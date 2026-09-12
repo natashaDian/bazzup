@@ -21,7 +21,7 @@ export default async function VendorHomePage() {
   ]);
 
   return (
-    <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-10 px-4 py-10">
+    <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-10 px-4 py-10 bg-white">
       <section className="flex flex-col gap-4">
         <h1 className="text-3xl font-bold sm:text-4xl">Discover Bazaars, Grow Your Business</h1>
         <p className="text-base text-muted-foreground">
@@ -34,7 +34,7 @@ export default async function VendorHomePage() {
           trigger={
             <DialogTrigger className="flex w-full max-w-xl items-center gap-2 rounded-lg border border-input bg-card px-3 py-2 text-left text-sm text-muted-foreground hover:bg-muted">
               <SearchIcon className="size-4 shrink-0" />
-              <span className="flex-1">Search event, location, or category...</span>
+              <span className="flex-1">Search event and location...</span>
               <span className="rounded-md bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">
                 Search
               </span>
@@ -53,7 +53,7 @@ export default async function VendorHomePage() {
         {recommended.length === 0 ? (
           <p className="text-sm text-muted-foreground">No bazaars available yet.</p>
         ) : (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {recommended.map((bazaar) => (
               <BazaarCard key={bazaar.id} bazaar={bazaar} />
             ))}
@@ -71,7 +71,7 @@ export default async function VendorHomePage() {
         {upcoming.length === 0 ? (
           <p className="text-sm text-muted-foreground">No upcoming bazaars yet.</p>
         ) : (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
             {upcoming.map((bazaar) => (
               <BazaarCard key={bazaar.id} bazaar={bazaar} />
             ))}
