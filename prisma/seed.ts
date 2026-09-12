@@ -77,6 +77,9 @@ async function main() {
         targetMarket: "Keluarga",
         businessDesc: "Jajanan pasar dan minuman kekinian",
         isVerifiedVendor: true,
+        profileImageUrl: "https://picsum.photos/seed/dapur-siti/400/400",
+        instagram: "@dapur.siti",
+        whatsapp: "6281300000001",
       },
     }),
     prisma.user.create({
@@ -91,6 +94,9 @@ async function main() {
         targetMarket: "Remaja",
         businessDesc: "Pakaian denim buatan lokal",
         isVerifiedVendor: true,
+        profileImageUrl: "https://picsum.photos/seed/andi-denim/400/400",
+        instagram: "@andidenim.co",
+        whatsapp: "6281300000002",
       },
     }),
     prisma.user.create({
@@ -103,6 +109,9 @@ async function main() {
         businessName: "Kriya Dewi",
         businessType: "Kerajinan",
         isVerifiedVendor: false,
+        profileImageUrl: "https://picsum.photos/seed/kriya-dewi/400/400",
+        instagram: "@kriya.dewi",
+        whatsapp: "6281300000003",
       },
     }),
     prisma.user.create({
@@ -116,6 +125,9 @@ async function main() {
         businessType: "Kuliner",
         targetMarket: "Pekerja kantoran",
         isVerifiedVendor: true,
+        profileImageUrl: "https://picsum.photos/seed/kopi-fajar/400/400",
+        instagram: "@kopikelilingfajar",
+        whatsapp: "6281300000004",
       },
     }),
   ]);
@@ -351,18 +363,125 @@ async function main() {
     ],
   });
 
-  const [userCount, bazaarCount, areaCount, applicationCount, reviewCount, notificationCount] =
-    await Promise.all([
-      prisma.user.count(),
-      prisma.bazaar.count(),
-      prisma.area.count(),
-      prisma.application.count(),
-      prisma.review.count(),
-      prisma.notification.count(),
-    ]);
+  await prisma.product.createMany({
+    data: [
+      // Siti Aminah - Dapur Siti (Kuliner)
+      { vendorId: vendor1.id, name: "Es Teh Kekinian", price: 8000 },
+      { vendorId: vendor1.id, name: "Risoles Mayo", price: 6000 },
+      { vendorId: vendor1.id, name: "Kue Cubit", price: 10000 },
+      { vendorId: vendor1.id, name: "Pisang Nugget", price: 12000 },
+
+      // Andi Pratama - Andi Denim Co. (Fashion)
+      { vendorId: vendor2.id, name: "Jaket Denim Oversize", price: 250000 },
+      { vendorId: vendor2.id, name: "Celana Denim Slim Fit", price: 180000 },
+      { vendorId: vendor2.id, name: "Rok Denim A-Line", price: 150000 },
+      { vendorId: vendor2.id, name: "Tas Denim Tote", price: 120000 },
+
+      // Dewi Lestari - Kriya Dewi (Kerajinan)
+      { vendorId: vendor3.id, name: "Tas Rajut Handmade", price: 95000 },
+      { vendorId: vendor3.id, name: "Gantungan Kunci Makrame", price: 15000 },
+      { vendorId: vendor3.id, name: "Vas Bunga Anyaman Rotan", price: 75000 },
+
+      // Fajar Nugroho - Kopi Keliling Fajar (Kuliner)
+      { vendorId: vendor4.id, name: "Kopi Susu Gula Aren", price: 15000 },
+      { vendorId: vendor4.id, name: "Americano", price: 12000 },
+      { vendorId: vendor4.id, name: "Cappuccino", price: 18000 },
+      { vendorId: vendor4.id, name: "Roti Bakar Coklat Keju", price: 15000 },
+      { vendorId: vendor4.id, name: "Es Kopi Kelapa", price: 20000 },
+    ],
+  });
+
+  await prisma.portfolio.createMany({
+    data: [
+      // Siti Aminah
+      {
+        vendorId: vendor1.id,
+        bazaarName: "Bazaar Ramadan Kota Tua",
+        eventDate: new Date("2026-03-12T00:00:00Z"),
+        photoUrl: "https://picsum.photos/seed/portfolio-siti-1/600/400",
+      },
+      {
+        vendorId: vendor1.id,
+        bazaarName: "Pasar Kaget Blok M",
+        eventDate: new Date("2025-11-02T00:00:00Z"),
+        photoUrl: "https://picsum.photos/seed/portfolio-siti-2/600/400",
+      },
+
+      // Andi Pratama
+      {
+        vendorId: vendor2.id,
+        bazaarName: "Jakarta Fashion Market",
+        eventDate: new Date("2025-09-14T00:00:00Z"),
+        photoUrl: "https://picsum.photos/seed/portfolio-andi-1/600/400",
+      },
+      {
+        vendorId: vendor2.id,
+        bazaarName: "Flea Market Senayan Park",
+        eventDate: new Date("2025-12-01T00:00:00Z"),
+        photoUrl: "https://picsum.photos/seed/portfolio-andi-2/600/400",
+      },
+
+      // Dewi Lestari
+      {
+        vendorId: vendor3.id,
+        bazaarName: "Pasar Kreatif Bandung",
+        eventDate: new Date("2026-01-06T00:00:00Z"),
+        photoUrl: "https://picsum.photos/seed/portfolio-dewi-1/600/400",
+      },
+      {
+        vendorId: vendor3.id,
+        bazaarName: "Braga Craft Festival",
+        eventDate: new Date("2025-07-20T00:00:00Z"),
+        photoUrl: "https://picsum.photos/seed/portfolio-dewi-2/600/400",
+      },
+      {
+        vendorId: vendor3.id,
+        bazaarName: "Pasar Seni ITB",
+        eventDate: new Date("2025-10-05T00:00:00Z"),
+        photoUrl: "https://picsum.photos/seed/portfolio-dewi-3/600/400",
+      },
+
+      // Fajar Nugroho
+      {
+        vendorId: vendor4.id,
+        bazaarName: "Car Free Day Sudirman Pop-up",
+        eventDate: new Date("2025-08-17T00:00:00Z"),
+        photoUrl: "https://picsum.photos/seed/portfolio-fajar-1/600/400",
+      },
+    ],
+  });
+
+  const [
+    userCount,
+    bazaarCount,
+    areaCount,
+    applicationCount,
+    reviewCount,
+    notificationCount,
+    productCount,
+    portfolioCount,
+  ] = await Promise.all([
+    prisma.user.count(),
+    prisma.bazaar.count(),
+    prisma.area.count(),
+    prisma.application.count(),
+    prisma.review.count(),
+    prisma.notification.count(),
+    prisma.product.count(),
+    prisma.portfolio.count(),
+  ]);
 
   console.log("Seed selesai:");
-  console.log({ userCount, bazaarCount, areaCount, applicationCount, reviewCount, notificationCount });
+  console.log({
+    userCount,
+    bazaarCount,
+    areaCount,
+    applicationCount,
+    reviewCount,
+    notificationCount,
+    productCount,
+    portfolioCount,
+  });
 }
 
 main()

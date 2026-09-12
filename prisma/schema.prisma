@@ -20,6 +20,11 @@ model User {
   targetMarket     String?
   businessDesc     String?
   isVerifiedVendor Boolean  @default(false)
+  profileImageUrl  String?
+  instagram        String?
+  whatsapp         String?
+  tiktok           String?
+  website          String?
   createdAt        DateTime @default(now())
 
   bazaars         Bazaar[]
@@ -27,6 +32,8 @@ model User {
   notifications   Notification[]
   reviewsAuthored Review[]       @relation("ReviewAuthor")
   reviewsReceived Review[]       @relation("ReviewReceiver")
+  products        Product[]
+  portfolios      Portfolio[]
 }
 
 model Bazaar {
@@ -135,6 +142,30 @@ model Review {
   @@index([applicationId])
   @@index([authorId])
   @@index([revieweeId])
+}
+
+model Product {
+  id        String   @id @default(cuid())
+  vendorId  String
+  vendor    User     @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  name      String
+  price     Int
+  imageUrl  String?
+  createdAt DateTime @default(now())
+
+  @@index([vendorId])
+}
+
+model Portfolio {
+  id         String   @id @default(cuid())
+  vendorId   String
+  vendor     User     @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  bazaarName String
+  eventDate  DateTime
+  photoUrl   String
+  createdAt  DateTime @default(now())
+
+  @@index([vendorId])
 }
 
 model Notification {
