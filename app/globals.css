@@ -165,3 +165,205 @@
     @apply font-sans;
   }
 }
+
+/* Login Page Animations */
+
+.login-container {
+  animation: loginContainerIn 0.7s ease-out both;
+}
+
+.login-panel-left {
+  animation: loginPanelLeftIn 0.7s ease-out 0.05s both;
+}
+
+.login-panel-right {
+  animation: loginPanelRightIn 0.7s ease-out 0.15s both;
+}
+
+.login-heading {
+  animation: loginHeadingIn 0.6s ease-out 0.25s both;
+}
+
+.login-description {
+  animation: loginDescriptionIn 0.6s ease-out 0.35s both;
+}
+
+.login-form-heading {
+  animation: loginFormHeadingIn 0.6s ease-out 0.3s both;
+}
+
+.login-form-wrapper {
+  animation: loginFormIn 0.6s ease-out 0.4s both;
+}
+
+.login-terms {
+  animation: loginTermsIn 0.6s ease-out 0.5s both;
+}
+
+
+/* Container */
+
+@keyframes loginContainerIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* Left Panel */
+
+@keyframes loginPanelLeftIn {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+
+/* Right Panel */
+
+@keyframes loginPanelRightIn {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+
+/* Main Heading */
+
+@keyframes loginHeadingIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* Description */
+
+@keyframes loginDescriptionIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* Form Heading */
+
+@keyframes loginFormHeadingIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* Form */
+
+@keyframes loginFormIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* Terms */
+
+@keyframes loginTermsIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+
+/* Accessibility */
+
+@media (prefers-reduced-motion: reduce) {
+  .login-container,
+  .login-panel-left,
+  .login-panel-right,
+  .login-heading,
+  .login-description,
+  .login-form-heading,
+  .login-form-wrapper,
+  .login-terms {
+    animation: none;
+  }
+}
+
+.login-gradient {
+  background: radial-gradient(
+    circle,
+    rgba(185, 140, 222, 0.42) 0%,
+    rgba(154, 103, 202, 0.35) 20%,
+    rgba(122, 92, 168, 0.26) 40%,
+    rgba(185, 140, 222, 0.12) 60%,
+    transparent 80%
+  );
+
+  filter: blur(40px);
+  animation: login-gradient-float 18s ease-in-out infinite alternate;
+}
+
+@keyframes login-gradient-float {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(45vw, 20vh, 0) scale(1.08);
+  }
+
+  100% {
+    transform: translate3d(10vw, 55vh, 0) scale(0.96);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-gradient {
+    animation: none;
+  }
+}
