@@ -26,7 +26,7 @@ export function VendorNav({ user }: { user: User }) {
             Explore
           </Link>
           <Link href="/applications" className="hover:text-foreground">
-            Application Status
+            Status
           </Link>
           <span className="cursor-default">About</span>
         </nav>
