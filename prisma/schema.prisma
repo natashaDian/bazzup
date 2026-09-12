@@ -9,14 +9,169 @@ datasource db {
 }
 
 model User {
+  id               String   @id @default(cuid())
+  email            String   @unique
+  name             String
+  phone            String?
+  role             Role
+  businessName     String?
+  businessType     String?
+  targetMarket     String?
+  businessDesc     String?
+  isVerifiedVendor Boolean  @default(false)
+  createdAt        DateTime @default(now())
+
+  bazaars         Bazaar[]
+  applications    Application[]
+  notifications   Notification[]
+  reviewsAuthored Review[]       @relation("ReviewAuthor")
+  reviewsReceived Review[]       @relation("ReviewReceiver")
+}
+
+model Bazaar {
+  id             String       @id @default(cuid())
+  organizerId    String
+  organizer      User         @relation(fields: [organizerId], references: [id])
+  title          String
+  description    String?
+  address        String
+  city           String
+  latitude       Float?
+  longitude      Float?
+  eventStartDate DateTime
+  eventEndDate   DateTime
+  status         BazaarStatus @default(DRAFT)
+  createdAt      DateTime     @default(now())
+
+  areas  Area[]
+  images BazaarImage[]
+
+  @@index([city, status])
+  @@index([organizerId])
+}
+
+model BazaarImage {
+  id       String @id @default(cuid())
+  bazaarId String
+  bazaar   Bazaar @relation(fields: [bazaarId], references: [id], onDelete: Cascade)
+  url      String
+
+  @@index([bazaarId])
+}
+
+model Area {
+  id               String   @id @default(cuid())
+  bazaarId         String
+  bazaar           Bazaar   @relation(fields: [bazaarId], references: [id])
+  name             String
+  description      String?
+  totalSlot        Int
+  pricePerSlot     Int
+  categoryWanted   String?
+  estimatedTraffic Int?
+  visitorProfile   String?
+  peakHours        String?
+  hasElectricity   Boolean  @default(false)
+  createdAt        DateTime @default(now())
+
+  images       AreaImage[]
+  applications Application[]
+
+  @@index([bazaarId])
+}
+
+model AreaImage {
+  id     String @id @default(cuid())
+  areaId String
+  area   Area   @relation(fields: [areaId], references: [id], onDelete: Cascade)
+  url    String
+
+  @@index([areaId])
+}
+
+model Application {
+  id                 String            @id @default(cuid())
+  areaId             String
+  area               Area              @relation(fields: [areaId], references: [id])
+  vendorId           String
+  vendor             User              @relation(fields: [vendorId], references: [id])
+  businessCategory   String
+  description        String?
+  matchScore         Int?
+  slotNumber         Int?
+  status             ApplicationStatus @default(PENDING)
+  rejectReason       String?
+  cancelReason       String?
+  appliedAt          DateTime          @default(now())
+  approvedAt         DateTime?
+  totalPrice         Int?
+  platformFee        Int?
+  paymentDeadline    DateTime?
+  paidAt             DateTime?
+  paymentConfirmedAt DateTime?
+  invoiceSentAt      DateTime?
+
+  reviews Review[]
+
+  @@unique([areaId, slotNumber])
+  @@index([areaId, status])
+  @@index([vendorId])
+}
+
+model Review {
+  id            String      @id @default(cuid())
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id])
+  authorId      String
+  author        User        @relation("ReviewAuthor", fields: [authorId], references: [id])
+  revieweeId    String
+  reviewee      User        @relation("ReviewReceiver", fields: [revieweeId], references: [id])
+  type          ReviewType
+  rating        Int
+  comment       String?
+  createdAt     DateTime    @default(now())
+
+  @@index([applicationId])
+  @@index([authorId])
+  @@index([revieweeId])
+}
+
+model Notification {
   id        String   @id @default(cuid())
-  email     String   @unique
-  name      String
-  role      Role     @default(USER)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  message   String
+  isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
+
+  @@index([userId])
 }
 
 enum Role {
-  USER
-  ADMIN
+  ORGANIZER
+  VENDOR
+}
+
+enum BazaarStatus {
+  DRAFT
+  ACTIVE
+  FULL
+  COMPLETED
+}
+
+enum ApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  EXPIRED
+  AWAITING_CONFIRMATION
+  CONFIRMED
+  CANCELLED
+  NO_SHOW
+  COMPLETED
+}
+
+enum ReviewType {
+  VENDOR_TO_BAZAAR
+  ORGANIZER_TO_VENDOR
 }
