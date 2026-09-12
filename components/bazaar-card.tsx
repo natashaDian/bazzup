@@ -1,15 +1,8 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatDateDisplay } from "@/lib/date";
+import { formatRupiah } from "@/lib/currency";
 import type { BazaarCard as BazaarCardData } from "@/lib/bazaars";
-
-function formatRupiah(amount: number) {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0,
-  }).format(amount);
-}
 
 export function BazaarCard({ bazaar }: { bazaar: BazaarCardData }) {
   return (

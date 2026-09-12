@@ -1,5 +1,5 @@
 import "server-only";
-import type { ApplicationStatus, Prisma } from "@prisma/client";
+import type { ApplicationStatus, BazaarStatus, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 
 const OCCUPYING_APPLICATION_STATUSES: ApplicationStatus[] = [
@@ -8,6 +8,33 @@ const OCCUPYING_APPLICATION_STATUSES: ApplicationStatus[] = [
   "CONFIRMED",
   "COMPLETED",
 ];
+
+// Statuses that count as "still an active application" - a vendor with one
+// of these for an area should not be able to apply again for that area.
+export const NON_TERMINAL_APPLICATION_STATUSES: ApplicationStatus[] = [
+  "PENDING",
+  "APPROVED",
+  "AWAITING_CONFIRMATION",
+  "CONFIRMED",
+];
+
+export async function getVendorAppliedAreaIds(
+  vendorId: string,
+  areaIds: string[],
+): Promise<Set<string>> {
+  if (areaIds.length === 0) return new Set();
+
+  const applications = await prisma.application.findMany({
+    where: {
+      vendorId,
+      areaId: { in: areaIds },
+      status: { in: NON_TERMINAL_APPLICATION_STATUSES },
+    },
+    select: { areaId: true },
+  });
+
+  return new Set(applications.map((application) => application.areaId));
+}
 
 const bazaarCardInclude = {
   images: { take: 1 },
@@ -18,14 +45,18 @@ const bazaarCardInclude = {
       categoryWanted: true,
       _count: {
         select: {
-          applications: { where: { status: { in: OCCUPYING_APPLICATION_STATUSES } } },
+          applications: {
+            where: { status: { in: OCCUPYING_APPLICATION_STATUSES } },
+          },
         },
       },
     },
   },
 } satisfies Prisma.BazaarInclude;
 
-type BazaarWithCardData = Prisma.BazaarGetPayload<{ include: typeof bazaarCardInclude }>;
+type BazaarWithCardData = Prisma.BazaarGetPayload<{
+  include: typeof bazaarCardInclude;
+}>;
 
 export type BazaarCard = {
   id: string;
@@ -43,11 +74,16 @@ export type BazaarCard = {
 
 function toBazaarCard(bazaar: BazaarWithCardData): BazaarCard {
   const totalSlot = bazaar.areas.reduce((sum, area) => sum + area.totalSlot, 0);
-  const takenSlot = bazaar.areas.reduce((sum, area) => sum + area._count.applications, 0);
+  const takenSlot = bazaar.areas.reduce(
+    (sum, area) => sum + area._count.applications,
+    0,
+  );
   const prices = bazaar.areas.map((area) => area.pricePerSlot);
   const categories = [
     ...new Set(
-      bazaar.areas.map((area) => area.categoryWanted).filter((c): c is string => Boolean(c))
+      bazaar.areas
+        .map((area) => area.categoryWanted)
+        .filter((c): c is string => Boolean(c)),
     ),
   ];
 
@@ -77,7 +113,7 @@ export async function getBazaarCities(): Promise<string[]> {
 
 export async function getRecommendedBazaars(
   businessType: string | null,
-  limit = 3
+  limit = 3,
 ): Promise<BazaarCard[]> {
   const baseWhere: Prisma.BazaarWhereInput = { status: "ACTIVE" };
 
@@ -112,7 +148,9 @@ export async function getUpcomingBazaars(limit = 3): Promise<BazaarCard[]> {
   return bazaars.map(toBazaarCard);
 }
 
-export async function searchBazaars(where: Prisma.BazaarWhereInput): Promise<BazaarCard[]> {
+export async function searchBazaars(
+  where: Prisma.BazaarWhereInput,
+): Promise<BazaarCard[]> {
   const bazaars = await prisma.bazaar.findMany({
     where,
     orderBy: { eventStartDate: "asc" },
@@ -121,6 +159,179 @@ export async function searchBazaars(where: Prisma.BazaarWhereInput): Promise<Baz
   return bazaars.map(toBazaarCard);
 }
 
-export async function countBazaars(where: Prisma.BazaarWhereInput): Promise<number> {
+export async function countBazaars(
+  where: Prisma.BazaarWhereInput,
+): Promise<number> {
   return prisma.bazaar.count({ where });
+}
+
+const bazaarDetailInclude = {
+  images: true,
+  organizer: { select: { name: true, businessName: true } },
+  areas: {
+    orderBy: { createdAt: "asc" },
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      totalSlot: true,
+      pricePerSlot: true,
+      categoryWanted: true,
+      hasElectricity: true,
+      estimatedTraffic: true,
+      images: { take: 1 },
+      _count: {
+        select: {
+          applications: {
+            where: { status: { in: OCCUPYING_APPLICATION_STATUSES } },
+          },
+        },
+      },
+    },
+  },
+} satisfies Prisma.BazaarInclude;
+type BazaarWithDetailData = Prisma.BazaarGetPayload<{
+  include: typeof bazaarDetailInclude;
+}>;
+
+export type BazaarAreaDetail = {
+  id: string;
+  name: string;
+  description: string | null;
+  totalSlot: number;
+  slotsLeft: number;
+  pricePerSlot: number;
+  categoryWanted: string | null;
+  hasElectricity: boolean;
+  estimatedTraffic: number | null;
+  imageUrl: string | null;
+};
+
+export type BazaarDetail = {
+  id: string;
+  title: string;
+  description: string | null;
+  address: string;
+  city: string;
+  eventStartDate: Date;
+  eventEndDate: Date;
+  status: BazaarStatus;
+  images: string[];
+  organizerName: string;
+  areas: BazaarAreaDetail[];
+};
+function toBazaarDetail(bazaar: BazaarWithDetailData): BazaarDetail {
+  return {
+    id: bazaar.id,
+    title: bazaar.title,
+    description: bazaar.description,
+    address: bazaar.address,
+    city: bazaar.city,
+    eventStartDate: bazaar.eventStartDate,
+    eventEndDate: bazaar.eventEndDate,
+    status: bazaar.status,
+    images: bazaar.images.map((image) => image.url),
+    organizerName: bazaar.organizer.businessName ?? bazaar.organizer.name,
+    areas: bazaar.areas.map((area) => ({
+      id: area.id,
+      name: area.name,
+      description: area.description,
+      totalSlot: area.totalSlot,
+      slotsLeft: Math.max(area.totalSlot - area._count.applications, 0),
+      pricePerSlot: area.pricePerSlot,
+      categoryWanted: area.categoryWanted,
+      hasElectricity: area.hasElectricity,
+      estimatedTraffic: area.estimatedTraffic,
+      imageUrl: area.images[0]?.url ?? null,
+    })),
+  };
+}
+export async function getBazaarById(id: string): Promise<BazaarDetail | null> {
+  const bazaar = await prisma.bazaar.findUnique({
+    where: { id },
+    include: bazaarDetailInclude,
+  });
+
+  return bazaar ? toBazaarDetail(bazaar) : null;
+}
+
+export type OrganizerBazaarCardData = BazaarCard & {
+  status: string;
+  areaCount: number;
+  pendingApplicationsCount: number;
+};
+
+export async function getOrganizerBazaarCounts(organizerId: string) {
+  const groups = await prisma.bazaar.groupBy({
+    by: ["status"],
+    where: { organizerId },
+    _count: { _all: true },
+  });
+
+  const counts = { all: 0, DRAFT: 0, ACTIVE: 0, FULL: 0, COMPLETED: 0 };
+  for (const g of groups) {
+    counts[g.status as keyof typeof counts] = g._count._all;
+    counts.all += g._count._all;
+  }
+  return counts;
+}
+export async function getOrganizerBazaars(
+  organizerId: string,
+  filters: { status?: string; q?: string } = {},
+): Promise<OrganizerBazaarCardData[]> {
+  const where: Prisma.BazaarWhereInput = { organizerId };
+
+  if (filters.status && filters.status !== "ALL") {
+    where.status = filters.status as Prisma.EnumBazaarStatusFilter["equals"];
+  }
+  if (filters.q) {
+    where.OR = [
+      { title: { contains: filters.q, mode: "insensitive" } },
+      { city: { contains: filters.q, mode: "insensitive" } },
+    ];
+  }
+
+  const bazaars = await prisma.bazaar.findMany({
+    where,
+    orderBy: { createdAt: "desc" },
+    include: bazaarCardInclude,
+  });
+
+  if (bazaars.length === 0) return [];
+
+  const areaRows = await prisma.area.findMany({
+    where: { bazaarId: { in: bazaars.map((b) => b.id) } },
+    select: { id: true, bazaarId: true },
+  });
+
+  const areaIdToBazaarId = new Map(areaRows.map((a) => [a.id, a.bazaarId]));
+  const areaCountPerBazaar = new Map<string, number>();
+  for (const a of areaRows) {
+    areaCountPerBazaar.set(
+      a.bazaarId,
+      (areaCountPerBazaar.get(a.bazaarId) ?? 0) + 1,
+    );
+  }
+
+  const pendingCounts = await prisma.application.groupBy({
+    by: ["areaId"],
+    where: { status: "PENDING", areaId: { in: areaRows.map((a) => a.id) } },
+    _count: { _all: true },
+  });
+  const pendingPerBazaar = new Map<string, number>();
+  for (const row of pendingCounts) {
+    const bazaarId = areaIdToBazaarId.get(row.areaId);
+    if (!bazaarId) continue;
+    pendingPerBazaar.set(
+      bazaarId,
+      (pendingPerBazaar.get(bazaarId) ?? 0) + row._count._all,
+    );
+  }
+
+  return bazaars.map((bazaar) => ({
+    ...toBazaarCard(bazaar),
+    status: bazaar.status,
+    areaCount: areaCountPerBazaar.get(bazaar.id) ?? 0,
+    pendingApplicationsCount: pendingPerBazaar.get(bazaar.id) ?? 0,
+  }));
 }
