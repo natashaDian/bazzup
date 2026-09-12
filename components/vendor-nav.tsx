@@ -1,6 +1,9 @@
 import Link from "next/link";
+import Image from "next/image";
+
 import { BellIcon, SparklesIcon } from "lucide-react";
 import type { User } from "@prisma/client";
+import bazzupLogo from "./assets/bazzup logo.png";
 
 export function VendorNav({ user }: { user: User }) {
   const initials =
@@ -13,10 +16,15 @@ export function VendorNav({ user }: { user: User }) {
 
   return (
     <header className="flex items-center justify-between gap-2 border-b bg-card px-4 py-3 sm:gap-6">
-      <div className="flex items-center gap-3 sm:gap-6">
-        <Link href="/vendor" className="flex items-center gap-1.5 font-bold text-primary">
-          <SparklesIcon className="size-5" />
-          BazzUp
+      <div className="flex items-center gap-3 sm:gap-4">
+        <Link href="/vendor" className="flex items-center">
+          <Image
+            src={bazzupLogo}
+            alt="BazzUp"
+            width={70}
+            height={32}
+            className="h-auto w-[70px]"
+          />
         </Link>
         <nav className="hidden items-center gap-4 text-sm font-medium text-muted-foreground sm:flex">
           <Link href="/vendor" className="hover:text-foreground">
