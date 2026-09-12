@@ -19,18 +19,11 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { formatDateDisplay } from "@/lib/date";
+import { formatRupiah } from "@/lib/currency";
 import { getCurrentUser } from "@/lib/auth";
 import { getBazaarById, getVendorAppliedAreaIds } from "@/lib/bazaars";
 import { BazaarImageCarousel } from "./bazaar-image-carousel";
 import { ApplyToAreaButton } from "./apply-to-area-button";
-
-function formatRupiah(amount: number) {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0,
-  }).format(amount);
-}
 
 const STATUS_LABEL: Record<string, { label: string; variant: "default" | "secondary" }> = {
   ACTIVE: { label: "Open", variant: "default" },

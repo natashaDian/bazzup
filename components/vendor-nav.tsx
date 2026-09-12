@@ -25,6 +25,9 @@ export function VendorNav({ user }: { user: User }) {
           <Link href="/explore" className="hover:text-foreground">
             Explore
           </Link>
+          <Link href="/applications" className="hover:text-foreground">
+            Application Status
+          </Link>
           <span className="cursor-default">About</span>
         </nav>
       </div>
