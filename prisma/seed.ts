@@ -168,6 +168,96 @@ async function main() {
     },
   });
 
+  const bazaar3 = await prisma.bazaar.create({
+    data: {
+      organizerId: organizer1.id,
+      title: "BSD Culinary Fest",
+      description: "Festival kuliner UMKM di kawasan BSD City, Tangerang",
+      address: "Jl. BSD Grand Boulevard",
+      city: "Tangerang",
+      latitude: -6.3016,
+      longitude: 106.6527,
+      eventStartDate: new Date("2026-10-05T09:00:00Z"),
+      eventEndDate: new Date("2026-10-06T21:00:00Z"),
+      status: "ACTIVE",
+      images: {
+        create: [{ url: "https://picsum.photos/seed/bsd-culinary-fest/800/400" }],
+      },
+    },
+  });
+
+  const bazaar4 = await prisma.bazaar.create({
+    data: {
+      organizerId: organizer2.id,
+      title: "Bekasi Weekend Market",
+      description: "Pasar akhir pekan untuk UMKM fashion dan lifestyle di Bekasi",
+      address: "Jl. Ahmad Yani No. 20",
+      city: "Bekasi",
+      latitude: -6.2383,
+      longitude: 107.0,
+      eventStartDate: new Date("2026-10-18T09:00:00Z"),
+      eventEndDate: new Date("2026-10-19T21:00:00Z"),
+      status: "ACTIVE",
+      images: {
+        create: [{ url: "https://picsum.photos/seed/bekasi-weekend-market/800/400" }],
+      },
+    },
+  });
+
+  const bazaar5 = await prisma.bazaar.create({
+    data: {
+      organizerId: organizer1.id,
+      title: "Surabaya Local Fest",
+      description: "Pameran produk kerajinan dan UMKM lokal Surabaya",
+      address: "Jl. Tunjungan No. 5",
+      city: "Surabaya",
+      latitude: -7.2575,
+      longitude: 112.7521,
+      eventStartDate: new Date("2026-11-05T09:00:00Z"),
+      eventEndDate: new Date("2026-11-07T21:00:00Z"),
+      status: "ACTIVE",
+      images: {
+        create: [{ url: "https://picsum.photos/seed/surabaya-local-fest/800/400" }],
+      },
+    },
+  });
+
+  const bazaar6 = await prisma.bazaar.create({
+    data: {
+      organizerId: organizer2.id,
+      title: "Yogyakarta Creative Day",
+      description: "Bazaar kreatif kuliner dan kerajinan khas Yogyakarta",
+      address: "Jl. Malioboro No. 8",
+      city: "Yogyakarta",
+      latitude: -7.7956,
+      longitude: 110.3695,
+      eventStartDate: new Date("2026-11-12T09:00:00Z"),
+      eventEndDate: new Date("2026-11-13T21:00:00Z"),
+      status: "ACTIVE",
+      images: {
+        create: [{ url: "https://picsum.photos/seed/yogyakarta-creative-day/800/400" }],
+      },
+    },
+  });
+
+  const bazaar7 = await prisma.bazaar.create({
+    data: {
+      organizerId: organizer2.id,
+      title: "Bandung Pop Up Market",
+      description: "Pop up market fashion dan lifestyle di kawasan Bandung",
+      address: "Jl. Riau No. 15",
+      city: "Bandung",
+      latitude: -6.9175,
+      longitude: 107.6191,
+      eventStartDate: new Date("2026-12-01T09:00:00Z"),
+      eventEndDate: new Date("2026-12-02T21:00:00Z"),
+      status: "ACTIVE",
+      images: {
+        create: [{ url: "https://picsum.photos/seed/bandung-popup-market/800/400" }],
+      },
+    },
+  });
+
   const areaA = await prisma.area.create({
     data: {
       bazaarId: bazaar1.id,
@@ -218,6 +308,96 @@ async function main() {
       hasElectricity: true,
       images: {
         create: [{ url: "https://picsum.photos/seed/area-panggung/600/400" }],
+      },
+    },
+  });
+
+  await prisma.area.create({
+    data: {
+      bazaarId: bazaar3.id,
+      name: "Food Court BSD",
+      description: "Zona kuliner utama di tengah venue",
+      totalSlot: 20,
+      pricePerSlot: 600000,
+      categoryWanted: "Kuliner",
+      estimatedTraffic: 1200,
+      visitorProfile: "Keluarga dan pekerja kantoran",
+      peakHours: "11:00-14:00",
+      hasElectricity: true,
+      images: {
+        create: [{ url: "https://picsum.photos/seed/area-bsd-foodcourt/600/400" }],
+      },
+    },
+  });
+
+  await prisma.area.create({
+    data: {
+      bazaarId: bazaar4.id,
+      name: "Zona Fashion Utama",
+      description: "Zona pakaian dan aksesoris",
+      totalSlot: 12,
+      pricePerSlot: 350000,
+      categoryWanted: "Fashion",
+      estimatedTraffic: 450,
+      visitorProfile: "Remaja dan dewasa muda",
+      peakHours: "16:00-20:00",
+      hasElectricity: false,
+      images: {
+        create: [{ url: "https://picsum.photos/seed/area-bekasi-fashion/600/400" }],
+      },
+    },
+  });
+
+  await prisma.area.create({
+    data: {
+      bazaarId: bazaar5.id,
+      name: "Galeri Kerajinan",
+      description: "Zona pameran produk kerajinan lokal",
+      totalSlot: 10,
+      pricePerSlot: 450000,
+      categoryWanted: "Kerajinan",
+      estimatedTraffic: 700,
+      visitorProfile: "Wisatawan dan kolektor",
+      peakHours: "10:00-15:00",
+      hasElectricity: true,
+      images: {
+        create: [{ url: "https://picsum.photos/seed/area-surabaya-kerajinan/600/400" }],
+      },
+    },
+  });
+
+  await prisma.area.create({
+    data: {
+      bazaarId: bazaar6.id,
+      name: "Zona Kuliner Malioboro",
+      description: "Zona jajanan khas Yogyakarta",
+      totalSlot: 15,
+      pricePerSlot: 400000,
+      categoryWanted: "Kuliner",
+      estimatedTraffic: 900,
+      visitorProfile: "Wisatawan",
+      peakHours: "17:00-21:00",
+      hasElectricity: true,
+      images: {
+        create: [{ url: "https://picsum.photos/seed/area-jogja-kuliner/600/400" }],
+      },
+    },
+  });
+
+  await prisma.area.create({
+    data: {
+      bazaarId: bazaar7.id,
+      name: "Zona Pop Up Fashion",
+      description: "Zona brand fashion lokal Bandung",
+      totalSlot: 14,
+      pricePerSlot: 320000,
+      categoryWanted: "Fashion",
+      estimatedTraffic: 550,
+      visitorProfile: "Remaja dan dewasa muda",
+      peakHours: "15:00-19:00",
+      hasElectricity: false,
+      images: {
+        create: [{ url: "https://picsum.photos/seed/area-bandung-popup/600/400" }],
       },
     },
   });
