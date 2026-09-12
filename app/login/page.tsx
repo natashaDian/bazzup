@@ -3,7 +3,7 @@ import { LoginForm } from "./login-form";
 import { Inter } from "next/font/google";
 
 export const metadata: Metadata = {
-  title: "Login - BazzUp",
+  title: "Sign in - BazzUp",
 };
 
 const inter = Inter({

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Daftar - BazzUp",
+  title: "Sign up - BazzUp",
 };
 
 export default function RegisterPage() {
