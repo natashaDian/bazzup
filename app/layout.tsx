@@ -14,17 +14,10 @@ export const metadata: Metadata = {
   description: "Discover bazaars, grow your business.",
 };
 
-export default function RootLayout({
-  children,
-}: LayoutProps<"/">) {
+export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      className={cn(inter.variable, "h-full antialiased")}
-    >
-      <body className="min-h-full flex flex-col">
-        {children}
-      </body>
+    <html lang="en" className={cn(inter.variable, "h-full antialiased")}>
+      <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
 }
