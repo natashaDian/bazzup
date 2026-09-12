@@ -1,8 +1,10 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 
-const CONFIRMED_STATUSES = ["CONFIRMED", "COMPLETED"] as const;
-const REJECTED_STATUSES = ["REJECTED", "EXPIRED"] as const;
+import type { ApplicationStatus } from "@prisma/client";
+
+const CONFIRMED_STATUSES: ApplicationStatus[] = ["CONFIRMED", "COMPLETED"];
+const REJECTED_STATUSES: ApplicationStatus[] = ["REJECTED", "EXPIRED"];
 
 export type DashboardStats = {
   primaryLabel: string;
@@ -37,7 +39,7 @@ export async function getDashboardStats(
       primaryValue: totalAreas,
       pendingApplications,
       confirmedVendors,
-      revenue: revenueResult._sum.platformFee ?? 0,
+      revenue: revenueResult._sum?.platformFee ?? 0,
     };
   }
 
