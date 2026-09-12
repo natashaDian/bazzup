@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn(inter.variable, "h-full antialiased")}
+      className={cn(inter.variable, "h-full antialiased bg-background")}
     >
       <body className="min-h-full flex flex-col">
         {children}
