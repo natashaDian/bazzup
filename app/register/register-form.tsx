@@ -2,31 +2,109 @@
 
 import { useActionState } from "react";
 import Link from "next/link";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+
 import { registerAction, type RegisterState } from "./actions";
 
 const initialState: RegisterState = {};
 
-export function RegisterForm() {
-  const [state, formAction, isPending] = useActionState(registerAction, initialState);
+type RegisterFormProps = {
+  role: "VENDOR" | "ORGANIZER";
+};
+
+export function RegisterForm({ role }: RegisterFormProps) {
+  const [state, formAction, isPending] = useActionState(
+    registerAction,
+    initialState
+  );
+
+  const isVendor = role === "VENDOR";
 
   return (
-    <form action={formAction} className="flex flex-col gap-4">
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="name">Full Name</Label>
-        <Input id="name" name="name" required autoComplete="name" />
+    <form action={formAction} className="flex flex-col gap-7">
+
+      {/* Role - Hidden */}
+      <input type="hidden" name="role" value={role} />
+
+      {/* Full Name */}
+      <div className="flex flex-col gap-2">
+        <Label
+          htmlFor="name"
+          className="text-sm font-normal text-[#3B1F4A]"
+        >
+          Full Name
+        </Label>
+
+        <Input
+          id="name"
+          name="name"
+          required
+          autoComplete="name"
+          placeholder="Your full name"
+          className="
+            h-12
+            rounded-lg
+            border-[#B98CDE]
+            bg-[#FAF8FF]
+            px-4
+            text-base
+            font-normal
+            text-[#3B1F4A]
+            shadow-none
+            placeholder:text-[#6B7280]
+            focus-visible:border-[#7A5CA8]
+            focus-visible:ring-1
+            focus-visible:ring-[#7A5CA8]
+          "
+        />
       </div>
 
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="email">Email</Label>
-        <Input id="email" name="email" type="email" required autoComplete="email" />
+      {/* Email */}
+      <div className="flex flex-col gap-2">
+        <Label
+          htmlFor="email"
+          className="text-sm font-normal text-[#3B1F4A]"
+        >
+          Email
+        </Label>
+
+        <Input
+          id="email"
+          name="email"
+          type="email"
+          required
+          autoComplete="email"
+          placeholder="you@example.com"
+          className="
+            h-12
+            rounded-lg
+            border-[#B98CDE]
+            bg-[#FAF8FF]
+            px-4
+            text-base
+            font-normal
+            text-[#3B1F4A]
+            shadow-none
+            placeholder:text-[#6B7280]
+            focus-visible:border-[#7A5CA8]
+            focus-visible:ring-1
+            focus-visible:ring-[#7A5CA8]
+          "
+        />
       </div>
 
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="password">Password</Label>
+      {/* Password */}
+      <div className="flex flex-col gap-2">
+        <Label
+          htmlFor="password"
+          className="text-sm font-normal text-[#3B1F4A]"
+        >
+          Password
+        </Label>
+
         <Input
           id="password"
           name="password"
@@ -34,34 +112,68 @@ export function RegisterForm() {
           required
           minLength={8}
           autoComplete="new-password"
+          placeholder="Create a password"
+          className="
+            h-12
+            rounded-lg
+            border-[#B98CDE]
+            bg-[#FAF8FF]
+            px-4
+            text-base
+            font-normal
+            text-[#3B1F4A]
+            shadow-none
+            placeholder:text-[#6B7280]
+            focus-visible:border-[#7A5CA8]
+            focus-visible:ring-1
+            focus-visible:ring-[#7A5CA8]
+          "
         />
       </div>
 
-      <div className="flex flex-col gap-2">
-        <Label>Register as</Label>
-        <RadioGroup name="role" defaultValue="VENDOR" className="grid-cols-2">
-          <Label className="flex items-center gap-2 rounded-lg border border-input px-3 py-2 has-data-checked:border-primary">
-            <RadioGroupItem value="VENDOR" />
-            Vendor
-          </Label>
-          <Label className="flex items-center gap-2 rounded-lg border border-input px-3 py-2 has-data-checked:border-primary">
-            <RadioGroupItem value="ORGANIZER" />
-            Organizer
-          </Label>
-        </RadioGroup>
-      </div>
+      {/* Error */}
+      {state.error && (
+        <p className="text-sm font-normal text-red-500">
+          {state.error}
+        </p>
+      )}
 
-      {state.error && <p className="text-sm text-destructive">{state.error}</p>}
-      {state.success && <p className="text-sm text-primary">{state.success}</p>}
+      {/* Success */}
+      {state.success && (
+        <p className="text-sm font-normal text-[#7A5CA8]">
+          {state.success}
+        </p>
+      )}
 
-      <Button type="submit" disabled={isPending} className="w-full">
-        {isPending ? "Signing up..." : "Sign up"}
+      {/* Submit */}
+      <Button
+        type="submit"
+        disabled={isPending}
+        className="
+          h-12
+          w-full
+          rounded-lg
+          bg-[#7A5CA8]
+          text-sm
+          font-normal
+          text-white
+          shadow-none
+          hover:bg-[#B98CDE]
+          disabled:cursor-not-allowed
+          disabled:opacity-60
+        "
+      >
+        {isPending ? "Memproses..." : "Daftar"}
       </Button>
 
-      <p className="text-center text-sm text-muted-foreground">
-        Already have an account?{" "}
-        <Link href="/login" className="text-primary underline-offset-4 hover:underline">
-          Sign in
+      {/* Login */}
+      <p className="text-center text-sm font-normal text-[#6B7280]">
+        Sudah punya akun?{" "}
+        <Link
+          href="/login"
+          className="font-normal text-[#7A5CA8] hover:underline"
+        >
+          Masuk
         </Link>
       </p>
     </form>

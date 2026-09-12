@@ -18,13 +18,8 @@ export default function RootLayout({
   children,
 }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      className={cn(inter.variable, "h-full antialiased bg-background")}
-    >
-      <body className="min-h-full flex flex-col">
-        {children}
-      </body>
+    <html lang="en" className={cn(inter.variable, "h-full antialiased")}>
+      <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
 }

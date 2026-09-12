@@ -2,7 +2,11 @@ import type { ReactNode } from "react";
 import { requireVendor } from "@/lib/auth";
 import { VendorNav } from "@/components/vendor-nav";
 
-export default async function VendorLayout({ children }: { children: ReactNode }) {
+export default async function VendorLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const user = await requireVendor();
 
   return (
