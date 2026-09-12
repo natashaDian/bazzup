@@ -55,7 +55,10 @@ export default async function VendorHomePage() {
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {recommended.map((bazaar) => (
-              <BazaarCard key={bazaar.id} bazaar={bazaar} />
+              <Link key={bazaar.id} href={`/bazaars/${bazaar.id}`}
+              className="transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg">
+                <BazaarCard bazaar={bazaar} />
+              </Link>
             ))}
           </div>
         )}
@@ -73,7 +76,9 @@ export default async function VendorHomePage() {
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
             {upcoming.map((bazaar) => (
-              <BazaarCard key={bazaar.id} bazaar={bazaar} />
+              <Link key={bazaar.id} href={`/bazaars/${bazaar.id}`}>
+                <BazaarCard bazaar={bazaar} />
+              </Link>
             ))}
           </div>
         )}

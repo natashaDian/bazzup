@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getBazaarCities, searchBazaars } from "@/lib/bazaars";
 import { buildBazaarWhere, parseBazaarSearchParams } from "@/lib/bazaar-search";
 import { ExploreFilterBar } from "@/components/explore-filter-bar";
@@ -45,7 +46,13 @@ export default async function ExplorePage({
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {bazaars.map((bazaar) => (
-            <BazaarCard key={bazaar.id} bazaar={bazaar} />
+            <Link
+              key={bazaar.id}
+              href={`/bazaars/${bazaar.id}`}
+              className="transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg"
+            >
+              <BazaarCard bazaar={bazaar} />
+            </Link>
           ))}
         </div>
       )}
