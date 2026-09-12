@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { randomUUID } from "node:crypto";
 
 const prisma = new PrismaClient();
 
@@ -46,6 +47,7 @@ async function main() {
   const [organizer1, organizer2, vendor1, vendor2, vendor3, vendor4] = await Promise.all([
     prisma.user.create({
       data: {
+        supabaseUserId: randomUUID(),
         email: `rina.organizer${SEED_EMAIL_DOMAIN}`,
         name: "Rina Wijaya",
         phone: "081200000001",
@@ -55,6 +57,7 @@ async function main() {
     }),
     prisma.user.create({
       data: {
+        supabaseUserId: randomUUID(),
         email: `budi.organizer${SEED_EMAIL_DOMAIN}`,
         name: "Budi Santoso",
         phone: "081200000002",
@@ -64,6 +67,7 @@ async function main() {
     }),
     prisma.user.create({
       data: {
+        supabaseUserId: randomUUID(),
         email: `siti.vendor${SEED_EMAIL_DOMAIN}`,
         name: "Siti Aminah",
         phone: "081300000001",
@@ -77,6 +81,7 @@ async function main() {
     }),
     prisma.user.create({
       data: {
+        supabaseUserId: randomUUID(),
         email: `andi.vendor${SEED_EMAIL_DOMAIN}`,
         name: "Andi Pratama",
         phone: "081300000002",
@@ -90,6 +95,7 @@ async function main() {
     }),
     prisma.user.create({
       data: {
+        supabaseUserId: randomUUID(),
         email: `dewi.vendor${SEED_EMAIL_DOMAIN}`,
         name: "Dewi Lestari",
         phone: "081300000003",
@@ -101,6 +107,7 @@ async function main() {
     }),
     prisma.user.create({
       data: {
+        supabaseUserId: randomUUID(),
         email: `fajar.vendor${SEED_EMAIL_DOMAIN}`,
         name: "Fajar Nugroho",
         phone: "081300000004",
