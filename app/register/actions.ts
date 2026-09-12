@@ -24,13 +24,13 @@ export async function registerAction(
   const role = parseRole(formData.get("role"));
 
   if (!name || !email || !password) {
-    return { error: "Nama, email, dan password wajib diisi." };
+    return { error: "Name, email, and password are required." };
   }
   if (!role) {
-    return { error: "Pilih peran sebagai Organizer atau Vendor." };
+    return { error: "Choose a role: Organizer or Vendor." };
   }
   if (password.length < 8) {
-    return { error: "Password minimal 8 karakter." };
+    return { error: "Password must be at least 8 characters." };
   }
 
   const supabase = await createClient();
@@ -40,15 +40,15 @@ export async function registerAction(
     return { error: error.message };
   }
   if (!data.user) {
-    return { error: "Registrasi gagal, coba lagi." };
+    return { error: "Registration failed, please try again." };
   }
 
-  // Supabase tidak mengembalikan error untuk email yang sudah terdaftar
-  // (mencegah user enumeration) - identities kosong menandakan akun itu
-  // sebenarnya sudah ada.
+  // Supabase does not return an error for an email that's already
+  // registered (to prevent user enumeration) - an empty identities array
+  // means the account actually already exists.
   if (data.user.identities && data.user.identities.length === 0) {
     return {
-      error: "Email ini sudah terdaftar. Silakan login atau gunakan email lain.",
+      error: "This email is already registered. Please sign in or use a different email.",
     };
   }
 
@@ -62,14 +62,14 @@ export async function registerAction(
       },
     });
   } catch {
-    return { error: "Gagal menyimpan data pengguna. Coba lagi." };
+    return { error: "Failed to save user data. Please try again." };
   }
 
   if (data.session) {
-    redirect("/");
+    redirect(role === "VENDOR" ? "/vendor" : "/");
   }
 
   return {
-    success: "Registrasi berhasil! Cek email kamu untuk verifikasi akun sebelum login.",
+    success: "Registration successful! Check your email to verify your account before signing in.",
   };
 }

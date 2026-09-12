@@ -33,13 +33,13 @@ export function LoginForm() {
       {state.error && <p className="text-sm text-destructive">{state.error}</p>}
 
       <Button type="submit" disabled={isPending} className="w-full">
-        {isPending ? "Memproses..." : "Masuk"}
+        {isPending ? "Signing in..." : "Sign in"}
       </Button>
 
       <p className="text-center text-sm text-muted-foreground">
-        Belum punya akun?{" "}
+        Don&apos;t have an account?{" "}
         <Link href="/register" className="text-primary underline-offset-4 hover:underline">
-          Daftar
+          Sign up
         </Link>
       </p>
     </form>

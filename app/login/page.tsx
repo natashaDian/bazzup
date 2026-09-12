@@ -9,16 +9,16 @@ import {
 import { LoginForm } from "./login-form";
 
 export const metadata: Metadata = {
-  title: "Masuk - BazzUp",
+  title: "Sign in - BazzUp",
 };
 
 export default function LoginPage() {
   return (
-    <main className="flex flex-1 items-center justify-center px-4 py-12">
+    <main className="theme-original flex flex-1 items-center justify-center bg-background px-4 py-12">
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle>Masuk ke BazzUp</CardTitle>
-          <CardDescription>Kelola bazaar atau lanjutkan pengajuan sewa slot.</CardDescription>
+          <CardTitle>Sign in to BazzUp</CardTitle>
+          <CardDescription>Manage your bazaar or continue your slot application.</CardDescription>
         </CardHeader>
         <CardContent>
           <LoginForm />

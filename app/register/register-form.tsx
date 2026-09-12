@@ -16,7 +16,7 @@ export function RegisterForm() {
   return (
     <form action={formAction} className="flex flex-col gap-4">
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="name">Nama Lengkap</Label>
+        <Label htmlFor="name">Full Name</Label>
         <Input id="name" name="name" required autoComplete="name" />
       </div>
 
@@ -38,7 +38,7 @@ export function RegisterForm() {
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label>Daftar sebagai</Label>
+        <Label>Register as</Label>
         <RadioGroup name="role" defaultValue="VENDOR" className="grid-cols-2">
           <Label className="flex items-center gap-2 rounded-lg border border-input px-3 py-2 has-data-checked:border-primary">
             <RadioGroupItem value="VENDOR" />
@@ -55,13 +55,13 @@ export function RegisterForm() {
       {state.success && <p className="text-sm text-primary">{state.success}</p>}
 
       <Button type="submit" disabled={isPending} className="w-full">
-        {isPending ? "Memproses..." : "Daftar"}
+        {isPending ? "Signing up..." : "Sign up"}
       </Button>
 
       <p className="text-center text-sm text-muted-foreground">
-        Sudah punya akun?{" "}
+        Already have an account?{" "}
         <Link href="/login" className="text-primary underline-offset-4 hover:underline">
-          Masuk
+          Sign in
         </Link>
       </p>
     </form>

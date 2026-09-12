@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
 
 export type LoginState = {
@@ -15,15 +16,16 @@ export async function loginAction(
   const password = String(formData.get("password") ?? "");
 
   if (!email || !password) {
-    return { error: "Email dan password wajib diisi." };
+    return { error: "Email and password are required." };
   }
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
-    return { error: "Email atau password salah." };
+    return { error: "Incorrect email or password." };
   }
 
-  redirect("/");
+  const user = await prisma.user.findUnique({ where: { supabaseUserId: data.user.id } });
+  redirect(user?.role === "VENDOR" ? "/vendor" : "/");
 }
