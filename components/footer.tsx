@@ -7,7 +7,6 @@ export function Footer() {
   return (
     <footer className="border-t border-[#E5E0EB] bg-[#F3EAFB]">
       <div className="mx-auto max-w-7xl px-6 md:px-10 lg:px-16">
-        
         {/* Main Footer */}
         <div className="flex flex-col items-center py-14 text-center md:py-16">
           <Link href="/" className="inline-flex items-center">
@@ -25,7 +24,7 @@ export function Footer() {
           </p>
 
           <p className="mt-3 max-w-md text-sm leading-6 text-[#6B7280]">
-            Temukan booth dan peluang baru untuk acara dan bisnis kamu.
+            Discover booths and new opportunities for your events and business.
           </p>
 
           <nav className="mt-8 flex items-center gap-8">
@@ -33,7 +32,7 @@ export function Footer() {
               href="/vendor"
               className="text-sm font-medium text-[#3B1F4A] transition-colors duration-200 hover:text-[#7A5CA8]"
             >
-              Cari Booth
+              Find a Booth
             </Link>
 
             <span className="h-1 w-1 rounded-full bg-[#B98CDE]" />
@@ -42,7 +41,7 @@ export function Footer() {
               href="/organizer"
               className="text-sm font-medium text-[#3B1F4A] transition-colors duration-200 hover:text-[#7A5CA8]"
             >
-              Jadi Partner
+              Become a Partner
             </Link>
           </nav>
         </div>
