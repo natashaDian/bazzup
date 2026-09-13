@@ -22,7 +22,7 @@ import { formatDateDisplay } from "@/lib/date";
 import { formatRupiah } from "@/lib/currency";
 import { getCurrentUser } from "@/lib/auth";
 import { getBazaarById, getVendorAppliedAreaIds } from "@/lib/bazaars";
-import { BazaarImageCarousel } from "./bazaar-image-carousel";
+import { BazaarImageCarousel } from "@/components/bazaar-image-carousel";
 import { ApplyToAreaButton } from "./apply-to-area-button";
 
 const STATUS_LABEL: Record<string, { label: string; variant: "default" | "secondary" }> = {

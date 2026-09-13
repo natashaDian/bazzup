@@ -148,21 +148,111 @@ export async function getUpcomingBazaars(limit = 3): Promise<BazaarCard[]> {
   return bazaars.map(toBazaarCard);
 }
 
-export async function searchBazaars(
-  where: Prisma.BazaarWhereInput,
-): Promise<BazaarCard[]> {
-  const bazaars = await prisma.bazaar.findMany({
-    where,
-    orderBy: { eventStartDate: "asc" },
-    include: bazaarCardInclude,
-  });
-  return bazaars.map(toBazaarCard);
-}
-
 export async function countBazaars(
   where: Prisma.BazaarWhereInput,
 ): Promise<number> {
   return prisma.bazaar.count({ where });
+}
+
+const exploreBazaarInclude = {
+  images: true,
+  organizer: { select: { name: true, businessName: true } },
+  areas: {
+    orderBy: { createdAt: "asc" },
+    select: {
+      id: true,
+      name: true,
+      pricePerSlot: true,
+      totalSlot: true,
+      categoryWanted: true,
+      _count: {
+        select: {
+          applications: {
+            where: { status: { in: OCCUPYING_APPLICATION_STATUSES } },
+          },
+        },
+      },
+    },
+  },
+} satisfies Prisma.BazaarInclude;
+
+type BazaarWithExploreData = Prisma.BazaarGetPayload<{
+  include: typeof exploreBazaarInclude;
+}>;
+
+export type ExploreBazaarArea = {
+  id: string;
+  name: string;
+  pricePerSlot: number;
+  slotsLeft: number;
+  totalSlot: number;
+  categoryWanted: string | null;
+};
+
+export type ExploreBazaar = {
+  id: string;
+  title: string;
+  description: string | null;
+  address: string;
+  city: string;
+  latitude: number;
+  longitude: number;
+  eventStartDate: Date;
+  eventEndDate: Date;
+  images: string[];
+  organizerName: string;
+  categories: string[];
+  minPricePerSlot: number | null;
+  areas: ExploreBazaarArea[];
+};
+
+function toExploreBazaar(bazaar: BazaarWithExploreData): ExploreBazaar {
+  const categories = [
+    ...new Set(
+      bazaar.areas
+        .map((area) => area.categoryWanted)
+        .filter((c): c is string => Boolean(c)),
+    ),
+  ];
+  const prices = bazaar.areas.map((area) => area.pricePerSlot);
+
+  return {
+    id: bazaar.id,
+    title: bazaar.title,
+    description: bazaar.description,
+    address: bazaar.address,
+    city: bazaar.city,
+    // Safe: the query below only selects rows where both are non-null.
+    latitude: bazaar.latitude as number,
+    longitude: bazaar.longitude as number,
+    eventStartDate: bazaar.eventStartDate,
+    eventEndDate: bazaar.eventEndDate,
+    images: bazaar.images.map((image) => image.url),
+    organizerName: bazaar.organizer.businessName ?? bazaar.organizer.name,
+    categories,
+    minPricePerSlot: prices.length > 0 ? Math.min(...prices) : null,
+    areas: bazaar.areas.map((area) => ({
+      id: area.id,
+      name: area.name,
+      pricePerSlot: area.pricePerSlot,
+      slotsLeft: Math.max(area.totalSlot - area._count.applications, 0),
+      totalSlot: area.totalSlot,
+      categoryWanted: area.categoryWanted,
+    })),
+  };
+}
+
+// Only bazaars with coordinates can be placed on the map, so those are
+// filtered out at the query level instead of showing pin-less rows.
+export async function getExploreBazaars(
+  where: Prisma.BazaarWhereInput,
+): Promise<ExploreBazaar[]> {
+  const bazaars = await prisma.bazaar.findMany({
+    where: { ...where, latitude: { not: null }, longitude: { not: null } },
+    orderBy: { eventStartDate: "asc" },
+    include: exploreBazaarInclude,
+  });
+  return bazaars.map(toExploreBazaar);
 }
 
 const bazaarDetailInclude = {
