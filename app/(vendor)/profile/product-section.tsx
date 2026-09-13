@@ -44,7 +44,7 @@ export function ProductSection({ products }: { products: Product[] }) {
   }
 
   return (
-    <div className="mb-6">
+    <div id="products" className="mb-6 scroll-mt-20">
       <div className="flex items-center justify-between mb-3">
         <span className="text-base font-medium">Produk saya</span>
         <Button size="sm" onClick={() => setAddOpen(true)}>
