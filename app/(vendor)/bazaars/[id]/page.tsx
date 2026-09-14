@@ -11,7 +11,6 @@ import {
 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { buttonVariants } from "@/components/ui/button";
 import {
   Accordion,
   AccordionContent,
@@ -110,9 +109,6 @@ export default async function BazaarDetailPage({ params }: PageParams) {
                 <p className="text-sm font-medium">{bazaar.organizerName}</p>
               </div>
             </div>
-            <a href="#available-areas" className={buttonVariants({ variant: "default" })}>
-              Apply Now
-            </a>
           </div>
 
           {bazaar.description && (
