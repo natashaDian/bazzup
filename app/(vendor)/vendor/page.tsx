@@ -6,6 +6,8 @@ import { getBazaarCities, getRecommendedBazaars, getUpcomingBazaars } from "@/li
 import { BazaarSearchDialog } from "@/components/bazaar-search-dialog";
 import { BazaarCard } from "@/components/bazaar-card";
 import { DialogTrigger } from "@/components/ui/dialog";
+import { IncompleteProfileDialog } from "@/components/incomplete-profile-dialog";
+import { isVendorProfileComplete } from "@/lib/vendor-profile";
 
 export const metadata: Metadata = {
   title: "Home - BazzUp",
@@ -22,6 +24,7 @@ export default async function VendorHomePage() {
 
   return (
     <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-10 px-4 py-10 bg-white">
+      <IncompleteProfileDialog defaultOpen={!isVendorProfileComplete(user)} />
       <section className="flex flex-col gap-4">
         <h1 className="text-3xl font-bold sm:text-4xl">Discover Bazaars, Grow Your Business</h1>
         <p className="text-base text-muted-foreground">

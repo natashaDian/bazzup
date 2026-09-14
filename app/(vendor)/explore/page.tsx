@@ -3,6 +3,7 @@ import { getBazaarCities, getExploreBazaars } from "@/lib/bazaars";
 import { buildBazaarWhere, parseBazaarSearchParams } from "@/lib/bazaar-search";
 import { ExploreFilterBar } from "@/components/explore-filter-bar";
 import { ExploreExperience } from "@/components/explore/explore-experience";
+import { IncompleteProfileDialog } from "@/components/incomplete-profile-dialog";
 
 export const metadata: Metadata = {
   title: "Explore - BazzUp",
@@ -22,6 +23,7 @@ export default async function ExplorePage({
   const rawCity = firstValue(sp.city);
   const rawStart = firstValue(sp.start);
   const rawEnd = firstValue(sp.end);
+  const incompleteProfile = firstValue(sp.incompleteProfile) === "1";
 
   const filters = parseBazaarSearchParams({ city: rawCity, start: rawStart, end: rawEnd });
   const where = buildBazaarWhere(filters);
@@ -30,6 +32,7 @@ export default async function ExplorePage({
 
   return (
     <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-5 px-4 py-6 lg:px-6">
+      <IncompleteProfileDialog defaultOpen={incompleteProfile} />
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold">Explore Bazaar</h1>

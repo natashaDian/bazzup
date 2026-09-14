@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import {
   CalendarIcon,
   LayersIcon,
@@ -22,6 +22,7 @@ import { formatDateDisplay } from "@/lib/date";
 import { formatRupiah } from "@/lib/currency";
 import { getCurrentUser } from "@/lib/auth";
 import { getBazaarById, getVendorAppliedAreaIds } from "@/lib/bazaars";
+import { isVendorProfileComplete } from "@/lib/vendor-profile";
 import { BazaarImageCarousel } from "@/components/bazaar-image-carousel";
 import { ApplyToAreaButton } from "./apply-to-area-button";
 
@@ -50,6 +51,14 @@ export default async function BazaarDetailPage({ params }: PageParams) {
   }
 
   const user = await getCurrentUser();
+
+  // Vendors are gated behind a complete profile so organizers always get
+  // usable info to review applications with - anyone getting here without
+  // one (direct link, back button, other cards) gets bounced back.
+  if (user?.role === "VENDOR" && !isVendorProfileComplete(user)) {
+    redirect("/explore?incompleteProfile=1");
+  }
+
   const appliedAreaIds = user
     ? await getVendorAppliedAreaIds(
         user.id,
