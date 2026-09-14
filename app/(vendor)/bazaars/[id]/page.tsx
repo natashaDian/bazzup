@@ -225,6 +225,7 @@ export default async function BazaarDetailPage({ params }: PageParams) {
                           bazaarId={bazaar.id}
                           areaId={area.id}
                           alreadyApplied={appliedAreaIds.has(area.id)}
+                          soldOut={area.slotsLeft <= 0}
                         />
                       </div>
                     </AccordionContent>

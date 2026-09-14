@@ -48,7 +48,7 @@ export function ExploreMap({
   }, [selectedLat, selectedLng]);
 
   return (
-    <div className="relative size-full">
+    <div className="relative isolate size-full">
       <MapContainer
         center={[userPosition.lat, userPosition.lng]}
         zoom={13}
