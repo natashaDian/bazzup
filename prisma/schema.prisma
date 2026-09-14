@@ -109,13 +109,16 @@ model Application {
   slotNumber         Int?
   status             ApplicationStatus @default(PENDING)
   rejectReason       String?
+  rejectedAt         DateTime?
   cancelReason       String?
+  cancelledAt        DateTime?
   appliedAt          DateTime          @default(now())
   approvedAt         DateTime?
   totalPrice         Int?
   platformFee        Int?
   paymentDeadline    DateTime?
   paidAt             DateTime?
+  transactionId      String?
   paymentConfirmedAt DateTime?
   invoiceSentAt      DateTime?
 
