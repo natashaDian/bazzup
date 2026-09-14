@@ -56,7 +56,7 @@ export function PortfolioSection({ portfolios }: { portfolios: Portfolio[] }) {
   }
 
   return (
-    <div>
+    <div id="portfolio" className="scroll-mt-20">
       <div className="flex items-center justify-between mb-3">
         <span className="text-base font-medium">Portofolio</span>
         <Button size="sm" onClick={() => setAddOpen(true)}>
