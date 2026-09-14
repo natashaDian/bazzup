@@ -3,7 +3,7 @@
 import { useActionState, useState, useEffect } from "react";
 import { CircleCheckBig } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ALREADY_APPLIED_MESSAGE } from "@/lib/application-messages";
+import { ALREADY_APPLIED_MESSAGE, SLOT_SOLD_OUT_MESSAGE } from "@/lib/application-messages";
 import { applyToAreaAction, type ApplyToAreaState } from "../actions";
 import {
   Dialog,
@@ -18,14 +18,19 @@ type ApplyToAreaButtonProps = {
   bazaarId: string;
   areaId: string;
   alreadyApplied: boolean;
+  soldOut: boolean;
 };
 
-export function ApplyToAreaButton({ bazaarId, areaId, alreadyApplied }: ApplyToAreaButtonProps) {
+export function ApplyToAreaButton({ bazaarId, areaId, alreadyApplied, soldOut }: ApplyToAreaButtonProps) {
   const boundAction = applyToAreaAction.bind(null, bazaarId, areaId);
   const [state, formAction, isPending] = useActionState(boundAction, initialState);
 
-  const disabled = alreadyApplied || isPending;
-  const errorMessage = alreadyApplied ? ALREADY_APPLIED_MESSAGE : state.error;
+  const disabled = alreadyApplied || soldOut || isPending;
+  const errorMessage = alreadyApplied
+    ? ALREADY_APPLIED_MESSAGE
+    : soldOut
+      ? SLOT_SOLD_OUT_MESSAGE
+      : state.error;
 
   const [showSuccess, setShowSuccess] = useState(false);
   useEffect(() => {

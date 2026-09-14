@@ -16,7 +16,7 @@ export default async function VendorHomePage() {
 
   const [cities, recommended, upcoming] = await Promise.all([
     getBazaarCities(),
-    getRecommendedBazaars(user.businessType),
+    getRecommendedBazaars(user.businessType, user.targetMarket),
     getUpcomingBazaars(),
   ]);
 
@@ -46,7 +46,7 @@ export default async function VendorHomePage() {
       <section className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold">Recommended for You</h2>
-          <Link href="/explore" className="text-sm font-medium text-primary hover:underline">
+          <Link href="/allbazaar/recommended" className="text-sm font-medium text-primary hover:underline">
             See All &rarr;
           </Link>
         </div>
@@ -67,7 +67,7 @@ export default async function VendorHomePage() {
       <section className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold">Upcoming Bazaars</h2>
-          <Link href="/explore" className="text-sm font-medium text-primary hover:underline">
+          <Link href="/allbazaar/upcoming" className="text-sm font-medium text-primary hover:underline">
             See All &rarr;
           </Link>
         </div>
@@ -76,7 +76,8 @@ export default async function VendorHomePage() {
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
             {upcoming.map((bazaar) => (
-              <Link key={bazaar.id} href={`/bazaars/${bazaar.id}`}>
+              <Link key={bazaar.id} href={`/bazaars/${bazaar.id}`}
+              className="transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg">
                 <BazaarCard bazaar={bazaar} />
               </Link>
             ))}

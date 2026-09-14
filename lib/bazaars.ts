@@ -1,8 +1,9 @@
 import "server-only";
 import type { ApplicationStatus, BazaarStatus, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { calculateMatchScore } from "@/lib/matchscore";
 
-const OCCUPYING_APPLICATION_STATUSES: ApplicationStatus[] = [
+export const OCCUPYING_APPLICATION_STATUSES: ApplicationStatus[] = [
   "APPROVED",
   "AWAITING_CONFIRMATION",
   "CONFIRMED",
@@ -112,35 +113,59 @@ export async function getBazaarCities(): Promise<string[]> {
 }
 
 export async function getRecommendedBazaars(
-  businessType: string | null,
+  businessType: string | null, targetMarket: string | null,
   limit = 3,
-): Promise<BazaarCard[]> {
-  const baseWhere: Prisma.BazaarWhereInput = { status: "ACTIVE" };
+): Promise<(BazaarCard & { matchScore: number })[]> {
+  const baseWhere: Prisma.BazaarWhereInput = { status: "ACTIVE", eventStartDate: { gte: new Date() } };
 
-  let bazaars = await prisma.bazaar.findMany({
-    where: businessType
-      ? { ...baseWhere, areas: { some: { categoryWanted: businessType } } }
-      : baseWhere,
-    orderBy: { eventStartDate: "asc" },
-    take: limit,
-    include: bazaarCardInclude,
+  const bazaars = await prisma.bazaar.findMany({
+    where: baseWhere,
+    include: {
+      images: { take: 1 },
+      areas: {
+        select: {
+          // Needed by toBazaarCard():
+          totalSlot: true,
+          pricePerSlot: true,
+          categoryWanted: true,
+          _count: {
+            select: {
+              applications: { where: { status: { in: OCCUPYING_APPLICATION_STATUSES } } },
+            },
+          },
+          // Needed by calculateMatchScore():
+          visitorProfile: true,
+          estimatedTraffic: true,
+          hasElectricity: true,
+        },
+      },
+    },
   });
 
-  if (bazaars.length === 0 && businessType) {
-    bazaars = await prisma.bazaar.findMany({
-      where: baseWhere,
-      orderBy: { eventStartDate: "asc" },
-      take: limit,
-      include: bazaarCardInclude,
-    });
-  }
+  const vendor = { businessType, targetMarket };
 
-  return bazaars.map(toBazaarCard);
+  return bazaars
+    .map((bazaar) => {
+      const bestScore = bazaar.areas.reduce((max, area) => {
+        const { score } = calculateMatchScore({ area, vendor });
+        return Math.max(max, score);
+      }, 0);
+ 
+      return { ...toBazaarCard(bazaar), matchScore: bestScore };
+    })
+    .sort((a, b) => b.matchScore - a.matchScore)
+    .slice(0, limit);
 }
 
 export async function getUpcomingBazaars(limit = 3): Promise<BazaarCard[]> {
+  const now = new Date();
+  const in30Days = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+
   const bazaars = await prisma.bazaar.findMany({
-    where: { status: "ACTIVE" },
+    where: {
+      status: "ACTIVE",
+      eventStartDate: { gte: now, lte: in30Days },
+    },
     orderBy: { eventStartDate: "asc" },
     take: limit,
     include: bazaarCardInclude,

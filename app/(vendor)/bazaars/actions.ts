@@ -3,8 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { requireVendor } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { NON_TERMINAL_APPLICATION_STATUSES } from "@/lib/bazaars";
-import { ALREADY_APPLIED_MESSAGE } from "@/lib/application-messages";
+import { NON_TERMINAL_APPLICATION_STATUSES, OCCUPYING_APPLICATION_STATUSES } from "@/lib/bazaars";
+import { ALREADY_APPLIED_MESSAGE, SLOT_SOLD_OUT_MESSAGE } from "@/lib/application-messages";
 
 export type ApplyToAreaState = {
   error?: string;
@@ -21,11 +21,23 @@ export async function applyToAreaAction(
 
   const area = await prisma.area.findUnique({
     where: { id: areaId },
-    select: { bazaarId: true },
+    select: {
+      bazaarId: true,
+      totalSlot: true,
+      _count: {
+        select: {
+          applications: { where: { status: { in: OCCUPYING_APPLICATION_STATUSES } } },
+        },
+      },
+    },
   });
 
   if (!area || area.bazaarId !== bazaarId) {
     return { error: "This area could not be found." };
+  }
+
+  if (area._count.applications >= area.totalSlot) {
+    return { error: SLOT_SOLD_OUT_MESSAGE };
   }
 
   const existing = await prisma.application.findFirst({
