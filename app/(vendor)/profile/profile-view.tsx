@@ -131,6 +131,7 @@ export function ProfileView({ user }: { user: User }) {
           {mode === "edit" ? (
             <ProfileForm
               user={user}
+              hasBusinessPhoto={Boolean(photoUrl)}
               onSaved={() => setMode("view")}
               onCancel={() => setMode("view")}
             />

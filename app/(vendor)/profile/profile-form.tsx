@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, startTransition } from "react";
+import { useActionState, useEffect, useState, startTransition } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { User } from "@prisma/client";
@@ -48,10 +48,12 @@ const initialState: UpdateVendorProfileState = {};
 
 export function ProfileForm({
   user,
+  hasBusinessPhoto,
   onSaved,
   onCancel,
 }: {
   user: User;
+  hasBusinessPhoto: boolean;
   onSaved: () => void;
   onCancel: () => void;
 }) {
@@ -59,6 +61,7 @@ export function ProfileForm({
     updateVendorProfileAction,
     initialState,
   );
+  const [photoError, setPhotoError] = useState<string | null>(null);
 
   const {
     register,
@@ -96,6 +99,12 @@ export function ProfileForm({
   }, [state, setError, onSaved]);
 
   const onSubmit = handleSubmit((data) => {
+    if (!hasBusinessPhoto) {
+      setPhotoError("Logo usaha wajib diupload sebelum menyimpan.");
+      return;
+    }
+    setPhotoError(null);
+
     const fd = new FormData();
     for (const [key, value] of Object.entries(data)) {
       fd.set(key, value ?? "");
@@ -123,7 +132,7 @@ export function ProfileForm({
           control={control}
           name="businessType"
           render={({ field }) => (
-            <Select value={field.value} onValueChange={field.onChange}>
+            <Select value={field.value ?? ""} onValueChange={field.onChange}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Choose business category" />
               </SelectTrigger>
@@ -172,7 +181,7 @@ export function ProfileForm({
           control={control}
           name="targetMarket"
           render={({ field }) => (
-            <Select value={field.value} onValueChange={field.onChange}>
+            <Select value={field.value ?? ""} onValueChange={field.onChange}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Choose target market" />
               </SelectTrigger>
@@ -243,7 +252,9 @@ export function ProfileForm({
         </div>
       </div>
 
-      {state.error && <p className="text-sm text-destructive">{state.error}</p>}
+      {(photoError || state.error) && (
+        <p className="text-sm text-destructive">{photoError ?? state.error}</p>
+      )}
 
       <div className="flex gap-2 pt-2">
         <Button type="submit" disabled={isPending} className="flex-1">

@@ -20,6 +20,10 @@ export async function updateVendorProfileAction(
 ): Promise<UpdateVendorProfileState> {
   const user = await requireVendor();
 
+  if (!user.profileImageUrl) {
+    return { error: "Logo usaha wajib diupload sebelum menyimpan." };
+  }
+
   const raw = {
     businessName: String(formData.get("businessName") ?? ""),
     businessType: String(formData.get("businessType") ?? ""),
