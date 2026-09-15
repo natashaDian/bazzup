@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState, useEffect } from "react";
+import Link from "next/link";
 import { CircleCheckBig } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ALREADY_APPLIED_MESSAGE, SLOT_SOLD_OUT_MESSAGE } from "@/lib/application-messages";
@@ -53,10 +54,12 @@ export function ApplyToAreaButton({ bazaarId, areaId, alreadyApplied, soldOut }:
                 <br />
                 Check your application status in the <span className="font-medium">{'"Status"'}</span> section
               </DialogDescription>
-              <button onClick={() => setShowSuccess(false)} 
-              className="mt-4 w-full rounded-md bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90">
+              <Link
+                href="/applications"
+                className="mt-4 flex w-full items-center justify-center rounded-md bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+              >
                 Got It
-              </button>
+              </Link>
             </div>
           </DialogContent>
         </Dialog>
