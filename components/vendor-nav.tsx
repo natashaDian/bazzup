@@ -55,7 +55,9 @@ export function VendorNav({ user }: { user: User }) {
           <Link href="/applications" className="hover:text-foreground">
             Status
           </Link>
-          <span className="cursor-default">About</span>
+          <Link href="/about" className="hover:text-foreground">
+            About
+          </Link>
         </nav>
       </div>
       <div className="flex items-center gap-3">

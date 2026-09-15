@@ -23,21 +23,18 @@ export const vendorProfileSchema = z
     businessDesc: z
       .string()
       .trim()
-      .max(1000, "Deskripsi maksimal 1000 karakter.")
-      .optional()
-      .or(z.literal("")),
+      .min(1, "Deskripsi usaha wajib diisi.")
+      .max(1000, "Deskripsi maksimal 1000 karakter."),
     targetMarket: z
       .string()
       .trim()
-      .max(500, "Target pasar maksimal 500 karakter.")
-      .optional()
-      .or(z.literal("")),
+      .min(1, "Pilih target pasar.")
+      .max(500, "Target pasar maksimal 500 karakter."),
     phone: z
       .string()
       .trim()
-      .max(20, "Nomor telepon maksimal 20 karakter.")
-      .optional()
-      .or(z.literal("")),
+      .min(1, "Nomor telepon wajib diisi.")
+      .max(20, "Nomor telepon maksimal 20 karakter."),
     instagram: z
       .string()
       .trim()
@@ -47,9 +44,8 @@ export const vendorProfileSchema = z
     whatsapp: z
       .string()
       .trim()
-      .max(20, "WhatsApp maksimal 20 karakter.")
-      .optional()
-      .or(z.literal("")),
+      .min(1, "WhatsApp wajib diisi.")
+      .max(20, "WhatsApp maksimal 20 karakter."),
     tiktok: z
       .string()
       .trim()
