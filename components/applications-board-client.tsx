@@ -3,10 +3,19 @@
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useTransition, useState } from "react";
 import Link from "next/link";
-import { Search, MapPin, ChevronRight } from "lucide-react";
+import { Search, MapPin, ChevronRight, ChevronDown } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import type { ApplicationCard } from "@/lib/applications";
 
 type BazaarOption = { id: string; title: string };
+
+const ALL_BAZAAR_VALUE = "__all__";
 
 const STATUS_DOT: Record<string, string> = {
   pending: "#EF9F27",
@@ -91,16 +100,16 @@ function VendorLink({
   initials: string;
 }) {
   return (
-    <div className="flex items-center gap-2.5">
+    <div className="flex items-center gap-3">
       <Link
         href={`/organizer/vendors/${vendorId}`}
-        className="w-9 h-9 rounded-full bg-secondary/15 flex items-center justify-center text-[11px] font-medium text-accent shrink-0"
+        className="w-10 h-10 rounded-full bg-secondary/15 flex items-center justify-center text-xs font-medium text-[#7A5CA8] shrink-0"
       >
         {initials}
       </Link>
       <Link
         href={`/organizer/vendors/${vendorId}`}
-        className="text-xs font-medium text-accent underline decoration-secondary/40 hover:decoration-accent"
+        className="text-sm font-medium text-[#7A5CA8] underline decoration-secondary/40 hover:decoration-[#7A5CA8]"
       >
         {vendorName}
       </Link>
@@ -113,10 +122,10 @@ function PendingCard({ app }: { app: ApplicationCard }) {
 
   return (
     <div
-      className="bg-card rounded-2xl p-3.5"
+      className="bg-card rounded-2xl p-4 shadow-sm"
       style={{ borderTop: "3px solid #EF9F27" }}
     >
-      <div className="flex items-start justify-between mb-2">
+      <div className="flex items-start justify-between mb-3">
         <VendorLink
           vendorId={app.vendorId}
           vendorName={app.vendorName}
@@ -126,7 +135,7 @@ function PendingCard({ app }: { app: ApplicationCard }) {
       </div>
       {app.category && (
         <span
-          className="inline-block text-[9px] px-1.5 py-0.5 rounded-full mb-2"
+          className="inline-block text-[10px] px-2 py-1 rounded-full mb-2.5"
           style={{
             backgroundColor: categoryStyle.bg,
             color: categoryStyle.text,
@@ -135,18 +144,19 @@ function PendingCard({ app }: { app: ApplicationCard }) {
           {app.category.split(",")[0].trim()}
         </span>
       )}
-      <p className="text-[10px] text-muted-foreground mb-1 flex items-center gap-1">
+      <p className="text-xs text-muted-foreground mb-1.5 flex items-center gap-1">
         <MapPin className="size-3" />
         {app.bazaarTitle} &middot; {app.areaName}
       </p>
-      <p className="text-[9px] text-secondary mb-2.5">
+      <p className="text-[11px] text-secondary mb-3">
         Applied on {formatDate(app.appliedAt)}
       </p>
       <Link
         href={`/organizer/applications/${app.id}`}
-        className="block w-full text-center bg-secondary/15 text-accent text-[11px] py-1.5 rounded-lg"
+        className="flex w-full items-center justify-center gap-1 bg-secondary/15 text-primary text-xs font-medium py-2 rounded-lg transition-colors hover:bg-secondary/25"
       >
         See details
+        <ChevronRight className="size-3.5" />
       </Link>
     </div>
   );
@@ -168,23 +178,23 @@ function SimpleCard({
   return (
     <Link
       href={`/organizer/applications/${app.id}`}
-      className="block bg-card rounded-2xl p-3.5 hover:shadow-sm transition-shadow"
+      className="block bg-card rounded-2xl p-4 shadow-sm transition-shadow hover:shadow-md"
       style={{ borderTop: `3px solid ${borderColor}` }}
     >
-      <div className="flex items-center gap-2.5 mb-2">
+      <div className="flex items-center gap-3 mb-3">
         <span
           onClick={(e) => e.stopPropagation()}
-          className="w-9 h-9 rounded-full bg-secondary/15 flex items-center justify-center text-[11px] font-medium text-accent shrink-0"
+          className="w-10 h-10 rounded-full bg-secondary/15 flex items-center justify-center text-xs font-medium text-[#7A5CA8] shrink-0"
         >
           {app.vendorInitials}
         </span>
         <div>
-          <p className="text-xs font-medium text-accent underline decoration-secondary/40">
+          <p className="text-sm font-medium text-[#7A5CA8] underline decoration-secondary/40">
             {app.vendorName}
           </p>
           {app.category && (
             <span
-              className="inline-block text-[9px] px-1.5 py-0.5 rounded-full mt-0.5"
+              className="inline-block text-[10px] px-2 py-1 rounded-full mt-1"
               style={{
                 backgroundColor: categoryStyle.bg,
                 color: categoryStyle.text,
@@ -195,11 +205,11 @@ function SimpleCard({
           )}
         </div>
       </div>
-      <p className="text-[10px] text-muted-foreground mb-1 flex items-center gap-1">
+      <p className="text-xs text-muted-foreground mb-1.5 flex items-center gap-1">
         <MapPin className="size-3" />
         {app.bazaarTitle} &middot; {app.areaName}
       </p>
-      <p className="text-[9px] text-secondary">
+      <p className="text-[11px] text-secondary">
         {dateLabel} {dateValue ? formatDate(dateValue) : "-"}
       </p>
     </Link>
@@ -228,6 +238,15 @@ export function ApplicationsBoardClient({
   const searchParams = useSearchParams();
   const [, startTransition] = useTransition();
   const [query, setQuery] = useState(searchQuery);
+  const [openSections, setOpenSections] = useState({
+    pending: true,
+    confirmed: true,
+    rejected: true,
+  });
+
+  function toggleSection(key: keyof typeof openSections) {
+    setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
+  }
 
   function updateParams(next: {
     bazaarId?: string;
@@ -248,82 +267,166 @@ export function ApplicationsBoardClient({
     <div>
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <div>
-          <h1 className="text-xl font-medium">Incoming applications</h1>
-          <p className="text-sm text-muted-foreground mt-1">
+          <h1 className="text-2xl font-bold tracking-tight text-[#3B1F4A]">
+            Incoming applications
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1.5">
             Review vendors and manage decisions in one place.
           </p>
         </div>
-        <div className="flex gap-2">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && updateParams({ q: query })}
-              placeholder="Search vendor"
-              className="pl-8 pr-3 py-2 rounded-lg border border-input bg-card text-xs w-40"
-            />
+        <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex gap-2.5">
+            <div className="relative">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && updateParams({ q: query })}
+                placeholder="Search vendor"
+                className="h-10 pl-10 pr-4 rounded-lg border border-[#E5E0EB] bg-white text-sm shadow-sm transition-all w-40 sm:w-48 hover:border-[#B98CDE] focus:outline-none focus:ring-2 focus:ring-[#7A5CA8]/30 focus:border-[#7A5CA8]"
+              />
+            </div>
+            <Select
+              value={selectedBazaarId || ALL_BAZAAR_VALUE}
+              onValueChange={(value) =>
+                updateParams({
+                  bazaarId: value === ALL_BAZAAR_VALUE ? "" : (value ?? ""),
+                })
+              }
+            >
+              <SelectTrigger className="!h-10 w-fit rounded-lg border-[#E5E0EB] bg-white px-4 text-sm text-[#3B1F4A] shadow-sm transition-all hover:border-[#B98CDE] hover:shadow-md focus-visible:border-[#7A5CA8] focus-visible:ring-[#7A5CA8]/30">
+                <SelectValue>
+                  {(value: string) =>
+                    value === ALL_BAZAAR_VALUE
+                      ? "All bazaars"
+                      : (bazaarOptions.find((b) => b.id === value)?.title ??
+                        "All bazaars")
+                  }
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent className="min-w-[180px] rounded-2xl border border-[#E5E0EB] bg-white p-2 shadow-lg">
+                <SelectItem
+                  value={ALL_BAZAAR_VALUE}
+                  className="rounded-lg px-3 py-2.5 text-sm text-[#3B1F4A] data-[selected]:bg-[#F3EAFB] data-[selected]:font-medium data-[highlighted]:bg-[#F3EAFB]"
+                >
+                  All bazaars
+                </SelectItem>
+                {bazaarOptions.map((b) => (
+                  <SelectItem
+                    key={b.id}
+                    value={b.id}
+                    className="rounded-lg px-3 py-2.5 text-sm text-[#3B1F4A] data-[selected]:bg-[#F3EAFB] data-[selected]:font-medium data-[highlighted]:bg-[#F3EAFB]"
+                  >
+                    {b.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
-          <select
-            value={selectedBazaarId}
-            onChange={(e) => updateParams({ bazaarId: e.target.value })}
-            className="text-xs px-3 py-2 rounded-lg border border-input bg-card"
-          >
-            <option value="">All bazaars</option>
-            {bazaarOptions.map((b) => (
-              <option key={b.id} value={b.id}>
-                {b.title}
-              </option>
-            ))}
-          </select>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div>
-          <div className="flex items-center justify-between mb-3 px-1">
-            <div className="flex items-center gap-2">
+        <div className="rounded-2xl bg-secondary/10 p-4">
+          <div className="flex items-center justify-between mb-3 px-1 flex-wrap gap-2">
+            <div className="flex items-center gap-1.5">
               <span
-                className="size-2 rounded-full"
+                className="size-2.5 rounded-full shrink-0"
                 style={{ backgroundColor: STATUS_DOT.pending }}
               />
-              <span className="text-sm font-medium">Pending review</span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#FAEEDA] text-[#854F0B]">
+              <span className="text-sm font-semibold text-[#3B1F4A]">
+                Pending review
+              </span>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-[#FAEEDA] text-[#854F0B]">
                 {board.pending.length}
               </span>
             </div>
-            <select
-              value={sort}
-              onChange={(e) => updateParams({ sort: e.target.value })}
-              className="text-[10px] px-2 py-1 rounded-md border border-input bg-card text-accent"
-            >
-              <option value="newest">Newest first</option>
-              <option value="highest">Highest score</option>
-            </select>
+            <div className="flex items-center gap-1.5">
+              <Select
+                value={sort}
+                onValueChange={(value) => updateParams({ sort: value ?? "newest" })}
+              >
+                <SelectTrigger className="h-auto w-fit rounded-full border-[#E5E0EB] bg-white px-2.5 py-1 text-xs text-[#7A5CA8] shadow-sm transition-colors hover:border-[#B98CDE] focus-visible:ring-[#7A5CA8]/30">
+                  <SelectValue>
+                    {(value: string) =>
+                      value === "highest" ? "Highest score" : "Newest first"
+                    }
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent className="min-w-[160px] rounded-2xl border border-[#E5E0EB] bg-white p-2 shadow-lg">
+                  <SelectItem
+                    value="newest"
+                    className="rounded-lg px-3 py-2 text-sm text-[#3B1F4A] data-[selected]:bg-[#F3EAFB] data-[selected]:font-medium data-[highlighted]:bg-[#F3EAFB]"
+                  >
+                    Newest first
+                  </SelectItem>
+                  <SelectItem
+                    value="highest"
+                    className="rounded-lg px-3 py-2 text-sm text-[#3B1F4A] data-[selected]:bg-[#F3EAFB] data-[selected]:font-medium data-[highlighted]:bg-[#F3EAFB]"
+                  >
+                    Highest score
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+              <button
+                type="button"
+                onClick={() => toggleSection("pending")}
+                aria-label={openSections.pending ? "Collapse" : "Expand"}
+                aria-expanded={openSections.pending}
+                className="flex size-7 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-white/70 lg:hidden"
+              >
+                <ChevronDown
+                  className={`size-4 transition-transform duration-200 ${
+                    openSections.pending ? "" : "-rotate-90"
+                  }`}
+                />
+              </button>
+            </div>
           </div>
-          <div className="flex flex-col gap-2.5">
+          <div
+            className={`${openSections.pending ? "flex" : "hidden"} flex-col gap-3 lg:flex`}
+          >
             {board.pending.length > 0 ? (
               board.pending.map((app) => <PendingCard key={app.id} app={app} />)
             ) : (
-              <div className="bg-card rounded-2xl p-6 text-center text-xs text-muted-foreground">
+              <div className="bg-card rounded-2xl p-6 text-center text-sm text-muted-foreground shadow-sm">
                 No pending applications.
               </div>
             )}
           </div>
         </div>
 
-        <div>
-          <div className="flex items-center gap-2 mb-3 px-1">
-            <span
-              className="size-2 rounded-full"
-              style={{ backgroundColor: STATUS_DOT.confirmed }}
-            />
-            <span className="text-sm font-medium">Confirmed</span>
-            <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#EAF3DE] text-[#27500A]">
-              {board.confirmed.length}
-            </span>
+        <div className="rounded-2xl bg-secondary/10 p-4">
+          <div className="flex items-center justify-between mb-3 px-1">
+            <div className="flex items-center gap-1.5">
+              <span
+                className="size-2.5 rounded-full shrink-0"
+                style={{ backgroundColor: STATUS_DOT.confirmed }}
+              />
+              <span className="text-sm font-semibold text-[#3B1F4A]">
+                Confirmed
+              </span>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-[#EAF3DE] text-[#27500A]">
+                {board.confirmed.length}
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => toggleSection("confirmed")}
+              aria-label={openSections.confirmed ? "Collapse" : "Expand"}
+              aria-expanded={openSections.confirmed}
+              className="flex size-7 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-white/70 lg:hidden"
+            >
+              <ChevronDown
+                className={`size-4 transition-transform duration-200 ${
+                  openSections.confirmed ? "" : "-rotate-90"
+                }`}
+              />
+            </button>
           </div>
-          <div className="flex flex-col gap-2.5">
+          <div
+            className={`${openSections.confirmed ? "flex" : "hidden"} flex-col gap-3 lg:flex`}
+          >
             {board.confirmed.length > 0 ? (
               board.confirmed.map((app) => (
                 <SimpleCard
@@ -335,25 +438,44 @@ export function ApplicationsBoardClient({
                 />
               ))
             ) : (
-              <div className="bg-card rounded-2xl p-6 text-center text-xs text-muted-foreground">
+              <div className="bg-card rounded-2xl p-6 text-center text-sm text-muted-foreground shadow-sm">
                 No confirmed vendors yet.
               </div>
             )}
           </div>
         </div>
 
-        <div>
-          <div className="flex items-center gap-2 mb-3 px-1">
-            <span
-              className="size-2 rounded-full"
-              style={{ backgroundColor: STATUS_DOT.rejected }}
-            />
-            <span className="text-sm font-medium">Rejected</span>
-            <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#F1EFE8] text-[#5F5E5A]">
-              {board.rejected.length}
-            </span>
+        <div className="rounded-2xl bg-secondary/10 p-4">
+          <div className="flex items-center justify-between mb-3 px-1">
+            <div className="flex items-center gap-1.5">
+              <span
+                className="size-2.5 rounded-full shrink-0"
+                style={{ backgroundColor: STATUS_DOT.rejected }}
+              />
+              <span className="text-sm font-semibold text-[#3B1F4A]">
+                Rejected
+              </span>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-[#F1EFE8] text-[#5F5E5A]">
+                {board.rejected.length}
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => toggleSection("rejected")}
+              aria-label={openSections.rejected ? "Collapse" : "Expand"}
+              aria-expanded={openSections.rejected}
+              className="flex size-7 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-white/70 lg:hidden"
+            >
+              <ChevronDown
+                className={`size-4 transition-transform duration-200 ${
+                  openSections.rejected ? "" : "-rotate-90"
+                }`}
+              />
+            </button>
           </div>
-          <div className="flex flex-col gap-2.5">
+          <div
+            className={`${openSections.rejected ? "flex" : "hidden"} flex-col gap-3 lg:flex`}
+          >
             {board.rejected.length > 0 ? (
               board.rejected.map((app) => (
                 <SimpleCard
@@ -365,7 +487,7 @@ export function ApplicationsBoardClient({
                 />
               ))
             ) : (
-              <div className="bg-card rounded-2xl p-6 text-center text-xs text-muted-foreground">
+              <div className="bg-card rounded-2xl p-6 text-center text-sm text-muted-foreground shadow-sm">
                 No rejected applications.
               </div>
             )}

@@ -25,12 +25,12 @@ export default async function MyBazaarsPage({
   const greeting = getGreeting();
 
   return (
-    <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-10">
-      <div className="mb-6">
-        <h1 className="text-xl font-medium">
+    <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8 sm:px-6 sm:py-10 lg:px-10 lg:py-12">
+      <div className="mb-8">
+        <h1 className="text-2xl font-semibold tracking-tight text-[#3B1F4A] sm:text-3xl">
           {greeting}, {user.businessName || user.name}
         </h1>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-sm text-muted-foreground mt-1.5">
           Manage and track all your created bazaars in one place.
         </p>
       </div>
@@ -42,19 +42,19 @@ export default async function MyBazaarsPage({
       />
 
       {bazaars.length === 0 ? (
-        <div className="border border-dashed rounded-xl py-16 flex flex-col items-center justify-center text-center">
-          <p className="text-muted-foreground mb-4">
+        <div className="border border-dashed rounded-xl py-20 flex flex-col items-center justify-center text-center">
+          <p className="text-muted-foreground mb-5">
             You haven't created any bazaars yet.
           </p>
           <Link
             href="/organizer/bazaars/new"
-            className="inline-flex items-center gap-1.5 bg-accent text-accent-foreground px-4 py-2 rounded-lg text-sm"
+            className="inline-flex items-center gap-1.5 bg-accent text-white px-5 py-2.5 rounded-lg text-sm shadow-sm transition-colors hover:bg-[#a97bd1]"
           >
             Create your first bazaar
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           {bazaars.map((bazaar) => (
             <OrganizerBazaarCard key={bazaar.id} bazaar={bazaar} />
           ))}

@@ -52,7 +52,7 @@ export function OrganizerBazaarCard({
       : 0;
 
   return (
-    <div className="bg-card rounded-2xl overflow-hidden">
+    <div className="bg-card rounded-2xl overflow-hidden shadow-sm">
       <div className="relative h-32 bg-secondary/15 flex items-center justify-center">
         {bazaar.coverImageUrl && (
           // eslint-disable-next-line @next/next/no-img-element
@@ -86,8 +86,8 @@ export function OrganizerBazaarCard({
         </p>
       </div>
 
-      <div className="p-4">
-        <div className="flex gap-3.5 text-xs text-muted-foreground mb-2.5">
+      <div className="p-5">
+        <div className="flex gap-4 text-xs text-muted-foreground mb-3">
           <span className="flex items-center gap-1">
             <Calendar className="size-3.5" />
             {formatDateDisplay(bazaar.eventStartDate)} -{" "}
@@ -100,23 +100,23 @@ export function OrganizerBazaarCard({
         </div>
 
         {bazaar.status === "DRAFT" ? (
-          <p className="text-xs text-muted-foreground mb-1.5">
+          <p className="text-xs text-muted-foreground mb-2">
             Not published yet
           </p>
         ) : (
-          <div className="flex items-center justify-between text-xs text-muted-foreground mb-1.5">
+          <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
             <span>
               {filledSlot} of {bazaar.totalSlot} slots filled
             </span>
             {bazaar.pendingApplicationsCount > 0 && (
-              <span className="text-accent font-medium">
+              <span className="text-[#7A5CA8] font-medium">
                 {bazaar.pendingApplicationsCount} pending
               </span>
             )}
           </div>
         )}
 
-        <div className="h-1.5 rounded-full bg-secondary/15 overflow-hidden mb-3.5">
+        <div className="h-1.5 rounded-full bg-secondary/15 overflow-hidden mb-4">
           <div
             className={`h-full ${status.barClass}`}
             style={{ width: `${percentFilled}%` }}
@@ -131,15 +131,15 @@ export function OrganizerBazaarCard({
 
 function ActionButtons({ bazaar }: { bazaar: OrganizerBazaarCardData }) {
   const secondaryClass =
-    "flex-1 flex items-center justify-center gap-1.5 bg-secondary/15 text-accent text-xs py-2 rounded-lg";
+    "flex-1 flex items-center justify-center gap-1.5 bg-secondary/15 text-primary text-xs py-2.5 rounded-lg transition-colors hover:bg-secondary/25";
   const primaryClass =
-    "flex-1 flex items-center justify-center gap-1.5 bg-accent text-accent-foreground text-xs py-2 rounded-lg";
+    "flex-1 flex items-center justify-center gap-1.5 bg-accent text-white text-xs py-2.5 rounded-lg transition-colors hover:bg-[#a97bd1]";
 
   const detailHref = `/organizer/bazaars/${bazaar.id}`;
 
   if (bazaar.status === "DRAFT") {
     return (
-      <div className="flex gap-2">
+      <div className="flex gap-2.5">
         <Link href={detailHref} className={secondaryClass}>
           <Eye className="size-3.5" /> Preview
         </Link>
@@ -152,7 +152,7 @@ function ActionButtons({ bazaar }: { bazaar: OrganizerBazaarCardData }) {
 
   if (bazaar.status === "FULL") {
     return (
-      <div className="flex gap-2">
+      <div className="flex gap-2.5">
         <Link href={detailHref} className={secondaryClass}>
           <Users className="size-3.5" /> View vendors
         </Link>
@@ -165,7 +165,7 @@ function ActionButtons({ bazaar }: { bazaar: OrganizerBazaarCardData }) {
 
   if (bazaar.status === "COMPLETED") {
     return (
-      <div className="flex gap-2">
+      <div className="flex gap-2.5">
         <Link href={detailHref} className={secondaryClass}>
           <ChartBar className="size-3.5" /> View summary
         </Link>
@@ -177,7 +177,7 @@ function ActionButtons({ bazaar }: { bazaar: OrganizerBazaarCardData }) {
   }
 
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2.5">
       <Link
         href={`/organizer/applications?bazaarId=${bazaar.id}`}
         className={secondaryClass}

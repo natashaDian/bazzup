@@ -14,8 +14,15 @@ import {
   ChevronRight,
 } from "lucide-react";
 import {
-  LineChart,
-  Line,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  AreaChart,
+  Area,
   ResponsiveContainer,
   XAxis,
   YAxis,
@@ -38,18 +45,53 @@ import type {
 
 type BazaarOption = { id: string; title: string };
 
+const ALL_BAZAAR_VALUE = "__all__";
+
 const ATTENTION_ICON = {
   draft: FilePenLine,
   pending: Inbox,
   unrated: Star,
 };
 
-const CARD_ACCENTS = [
-  { bg: "bg-accent/15", text: "text-accent" },
-  { bg: "bg-secondary/25", text: "text-primary" },
-  { bg: "bg-accent/10", text: "text-accent" },
-  { bg: "bg-secondary/20", text: "text-primary" },
-];
+// One consistent icon style across every stat card.
+const CARD_ACCENT = { bg: "bg-accent/15", text: "text-accent" };
+
+function ChartTooltip({
+  active,
+  payload,
+  label,
+}: {
+  active?: boolean;
+  payload?: Array<{
+    value?: number | string;
+    name?: string;
+    color?: string;
+    payload?: { fill?: string };
+  }>;
+  label?: string;
+}) {
+  if (!active || !payload?.length) return null;
+
+  return (
+    <div className="rounded-lg border border-[#E5E0EB] bg-white/95 px-2.5 py-2 text-xs shadow-lg backdrop-blur-sm">
+      {label && (
+        <p className="mb-1 font-medium text-[#3B1F4A]">{label}</p>
+      )}
+      {payload.map((entry, i) => (
+        <div key={i} className="flex items-center gap-1.5">
+          <span
+            className="size-1.5 shrink-0 rounded-full"
+            style={{ backgroundColor: entry.color ?? entry.payload?.fill }}
+          />
+          <span className="text-muted-foreground">
+            {entry.name && entry.name !== label ? `${entry.name}: ` : ""}
+          </span>
+          <span className="font-medium text-[#3B1F4A]">{entry.value}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 function useCountUp(target: number, duration = 700) {
   const [value, setValue] = useState(0);
@@ -159,29 +201,53 @@ export function OrganizerDashboardClient({
 
   return (
     <div>
-      <div className="flex items-start justify-between gap-4 mb-6 flex-wrap animate-in fade-in slide-in-from-bottom-2 duration-500">
+      <div className="flex items-start justify-between gap-4 mb-8 flex-wrap animate-in fade-in slide-in-from-bottom-2 duration-500">
         <div>
-          <h1 className="text-xl font-medium">
+          <h1 className="text-2xl font-semibold tracking-tight text-[#3B1F4A] sm:text-3xl">
             {greeting}, {displayName}
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>
+          <p className="text-sm text-muted-foreground mt-1.5">{subtitle}</p>
         </div>
 
-        <select
-          value={selectedBazaarId}
-          onChange={(e) => handleBazaarChange(e.target.value)}
-          className="text-sm px-3 py-2 rounded-lg border border-input bg-card transition-shadow hover:shadow-sm"
-        >
-          <option value="">All bazaars</option>
-          {bazaarOptions.map((bazaar) => (
-            <option key={bazaar.id} value={bazaar.id}>
-              {bazaar.title}
-            </option>
-          ))}
-        </select>
+        <div className="flex items-center gap-3 sm:gap-4">
+          <Select
+            value={selectedBazaarId || ALL_BAZAAR_VALUE}
+            onValueChange={(value) =>
+              handleBazaarChange(value === ALL_BAZAAR_VALUE ? "" : (value ?? ""))
+            }
+          >
+            <SelectTrigger className="!h-10 w-fit rounded-lg border-[#E5E0EB] bg-white px-4 text-sm text-[#3B1F4A] shadow-sm transition-all hover:border-[#B98CDE] hover:shadow-md focus-visible:border-[#7A5CA8] focus-visible:ring-[#7A5CA8]/30">
+              <SelectValue>
+                {(value: string) =>
+                  value === ALL_BAZAAR_VALUE
+                    ? "All bazaars"
+                    : (bazaarOptions.find((b) => b.id === value)?.title ??
+                      "All bazaars")
+                }
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent className="min-w-[180px] rounded-2xl border border-[#E5E0EB] bg-white p-2 shadow-lg">
+              <SelectItem
+                value={ALL_BAZAAR_VALUE}
+                className="rounded-lg px-3 py-2.5 text-sm text-[#3B1F4A] data-[selected]:bg-[#F3EAFB] data-[selected]:font-medium data-[highlighted]:bg-[#F3EAFB]"
+              >
+                All bazaars
+              </SelectItem>
+              {bazaarOptions.map((bazaar) => (
+                <SelectItem
+                  key={bazaar.id}
+                  value={bazaar.id}
+                  className="rounded-lg px-3 py-2.5 text-sm text-[#3B1F4A] data-[selected]:bg-[#F3EAFB] data-[selected]:font-medium data-[highlighted]:bg-[#F3EAFB]"
+                >
+                  {bazaar.title}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
         {statCards.map((card, i) => (
           <div
             key={i}
@@ -197,20 +263,26 @@ export function OrganizerDashboardClient({
               label={card.label}
               value={card.value}
               isNumber={card.isNumber}
-              accent={CARD_ACCENTS[i]}
+              accent={CARD_ACCENT}
             />
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-        <div className="bg-card rounded-xl p-4 transition-shadow hover:shadow-md animate-in fade-in duration-500">
-          <p className="text-xs font-medium text-muted-foreground mb-3">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-8">
+        <div className="bg-card rounded-xl p-5 shadow-sm transition-shadow hover:shadow-md animate-in fade-in duration-500">
+          <p className="text-xs font-medium text-muted-foreground mb-4">
             Applications trend
           </p>
           <div style={{ width: "100%", height: 140 }}>
             <ResponsiveContainer>
-              <LineChart data={trend}>
+              <AreaChart data={trend}>
+                <defs>
+                  <linearGradient id="trendGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#7A5CA8" stopOpacity={0.25} />
+                    <stop offset="95%" stopColor="#7A5CA8" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
                 <XAxis
                   dataKey="week"
                   tick={{ fontSize: 10, fill: "#6B7280" }}
@@ -218,23 +290,30 @@ export function OrganizerDashboardClient({
                   tickLine={false}
                 />
                 <YAxis hide />
-                <Tooltip />
-                <Line
+                <Tooltip
+                  content={<ChartTooltip />}
+                  position={{ y: 0 }}
+                  wrapperStyle={{ zIndex: 20 }}
+                />
+                <Area
                   type="monotone"
                   dataKey="count"
+                  name="Applications"
                   stroke="#7A5CA8"
                   strokeWidth={2}
-                  dot={{ r: 3, fill: "#7A5CA8" }}
+                  fill="url(#trendGradient)"
+                  dot={{ r: 3, fill: "#7A5CA8", strokeWidth: 0 }}
+                  activeDot={{ r: 4 }}
                   isAnimationActive
                   animationDuration={900}
                 />
-              </LineChart>
+              </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        <div className="bg-card rounded-xl p-4 transition-shadow hover:shadow-md animate-in fade-in duration-500 delay-100">
-          <p className="text-xs font-medium text-muted-foreground mb-3">
+        <div className="bg-card rounded-xl p-5 shadow-sm transition-shadow hover:shadow-md animate-in fade-in duration-500 delay-100">
+          <p className="text-xs font-medium text-muted-foreground mb-4">
             Application status
           </p>
           {statusData.length > 0 ? (
@@ -245,6 +324,25 @@ export function OrganizerDashboardClient({
               >
                 <ResponsiveContainer>
                   <PieChart>
+                    <defs>
+                      {statusData.map((entry, index) => (
+                        <linearGradient
+                          key={index}
+                          id={`pieGradient-${index}`}
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
+                          <stop offset="0%" stopColor={entry.color} stopOpacity={1} />
+                          <stop
+                            offset="100%"
+                            stopColor={entry.color}
+                            stopOpacity={0.7}
+                          />
+                        </linearGradient>
+                      ))}
+                    </defs>
                     <Pie
                       data={statusData}
                       dataKey="value"
@@ -254,11 +352,15 @@ export function OrganizerDashboardClient({
                       isAnimationActive
                       animationDuration={800}
                     >
-                      {statusData.map((entry, index) => (
-                        <Cell key={index} fill={entry.color} />
+                      {statusData.map((_, index) => (
+                        <Cell key={index} fill={`url(#pieGradient-${index})`} />
                       ))}
                     </Pie>
-                    <Tooltip />
+                    <Tooltip
+                      content={<ChartTooltip />}
+                      position={{ y: 0 }}
+                      wrapperStyle={{ zIndex: 20 }}
+                    />
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
@@ -294,8 +396,8 @@ export function OrganizerDashboardClient({
           )}
         </div>
 
-        <div className="bg-card rounded-xl p-4 transition-shadow hover:shadow-md animate-in fade-in duration-500 delay-200">
-          <p className="text-xs font-medium text-muted-foreground mb-3">
+        <div className="bg-card rounded-xl p-5 shadow-sm transition-shadow hover:shadow-md animate-in fade-in duration-500 delay-200">
+          <p className="text-xs font-medium text-muted-foreground mb-4">
             Top categories
           </p>
           {categories.length > 0 ? (
@@ -306,6 +408,12 @@ export function OrganizerDashboardClient({
                   layout="vertical"
                   margin={{ left: 8 }}
                 >
+                  <defs>
+                    <linearGradient id="categoryGradient" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="#B98CDE" stopOpacity={0.55} />
+                      <stop offset="100%" stopColor="#7A5CA8" stopOpacity={0.95} />
+                    </linearGradient>
+                  </defs>
                   <XAxis type="number" hide />
                   <YAxis
                     dataKey="category"
@@ -315,10 +423,15 @@ export function OrganizerDashboardClient({
                     tickLine={false}
                     width={70}
                   />
-                  <Tooltip />
+                  <Tooltip
+                    content={<ChartTooltip />}
+                    position={{ y: 0 }}
+                    wrapperStyle={{ zIndex: 20 }}
+                  />
                   <Bar
                     dataKey="count"
-                    fill="#B98CDE"
+                    name="Count"
+                    fill="url(#categoryGradient)"
                     radius={4}
                     barSize={14}
                     isAnimationActive
@@ -335,9 +448,9 @@ export function OrganizerDashboardClient({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-8">
         <div className="lg:col-span-2">
-          <p className="text-sm font-medium mb-3 flex items-center gap-2">
+          <p className="text-sm font-medium mb-4 flex items-center gap-2">
             Needs your attention
             {attentionItems.length > 0 && (
               <span className="relative flex size-2">
@@ -346,7 +459,7 @@ export function OrganizerDashboardClient({
               </span>
             )}
           </p>
-          <div className="bg-card rounded-xl overflow-hidden">
+          <div className="bg-card rounded-xl shadow-sm overflow-hidden">
             {attentionItems.length > 0 ? (
               attentionItems.map((item, i) => {
                 const Icon = ATTENTION_ICON[item.type];
@@ -354,7 +467,7 @@ export function OrganizerDashboardClient({
                   <Link
                     key={i}
                     href={`/organizer/bazaars/${item.bazaarId}`}
-                    className={`group flex items-center justify-between px-4 py-3 transition-colors hover:bg-secondary/10 ${
+                    className={`group flex items-center justify-between px-5 py-3.5 transition-colors hover:bg-secondary/10 ${
                       i < attentionItems.length - 1
                         ? "border-b border-secondary/10"
                         : ""
@@ -377,13 +490,13 @@ export function OrganizerDashboardClient({
         </div>
 
         <div>
-          <p className="text-sm font-medium mb-3">Recent activity</p>
-          <div className="bg-card rounded-xl p-4">
+          <p className="text-sm font-medium mb-4">Recent activity</p>
+          <div className="bg-card rounded-xl p-5 shadow-sm">
             {recentActivity.length > 0 ? (
               recentActivity.map((item, i) => (
                 <div
                   key={i}
-                  className={`flex gap-2.5 ${i < recentActivity.length - 1 ? "mb-3" : ""}`}
+                  className={`flex gap-2.5 ${i < recentActivity.length - 1 ? "mb-3.5" : ""}`}
                 >
                   <div className="size-1.5 rounded-full bg-accent mt-1.5 shrink-0" />
                   <p className="text-xs">{item.message}</p>
@@ -399,14 +512,14 @@ export function OrganizerDashboardClient({
       </div>
 
       <div>
-        <p className="text-sm font-medium mb-3">Upcoming bazaars</p>
+        <p className="text-sm font-medium mb-4">Upcoming bazaars</p>
         {upcomingBazaars.length > 0 ? (
-          <div className="flex gap-3 overflow-x-auto">
+          <div className="flex gap-4 overflow-x-auto">
             {upcomingBazaars.map((bazaar) => (
               <Link
                 key={bazaar.id}
                 href={`/organizer/bazaars/${bazaar.id}`}
-                className="group bg-card rounded-xl px-4 py-3 flex-1 min-w-[160px] flex items-center justify-between transition-all hover:shadow-md hover:-translate-y-0.5"
+                className="group bg-card rounded-xl px-5 py-4 flex-1 min-w-[160px] flex items-center justify-between shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5"
               >
                 <div>
                   <p className="text-xs text-accent mb-1">
@@ -421,7 +534,7 @@ export function OrganizerDashboardClient({
             ))}
           </div>
         ) : (
-          <div className="bg-card rounded-xl px-4 py-6 text-center text-sm text-muted-foreground">
+          <div className="bg-card rounded-xl px-4 py-6 text-center text-sm text-muted-foreground shadow-sm">
             No upcoming bazaars scheduled.
           </div>
         )}
@@ -446,8 +559,8 @@ function StatCard({
   const animatedValue = useCountUp(isNumber ? Number(value) : 0);
 
   return (
-    <div className="bg-card rounded-xl p-4 transition-all hover:shadow-md hover:-translate-y-0.5">
-      <div className="flex items-center gap-2.5 mb-2">
+    <div className="bg-card rounded-xl p-5 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
+      <div className="flex items-center gap-2.5 mb-2.5">
         <div
           className={`size-7 rounded-lg flex items-center justify-center ${accent.bg} ${accent.text}`}
         >

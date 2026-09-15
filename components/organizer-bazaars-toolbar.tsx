@@ -58,44 +58,44 @@ export function OrganizerBazaarsToolbar({
   }
 
   return (
-    <div className="mb-4">
-      <div className="flex items-center gap-2 mb-3">
+    <div className="mb-6">
+      <div className="flex items-center gap-3 mb-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
           <input
             value={query}
             onChange={(e) => handleSearchChange(e.target.value)}
             placeholder="Search by bazaar name or city"
-            className="w-full pl-9 pr-3 py-2 rounded-lg border border-input bg-card text-sm"
+            className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-input bg-card text-sm shadow-sm transition-shadow focus:outline-none focus:ring-2 focus:ring-[#7A5CA8]/30 focus:border-[#7A5CA8]"
           />
         </div>
         <a
           href="/organizer/bazaars/new"
-          className="flex items-center gap-1.5 bg-accent text-accent-foreground px-4 py-2 rounded-lg text-sm"
+          className="search-gradient-button flex items-center gap-1.5 text-white px-5 py-2.5 rounded-lg text-sm shadow-sm"
         >
           <Plus className="size-4" />
           Create bazaar
         </a>
       </div>
 
-      <div className="flex gap-2 flex-wrap">
+      <div className="flex gap-2.5 flex-wrap">
         {FILTERS.map(({ key, label, icon: Icon }) => {
           const isActive = currentStatus === key || (key === "ALL" && !currentStatus);
           return (
             <button
               key={key}
               onClick={() => updateParams({ status: key })}
-              className={`flex items-center gap-1.5 text-sm px-3.5 py-1.5 rounded-full ${
+              className={`flex items-center gap-1.5 text-sm px-4 py-2 rounded-full transition-colors ${
                 isActive
-                  ? "bg-accent text-accent-foreground"
-                  : "bg-card text-muted-foreground"
+                  ? "bg-accent text-white"
+                  : "bg-card text-muted-foreground shadow-sm hover:text-[#3B1F4A]"
               }`}
             >
               <Icon className="size-3.5" />
               {label}
               <span
                 className={`text-xs px-1.5 rounded-full ${
-                  isActive ? "bg-white/25" : "bg-secondary/20 text-accent"
+                  isActive ? "bg-black/15" : "bg-secondary/20 text-primary"
                 }`}
               >
                 {counts[key as keyof Counts]}

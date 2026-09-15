@@ -337,16 +337,16 @@
 
 .login-gradient {
   background: radial-gradient(
-    circle,
-    rgba(185, 140, 222, 0.42) 0%,
-    rgba(154, 103, 202, 0.35) 20%,
-    rgba(122, 92, 168, 0.26) 40%,
-    rgba(185, 140, 222, 0.12) 60%,
-    transparent 80%
+    ellipse at center,
+    rgba(185, 140, 222, 0.22) 0%,
+    rgba(154, 103, 202, 0.16) 28%,
+    rgba(122, 92, 168, 0.10) 48%,
+    rgba(185, 140, 222, 0.05) 65%,
+    transparent 82%
   );
 
-  filter: blur(40px);
-  animation: login-gradient-float 18s ease-in-out infinite alternate;
+  filter: blur(70px);
+  animation: home-gradient-float 18s ease-in-out infinite alternate;
 }
 
 @keyframes login-gradient-float {
@@ -365,6 +365,433 @@
 
 @media (prefers-reduced-motion: reduce) {
   .login-gradient {
+    animation: none;
+  }
+}
+
+/* home animation */
+
+.home-section {
+  animation: homeSectionIn 0.7s ease-out both;
+}
+
+.home-section:nth-child(2) {
+  animation-delay: 0.08s;
+}
+
+.home-section:nth-child(3) {
+  animation-delay: 0.16s;
+}
+
+@keyframes homeSectionIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.home-gradient-x {
+  animation: home-gradient-x 14s ease-in-out infinite;
+  will-change: transform;
+}
+
+.home-gradient {
+  background: radial-gradient(
+    circle,
+    rgba(185, 140, 222, 0.25) 0%,
+    rgba(154, 103, 202, 0.16) 28%,
+    rgba(122, 92, 168, 0.08) 50%,
+    rgba(185, 140, 222, 0.03) 65%,
+    transparent 74%
+  );
+
+  filter: blur(30px);
+
+  animation: home-gradient-y 11s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes home-gradient-x {
+  0% {
+    transform: translateX(-80px);
+  }
+
+  25% {
+    transform: translateX(20px);
+  }
+
+  50% {
+    transform: translateX(100px);
+  }
+
+  75% {
+    transform: translateX(30px);
+  }
+
+  100% {
+    transform: translateX(-80px);
+  }
+}
+
+@keyframes home-gradient-y {
+  0% {
+    transform: translateY(-10px) scale(1);
+  }
+
+  25% {
+    transform: translateY(25px) scale(1.04);
+  }
+
+  50% {
+    transform: translateY(55px) scale(1.08);
+  }
+
+  75% {
+    transform: translateY(20px) scale(1.04);
+  }
+
+  100% {
+    transform: translateY(-10px) scale(1);
+  }
+}
+
+@keyframes home-gradient-float {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(-20px, 18px, 0) scale(1.05);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes home-gradient-float {
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(-35%, 24px, 0);
+  }
+
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-gradient {
+    animation: none;
+  }
+}
+
+@keyframes home-gradient-float {
+  0% {
+    transform: translate3d(-50%, 0, 0) scale(1);
+  }
+
+  25% {
+    transform: translate3d(-42%, 18px, 0) scale(1.03);
+  }
+
+  50% {
+    transform: translate3d(-48%, 35px, 0) scale(1.06);
+  }
+
+  75% {
+    transform: translate3d(-55%, 18px, 0) scale(1.03);
+  }
+
+  100% {
+    transform: translate3d(-50%, 0, 0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-gradient {
+    animation: none;
+  }
+}
+
+@keyframes home-gradient-float {
+  0% {
+    transform: translate3d(-50%, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(-44%, 25px, 0) scale(1.08);
+  }
+
+  100% {
+    transform: translate3d(-56%, 45px, 0) scale(1.03);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-gradient {
+    animation: none;
+  }
+}
+
+
+/* Search button moving gradient */
+
+.search-gradient-button {
+  background: linear-gradient(
+    110deg,
+    #7a5ca8,
+    #9a67ca,
+    #b98cde,
+    #7a5ca8
+  );
+
+  background-size: 250% 100%;
+
+  animation: searchGradientMove 6s ease-in-out infinite;
+}
+
+@keyframes searchGradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+
+/* Accessibility */
+
+@media (prefers-reduced-motion: reduce) {
+  .home-section,
+  .search-gradient-button {
+    animation: none;
+  }
+}
+
+@keyframes home-gradient-float {
+  0% {
+    transform: translate3d(-4%, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(4%, 18px, 0) scale(1.04);
+  }
+
+  100% {
+    transform: translate3d(-2%, 35px, 0) scale(1.02);
+  }
+}
+
+/* =========================================================
+   BazzUp Vendor Home
+   ========================================================= */
+
+.home-hero {
+  isolation: isolate;
+}
+
+/* ---------------------------------------------------------
+   Animated purple atmosphere
+   --------------------------------------------------------- */
+
+.home-gradient {
+  position: absolute;
+  width: 320px;
+  height: 240px;
+  border-radius: 9999px;
+  pointer-events: none;
+
+  background: radial-gradient(
+    ellipse at center,
+    rgba(185, 140, 222, 0.24) 0%,
+    rgba(154, 103, 202, 0.17) 28%,
+    rgba(122, 92, 168, 0.09) 48%,
+    rgba(185, 140, 222, 0.035) 66%,
+    transparent 78%
+  );
+
+  filter: blur(42px);
+  will-change: transform;
+}
+
+/*
+  First glow:
+  bergerak dari area kanan atas hero
+  menuju tengah lalu kembali.
+*/
+.home-gradient-one {
+  top: -95px;
+  left: 46%;
+
+  animation:
+    home-gradient-move-one 14s
+    cubic-bezier(0.45, 0.05, 0.55, 0.95)
+    infinite alternate;
+}
+
+/*
+  Second glow:
+  gerakannya lebih lambat dan berbeda arah,
+  supaya keseluruhan gradient tidak terasa "diam".
+*/
+.home-gradient-two {
+  top: 25px;
+  left: 67%;
+  width: 250px;
+  height: 190px;
+
+  opacity: 0.55;
+
+  animation:
+    home-gradient-move-two 18s
+    cubic-bezier(0.45, 0.05, 0.55, 0.95)
+    infinite alternate;
+}
+
+@keyframes home-gradient-move-one {
+  0% {
+    transform: translate3d(-35px, 10px, 0) scale(0.92);
+  }
+
+  35% {
+    transform: translate3d(30px, 35px, 0) scale(1);
+  }
+
+  70% {
+    transform: translate3d(90px, -5px, 0) scale(1.08);
+  }
+
+  100% {
+    transform: translate3d(145px, 45px, 0) scale(0.96);
+  }
+}
+
+@keyframes home-gradient-move-two {
+  0% {
+    transform: translate3d(35px, 25px, 0) scale(0.9);
+  }
+
+  50% {
+    transform: translate3d(-55px, 70px, 0) scale(1.05);
+  }
+
+  100% {
+    transform: translate3d(-120px, 15px, 0) scale(0.94);
+  }
+}
+
+
+/* ---------------------------------------------------------
+   Hero typography
+   --------------------------------------------------------- */
+
+.home-hero-title {
+  animation: home-content-in 0.7s ease-out both;
+}
+
+.home-hero-description {
+  animation: home-content-in 0.7s ease-out 0.08s both;
+}
+
+.home-search {
+  animation: home-content-in 0.7s ease-out 0.16s both;
+}
+
+.home-explore-cta {
+  animation: home-content-in 0.7s ease-out 0.22s both;
+}
+
+
+/* Animated gradient text */
+.home-gradient-text {
+  display: inline-block;
+
+  background: linear-gradient(
+    110deg,
+    #6f35d5 0%,
+    #9b62e8 25%,
+    #7a5ca8 50%,
+    #b98cde 72%,
+    #6f35d5 100%
+  );
+
+  background-size: 250% 100%;
+
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+
+  animation: home-text-gradient 7s ease-in-out infinite;
+}
+
+@keyframes home-text-gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+
+/* ---------------------------------------------------------
+   Explore bridge
+   --------------------------------------------------------- */
+
+.home-explore-bridge {
+  animation: home-content-in 0.7s ease-out both;
+}
+
+
+/* ---------------------------------------------------------
+   Generic entrance
+   --------------------------------------------------------- */
+
+@keyframes home-content-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* ---------------------------------------------------------
+   Accessibility
+   --------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .home-gradient,
+  .home-gradient-text,
+  .home-hero-title,
+  .home-hero-description,
+  .home-search,
+  .home-explore-cta,
+  .home-explore-bridge {
     animation: none;
   }
 }
