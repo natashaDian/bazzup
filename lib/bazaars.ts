@@ -282,7 +282,17 @@ export async function getExploreBazaars(
 
 const bazaarDetailInclude = {
   images: true,
-  organizer: { select: { name: true, businessName: true } },
+  organizer: {
+    select: {
+      name: true,
+      businessName: true,
+      businessDesc: true,
+      phone: true,
+      whatsapp: true,
+      instagram: true,
+      website: true,
+    },
+  },
   areas: {
     orderBy: { createdAt: "asc" },
     select: {
@@ -322,17 +332,28 @@ export type BazaarAreaDetail = {
   imageUrl: string | null;
 };
 
+export type BazaarOrganizerContact = {
+  businessDesc: string | null;
+  phone: string | null;
+  whatsapp: string | null;
+  instagram: string | null;
+  website: string | null;
+};
+
 export type BazaarDetail = {
   id: string;
   title: string;
   description: string | null;
   address: string;
   city: string;
+  latitude: number | null;
+  longitude: number | null;
   eventStartDate: Date;
   eventEndDate: Date;
   status: BazaarStatus;
   images: string[];
   organizerName: string;
+  organizerContact: BazaarOrganizerContact;
   areas: BazaarAreaDetail[];
 };
 function toBazaarDetail(bazaar: BazaarWithDetailData): BazaarDetail {
@@ -342,11 +363,20 @@ function toBazaarDetail(bazaar: BazaarWithDetailData): BazaarDetail {
     description: bazaar.description,
     address: bazaar.address,
     city: bazaar.city,
+    latitude: bazaar.latitude,
+    longitude: bazaar.longitude,
     eventStartDate: bazaar.eventStartDate,
     eventEndDate: bazaar.eventEndDate,
     status: bazaar.status,
     images: bazaar.images.map((image) => image.url),
     organizerName: bazaar.organizer.businessName ?? bazaar.organizer.name,
+    organizerContact: {
+      businessDesc: bazaar.organizer.businessDesc,
+      phone: bazaar.organizer.phone,
+      whatsapp: bazaar.organizer.whatsapp,
+      instagram: bazaar.organizer.instagram,
+      website: bazaar.organizer.website,
+    },
     areas: bazaar.areas.map((area) => ({
       id: area.id,
       name: area.name,

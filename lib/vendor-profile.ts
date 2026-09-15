@@ -6,7 +6,6 @@ const REQUIRED_PROFILE_FIELDS = [
   "businessDesc",
   "targetMarket",
   "phone",
-  "instagram",
   "whatsapp",
   "profileImageUrl",
 ] as const satisfies readonly (keyof User)[];
