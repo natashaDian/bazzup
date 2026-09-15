@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { requireOrganizer } from "@/lib/auth";
 import {
   getDashboardStats,
@@ -12,6 +13,7 @@ import {
 } from "@/lib/dashboard";
 import { getGreeting } from "@/lib/greeting";
 import { OrganizerDashboardClient } from "@/components/organizer-dashboard-client";
+import { CreateFirstBazaarPopup } from "@/components/create-first-bazaar-popup";
 
 export const metadata: Metadata = {
   title: "Dashboard - BazzUp",
@@ -24,6 +26,10 @@ export default async function OrganizerDashboardPage({
 }) {
   const params = await searchParams;
   const user = await requireOrganizer();
+
+  const cookieStore = await cookies();
+  const justLoggedIn = cookieStore.get("just_logged_in")?.value === "true";
+
   const bazaarId = params.bazaarId || undefined;
 
   const [
@@ -51,6 +57,10 @@ export default async function OrganizerDashboardPage({
 
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-10">
+      <CreateFirstBazaarPopup
+        hasBazaars={bazaarOptions.length > 0}
+        justLoggedIn={justLoggedIn}
+      />
       <OrganizerDashboardClient
         greeting={greeting}
         displayName={displayName}
