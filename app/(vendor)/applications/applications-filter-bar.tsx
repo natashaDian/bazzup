@@ -33,9 +33,9 @@ export function ApplicationsFilterBar({
   const [search, setSearch] = useState(initialSearch ?? "");
 
   function navigate(next: { status?: string; search?: string; sort?: string }) {
-    const status = next.status ?? initialStatus;
-    const searchValue = next.search ?? initialSearch;
-    const sort = next.sort ?? initialSort;
+    const status = "status" in next ? next.status : initialStatus;
+    const searchValue = "search" in next ? next.search : initialSearch;
+    const sort = "sort" in next ? next.sort : initialSort;
 
     const params = new URLSearchParams();
     if (status) params.set("status", status);
@@ -57,14 +57,19 @@ export function ApplicationsFilterBar({
   }, [search]);
 
   const statusLabel = (value: string) =>
-    value === ALL_STATUS_VALUE ? "All Status" : (statuses.find((s) => s.value === value)?.label ?? value);
+    value === ALL_STATUS_VALUE
+      ? "All Status"
+      : (statuses.find((s) => s.value === value)?.label ?? value);
 
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
       <Select
         value={initialStatus ?? ALL_STATUS_VALUE}
         onValueChange={(value) =>
-          navigate({ status: value === ALL_STATUS_VALUE ? undefined : (value ?? undefined) })
+          navigate({
+            status:
+              value === ALL_STATUS_VALUE ? undefined : (value ?? undefined),
+          })
         }
       >
         <SelectTrigger className="w-full sm:w-52">
@@ -96,7 +101,9 @@ export function ApplicationsFilterBar({
       >
         <SelectTrigger className="w-full sm:w-44">
           <SelectValue>
-            {(value: string) => (value === "oldest" ? "Oldest First" : "Newest First")}
+            {(value: string) =>
+              value === "oldest" ? "Oldest First" : "Newest First"
+            }
           </SelectValue>
         </SelectTrigger>
         <SelectContent>

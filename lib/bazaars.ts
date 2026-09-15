@@ -1,8 +1,9 @@
 import "server-only";
 import type { ApplicationStatus, BazaarStatus, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { calculateMatchScore } from "@/lib/matchscore";
 
-const OCCUPYING_APPLICATION_STATUSES: ApplicationStatus[] = [
+export const OCCUPYING_APPLICATION_STATUSES: ApplicationStatus[] = [
   "APPROVED",
   "AWAITING_CONFIRMATION",
   "CONFIRMED",
@@ -112,48 +113,61 @@ export async function getBazaarCities(): Promise<string[]> {
 }
 
 export async function getRecommendedBazaars(
-  businessType: string | null,
+  businessType: string | null, targetMarket: string | null,
   limit = 3,
-): Promise<BazaarCard[]> {
-  const baseWhere: Prisma.BazaarWhereInput = { status: "ACTIVE" };
+): Promise<(BazaarCard & { matchScore: number })[]> {
+  const baseWhere: Prisma.BazaarWhereInput = { status: "ACTIVE", eventStartDate: { gte: new Date() } };
 
-  let bazaars = await prisma.bazaar.findMany({
-    where: businessType
-      ? { ...baseWhere, areas: { some: { categoryWanted: businessType } } }
-      : baseWhere,
-    orderBy: { eventStartDate: "asc" },
-    take: limit,
-    include: bazaarCardInclude,
+  const bazaars = await prisma.bazaar.findMany({
+    where: baseWhere,
+    include: {
+      images: { take: 1 },
+      areas: {
+        select: {
+          // Needed by toBazaarCard():
+          totalSlot: true,
+          pricePerSlot: true,
+          categoryWanted: true,
+          _count: {
+            select: {
+              applications: { where: { status: { in: OCCUPYING_APPLICATION_STATUSES } } },
+            },
+          },
+          // Needed by calculateMatchScore():
+          visitorProfile: true,
+          estimatedTraffic: true,
+          hasElectricity: true,
+        },
+      },
+    },
   });
 
-  if (bazaars.length === 0 && businessType) {
-    bazaars = await prisma.bazaar.findMany({
-      where: baseWhere,
-      orderBy: { eventStartDate: "asc" },
-      take: limit,
-      include: bazaarCardInclude,
-    });
-  }
+  const vendor = { businessType, targetMarket };
 
-  return bazaars.map(toBazaarCard);
+  return bazaars
+    .map((bazaar) => {
+      const bestScore = bazaar.areas.reduce((max, area) => {
+        const { score } = calculateMatchScore({ area, vendor });
+        return Math.max(max, score);
+      }, 0);
+ 
+      return { ...toBazaarCard(bazaar), matchScore: bestScore };
+    })
+    .sort((a, b) => b.matchScore - a.matchScore)
+    .slice(0, limit);
 }
 
 export async function getUpcomingBazaars(limit = 3): Promise<BazaarCard[]> {
+  const now = new Date();
+  const in30Days = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+
   const bazaars = await prisma.bazaar.findMany({
-    where: { status: "ACTIVE" },
+    where: {
+      status: "ACTIVE",
+      eventStartDate: { gte: now, lte: in30Days },
+    },
     orderBy: { eventStartDate: "asc" },
     take: limit,
-    include: bazaarCardInclude,
-  });
-  return bazaars.map(toBazaarCard);
-}
-
-export async function searchBazaars(
-  where: Prisma.BazaarWhereInput,
-): Promise<BazaarCard[]> {
-  const bazaars = await prisma.bazaar.findMany({
-    where,
-    orderBy: { eventStartDate: "asc" },
     include: bazaarCardInclude,
   });
   return bazaars.map(toBazaarCard);
@@ -165,9 +179,120 @@ export async function countBazaars(
   return prisma.bazaar.count({ where });
 }
 
-const bazaarDetailInclude = {
+const exploreBazaarInclude = {
   images: true,
   organizer: { select: { name: true, businessName: true } },
+  areas: {
+    orderBy: { createdAt: "asc" },
+    select: {
+      id: true,
+      name: true,
+      pricePerSlot: true,
+      totalSlot: true,
+      categoryWanted: true,
+      _count: {
+        select: {
+          applications: {
+            where: { status: { in: OCCUPYING_APPLICATION_STATUSES } },
+          },
+        },
+      },
+    },
+  },
+} satisfies Prisma.BazaarInclude;
+
+type BazaarWithExploreData = Prisma.BazaarGetPayload<{
+  include: typeof exploreBazaarInclude;
+}>;
+
+export type ExploreBazaarArea = {
+  id: string;
+  name: string;
+  pricePerSlot: number;
+  slotsLeft: number;
+  totalSlot: number;
+  categoryWanted: string | null;
+};
+
+export type ExploreBazaar = {
+  id: string;
+  title: string;
+  description: string | null;
+  address: string;
+  city: string;
+  latitude: number;
+  longitude: number;
+  eventStartDate: Date;
+  eventEndDate: Date;
+  images: string[];
+  organizerName: string;
+  categories: string[];
+  minPricePerSlot: number | null;
+  areas: ExploreBazaarArea[];
+};
+
+function toExploreBazaar(bazaar: BazaarWithExploreData): ExploreBazaar {
+  const categories = [
+    ...new Set(
+      bazaar.areas
+        .map((area) => area.categoryWanted)
+        .filter((c): c is string => Boolean(c)),
+    ),
+  ];
+  const prices = bazaar.areas.map((area) => area.pricePerSlot);
+
+  return {
+    id: bazaar.id,
+    title: bazaar.title,
+    description: bazaar.description,
+    address: bazaar.address,
+    city: bazaar.city,
+    // Safe: the query below only selects rows where both are non-null.
+    latitude: bazaar.latitude as number,
+    longitude: bazaar.longitude as number,
+    eventStartDate: bazaar.eventStartDate,
+    eventEndDate: bazaar.eventEndDate,
+    images: bazaar.images.map((image) => image.url),
+    organizerName: bazaar.organizer.businessName ?? bazaar.organizer.name,
+    categories,
+    minPricePerSlot: prices.length > 0 ? Math.min(...prices) : null,
+    areas: bazaar.areas.map((area) => ({
+      id: area.id,
+      name: area.name,
+      pricePerSlot: area.pricePerSlot,
+      slotsLeft: Math.max(area.totalSlot - area._count.applications, 0),
+      totalSlot: area.totalSlot,
+      categoryWanted: area.categoryWanted,
+    })),
+  };
+}
+
+// Only bazaars with coordinates can be placed on the map, so those are
+// filtered out at the query level instead of showing pin-less rows.
+export async function getExploreBazaars(
+  where: Prisma.BazaarWhereInput,
+): Promise<ExploreBazaar[]> {
+  const bazaars = await prisma.bazaar.findMany({
+    where: { ...where, latitude: { not: null }, longitude: { not: null } },
+    orderBy: { eventStartDate: "asc" },
+    include: exploreBazaarInclude,
+  });
+  return bazaars.map(toExploreBazaar);
+}
+
+const bazaarDetailInclude = {
+  images: true,
+  organizer: {
+    select: {
+      name: true,
+      businessName: true,
+      businessDesc: true,
+      phone: true,
+      whatsapp: true,
+      instagram: true,
+      website: true,
+    },
+  },
   areas: {
     orderBy: { createdAt: "asc" },
     select: {
@@ -207,17 +332,28 @@ export type BazaarAreaDetail = {
   imageUrl: string | null;
 };
 
+export type BazaarOrganizerContact = {
+  businessDesc: string | null;
+  phone: string | null;
+  whatsapp: string | null;
+  instagram: string | null;
+  website: string | null;
+};
+
 export type BazaarDetail = {
   id: string;
   title: string;
   description: string | null;
   address: string;
   city: string;
+  latitude: number | null;
+  longitude: number | null;
   eventStartDate: Date;
   eventEndDate: Date;
   status: BazaarStatus;
   images: string[];
   organizerName: string;
+  organizerContact: BazaarOrganizerContact;
   areas: BazaarAreaDetail[];
 };
 function toBazaarDetail(bazaar: BazaarWithDetailData): BazaarDetail {
@@ -227,11 +363,20 @@ function toBazaarDetail(bazaar: BazaarWithDetailData): BazaarDetail {
     description: bazaar.description,
     address: bazaar.address,
     city: bazaar.city,
+    latitude: bazaar.latitude,
+    longitude: bazaar.longitude,
     eventStartDate: bazaar.eventStartDate,
     eventEndDate: bazaar.eventEndDate,
     status: bazaar.status,
     images: bazaar.images.map((image) => image.url),
     organizerName: bazaar.organizer.businessName ?? bazaar.organizer.name,
+    organizerContact: {
+      businessDesc: bazaar.organizer.businessDesc,
+      phone: bazaar.organizer.phone,
+      whatsapp: bazaar.organizer.whatsapp,
+      instagram: bazaar.organizer.instagram,
+      website: bazaar.organizer.website,
+    },
     areas: bazaar.areas.map((area) => ({
       id: area.id,
       name: area.name,

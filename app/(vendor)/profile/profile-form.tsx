@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, startTransition } from "react";
+import { useActionState, useEffect, useState, startTransition } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { User } from "@prisma/client";
@@ -25,6 +25,7 @@ import {
   resolveBusinessTypeDefaults,
   type VendorProfileFormValues,
 } from "./schema";
+import {TARGET_MARKETS} from "@/lib/constants";
 
 const CATEGORY_LABELS: Record<(typeof BUSINESS_CATEGORIES)[number], string> = {
   "F&B": "F&B (Makanan & Minuman)",
@@ -32,17 +33,27 @@ const CATEGORY_LABELS: Record<(typeof BUSINESS_CATEGORIES)[number], string> = {
   Lifestyle: "Lifestyle",
   Beauty: "Beauty",
   Services: "Services",
-  Other: "Lainnya",
+  Other: "Other",
+};
+
+const TARGET_MARKET_LABELS: Record<(typeof TARGET_MARKETS)[number]["value"], string> = {
+  pelajar: "Students & University Students",
+  pekerja: "Office Workers",
+  keluarga: "Families & Children",
+  wisatawan: "Tourists",
+  umum: "All Segments",
 };
 
 const initialState: UpdateVendorProfileState = {};
 
 export function ProfileForm({
   user,
+  hasBusinessPhoto,
   onSaved,
   onCancel,
 }: {
   user: User;
+  hasBusinessPhoto: boolean;
   onSaved: () => void;
   onCancel: () => void;
 }) {
@@ -50,6 +61,7 @@ export function ProfileForm({
     updateVendorProfileAction,
     initialState,
   );
+  const [photoError, setPhotoError] = useState<string | null>(null);
 
   const {
     register,
@@ -87,6 +99,12 @@ export function ProfileForm({
   }, [state, setError, onSaved]);
 
   const onSubmit = handleSubmit((data) => {
+    if (!hasBusinessPhoto) {
+      setPhotoError("Logo usaha wajib diupload sebelum menyimpan.");
+      return;
+    }
+    setPhotoError(null);
+
     const fd = new FormData();
     for (const [key, value] of Object.entries(data)) {
       fd.set(key, value ?? "");
@@ -99,7 +117,7 @@ export function ProfileForm({
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-5">
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="businessName">Nama Usaha</Label>
+        <Label htmlFor="businessName">Business Name</Label>
         <Input id="businessName" {...register("businessName")} />
         {errors.businessName && (
           <p className="text-xs text-destructive">
@@ -109,14 +127,14 @@ export function ProfileForm({
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label>Kategori Usaha</Label>
+        <Label>Business Category</Label>
         <Controller
           control={control}
           name="businessType"
           render={({ field }) => (
-            <Select value={field.value} onValueChange={field.onChange}>
+            <Select value={field.value ?? ""} onValueChange={field.onChange}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Pilih kategori usaha" />
+                <SelectValue placeholder="Choose business category" />
               </SelectTrigger>
               <SelectContent>
                 {BUSINESS_CATEGORIES.map((category) => (
@@ -137,7 +155,7 @@ export function ProfileForm({
 
       {businessType === BUSINESS_CATEGORY_OTHER && (
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="businessTypeOther">Sebutkan kategori usahamu</Label>
+          <Label htmlFor="businessTypeOther">Tell us about your business</Label>
           <Input id="businessTypeOther" {...register("businessTypeOther")} />
           {errors.businessTypeOther && (
             <p className="text-xs text-destructive">
@@ -148,7 +166,7 @@ export function ProfileForm({
       )}
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="businessDesc">Deskripsi Usaha</Label>
+        <Label htmlFor="businessDesc">Business Description</Label>
         <Textarea id="businessDesc" rows={3} {...register("businessDesc")} />
         {errors.businessDesc && (
           <p className="text-xs text-destructive">
@@ -158,8 +176,25 @@ export function ProfileForm({
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="targetMarket">Target Pasar</Label>
-        <Textarea id="targetMarket" rows={2} {...register("targetMarket")} />
+        <Label>Target Market</Label>
+        <Controller
+          control={control}
+          name="targetMarket"
+          render={({ field }) => (
+            <Select value={field.value ?? ""} onValueChange={field.onChange}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Choose target market" />
+              </SelectTrigger>
+              <SelectContent>
+                {TARGET_MARKETS.map((market) => (
+                  <SelectItem key={market.value} value={market.value}>
+                    {market.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        />
         {errors.targetMarket && (
           <p className="text-xs text-destructive">
             {errors.targetMarket.message}
@@ -168,7 +203,7 @@ export function ProfileForm({
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="phone">Telepon</Label>
+        <Label htmlFor="phone">Call Number</Label>
         <Input id="phone" {...register("phone")} />
         {errors.phone && (
           <p className="text-xs text-destructive">{errors.phone.message}</p>
@@ -180,7 +215,7 @@ export function ProfileForm({
           <Label htmlFor="instagram">Instagram</Label>
           <Input
             id="instagram"
-            placeholder="@usahakamu"
+            placeholder="@urusername"
             {...register("instagram")}
           />
           {errors.instagram && (
@@ -202,7 +237,7 @@ export function ProfileForm({
 
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="tiktok">TikTok</Label>
-          <Input id="tiktok" placeholder="@usahakamu" {...register("tiktok")} />
+          <Input id="tiktok" placeholder="@urusername" {...register("tiktok")} />
           {errors.tiktok && (
             <p className="text-xs text-destructive">{errors.tiktok.message}</p>
           )}
@@ -217,7 +252,9 @@ export function ProfileForm({
         </div>
       </div>
 
-      {state.error && <p className="text-sm text-destructive">{state.error}</p>}
+      {(photoError || state.error) && (
+        <p className="text-sm text-destructive">{photoError ?? state.error}</p>
+      )}
 
       <div className="flex gap-2 pt-2">
         <Button type="submit" disabled={isPending} className="flex-1">

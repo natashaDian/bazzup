@@ -14,6 +14,8 @@ import {
 import { BazaarSearchDialog } from "@/components/bazaar-search-dialog";
 import { BazaarCard } from "@/components/bazaar-card";
 import { DialogTrigger } from "@/components/ui/dialog";
+import { IncompleteProfileDialog } from "@/components/incomplete-profile-dialog";
+import { isVendorProfileComplete } from "@/lib/vendor-profile";
 
 export const metadata: Metadata = {
   title: "Home - BazzUp",
@@ -24,12 +26,13 @@ export default async function VendorHomePage() {
 
   const [cities, recommended, upcoming] = await Promise.all([
     getBazaarCities(),
-    getRecommendedBazaars(user.businessType),
+    getRecommendedBazaars(user.businessType, user.targetMarket),
     getUpcomingBazaars(),
   ]);
 
   return (
     <main className="flex flex-1 flex-col bg-white">
+      <IncompleteProfileDialog defaultOpen={!isVendorProfileComplete(user)} />
       <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-6 py-10 md:px-10 md:py-12 lg:px-16">
 
         {/* =====================================================

@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import {
   CalendarIcon,
   LayersIcon,
   MapPinIcon,
+  StoreIcon,
   TagIcon,
   TrendingUpIcon,
+  UsersIcon,
   ZapIcon,
 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { buttonVariants } from "@/components/ui/button";
 import {
   Accordion,
   AccordionContent,
@@ -22,7 +23,9 @@ import { formatDateDisplay } from "@/lib/date";
 import { formatRupiah } from "@/lib/currency";
 import { getCurrentUser } from "@/lib/auth";
 import { getBazaarById, getVendorAppliedAreaIds } from "@/lib/bazaars";
-import { BazaarImageCarousel } from "./bazaar-image-carousel";
+import { isVendorProfileComplete } from "@/lib/vendor-profile";
+import { BazaarImageCarousel } from "@/components/bazaar-image-carousel";
+import { OrganizerInfoDialog } from "@/components/organizer-info-dialog";
 import { ApplyToAreaButton } from "./apply-to-area-button";
 
 const STATUS_LABEL: Record<string, { label: string; variant: "default" | "secondary" }> = {
@@ -50,6 +53,14 @@ export default async function BazaarDetailPage({ params }: PageParams) {
   }
 
   const user = await getCurrentUser();
+
+  // Vendors are gated behind a complete profile so organizers always get
+  // usable info to review applications with - anyone getting here without
+  // one (direct link, back button, other cards) gets bounced back.
+  if (user?.role === "VENDOR" && !isVendorProfileComplete(user)) {
+    redirect("/explore?incompleteProfile=1");
+  }
+
   const appliedAreaIds = user
     ? await getVendorAppliedAreaIds(
         user.id,
@@ -69,6 +80,13 @@ export default async function BazaarDetailPage({ params }: PageParams) {
   );
   const status = STATUS_LABEL[bazaar.status] ?? { label: bazaar.status, variant: "secondary" as const };
   const organizerInitial = bazaar.organizerName.charAt(0).toUpperCase();
+  const confirmedVendorCount = bazaar.areas.reduce(
+    (sum, area) => sum + (area.totalSlot - area.slotsLeft),
+    0
+  );
+  const mapsUrl = bazaar.latitude !== null && bazaar.longitude !== null
+    ? `https://www.google.com/maps?q=${bazaar.latitude},${bazaar.longitude}`
+    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${bazaar.address}, ${bazaar.city}`)}`;
 
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-8">
@@ -85,6 +103,20 @@ export default async function BazaarDetailPage({ params }: PageParams) {
               <MapPinIcon className="size-4" />
               {bazaar.city}
             </p>
+            <div className="flex items-start justify-between gap-3">
+              <p className="flex min-w-0 flex-1 items-start gap-1.5 text-xs text-muted-foreground">
+                <MapPinIcon className="invisible mt-0.5 size-4 shrink-0" />
+                <span>{bazaar.address}</span>
+              </p>
+              <a
+                href={mapsUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="shrink-0 text-sm font-medium text-primary hover:underline"
+              >
+                View Maps &rarr;
+              </a>
+            </div>
             <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
               <CalendarIcon className="size-4" />
               {formatDateDisplay(bazaar.eventStartDate)} - {formatDateDisplay(bazaar.eventEndDate)}
@@ -101,17 +133,45 @@ export default async function BazaarDetailPage({ params }: PageParams) {
                 <p className="text-sm font-medium">{bazaar.organizerName}</p>
               </div>
             </div>
-            <a href="#available-areas" className={buttonVariants({ variant: "default" })}>
-              Apply Now
-            </a>
+            <OrganizerInfoDialog name={bazaar.organizerName} contact={bazaar.organizerContact} />
           </div>
 
-          {bazaar.description && (
-            <div className="flex flex-col gap-2">
-              <h2 className="text-xl font-semibold">About This Bazaar</h2>
-              <p className="text-base text-muted-foreground">{bazaar.description}</p>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-[1.4fr_1fr]">
+            {bazaar.description && (
+              <div className="flex flex-col gap-2">
+                <h2 className="text-xl font-semibold">About This Bazaar</h2>
+                <p className="text-base text-muted-foreground">{bazaar.description}</p>
+              </div>
+            )}
+
+            <div className="flex flex-col gap-2 rounded-xl border bg-card p-5">
+              <h2 className="text-lg font-semibold">What to Expect</h2>
+              <p className="text-sm text-muted-foreground">
+                Facility details for this bazaar haven&apos;t been added yet.
+              </p>
             </div>
-          )}
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <h2 className="text-xl font-semibold">Event Highlights</h2>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <HighlightStat
+                icon={<StoreIcon className="size-5" />}
+                value={`${confirmedVendorCount}+`}
+                label="Vendors"
+              />
+              <HighlightStat
+                icon={<UsersIcon className="size-5" />}
+                value={maxTraffic > 0 ? `~${maxTraffic}` : "-"}
+                label="Visitors / day"
+              />
+              <HighlightStat
+                icon={<MapPinIcon className="size-5" />}
+                value={`${bazaar.areas.length}`}
+                label="Areas"
+              />
+            </div>
+          </div>
         </div>
 
         <aside className="flex flex-col gap-6">
@@ -225,6 +285,7 @@ export default async function BazaarDetailPage({ params }: PageParams) {
                           bazaarId={bazaar.id}
                           areaId={area.id}
                           alreadyApplied={appliedAreaIds.has(area.id)}
+                          soldOut={area.slotsLeft <= 0}
                         />
                       </div>
                     </AccordionContent>
@@ -247,6 +308,18 @@ function InfoRow({ icon, label, value }: { icon: ReactNode; label: string; value
         <p className="text-xs text-muted-foreground">{label}</p>
         <p className="text-sm font-medium">{value}</p>
       </div>
+    </div>
+  );
+}
+
+function HighlightStat({ icon, value, label }: { icon: ReactNode; value: string; label: string }) {
+  return (
+    <div className="flex flex-col items-center gap-2 rounded-xl border bg-card p-5 text-center">
+      <span className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+        {icon}
+      </span>
+      <p className="text-xl font-bold">{value}</p>
+      <p className="text-xs text-muted-foreground">{label}</p>
     </div>
   );
 }
