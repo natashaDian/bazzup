@@ -4,6 +4,7 @@ import { useActionState, useEffect, useState, startTransition } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { User } from "@prisma/client";
+import { MessageCircleIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,6 +16,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { BUSINESS_CATEGORIES, BUSINESS_CATEGORY_OTHER } from "@/lib/constants";
 import {
   updateVendorProfileAction,
@@ -68,6 +75,7 @@ export function ProfileForm({
     control,
     handleSubmit,
     watch,
+    setValue,
     setError,
     formState: { errors },
   } = useForm<VendorProfileFormValues>({
@@ -86,6 +94,11 @@ export function ProfileForm({
   });
 
   const businessType = watch("businessType");
+  const phone = watch("phone");
+  const [whatsappSameAsPhone, setWhatsappSameAsPhone] = useState(
+    Boolean(user.whatsapp) && user.whatsapp === user.phone,
+  );
+  const [pendingSubmit, setPendingSubmit] = useState<VendorProfileFormValues | null>(null);
 
   useEffect(() => {
     if (state.fieldErrors) {
@@ -98,13 +111,13 @@ export function ProfileForm({
     }
   }, [state, setError, onSaved]);
 
-  const onSubmit = handleSubmit((data) => {
-    if (!hasBusinessPhoto) {
-      setPhotoError("Logo usaha wajib diupload sebelum menyimpan.");
-      return;
+  useEffect(() => {
+    if (whatsappSameAsPhone) {
+      setValue("whatsapp", phone, { shouldValidate: true });
     }
-    setPhotoError(null);
+  }, [whatsappSameAsPhone, phone, setValue]);
 
+  function submitProfile(data: VendorProfileFormValues) {
     const fd = new FormData();
     for (const [key, value] of Object.entries(data)) {
       fd.set(key, value ?? "");
@@ -112,9 +125,28 @@ export function ProfileForm({
     startTransition(() => {
       formAction(fd);
     });
+  }
+
+  const onSubmit = handleSubmit((data) => {
+    if (!hasBusinessPhoto) {
+      setPhotoError("Logo usaha wajib diupload sebelum menyimpan.");
+      return;
+    }
+    setPhotoError(null);
+
+    // WhatsApp is how organizers reach vendors about their applications, so
+    // it gets a confirmation step before saving instead of silently trusting
+    // whatever was typed.
+    if (data.whatsapp) {
+      setPendingSubmit(data);
+      return;
+    }
+
+    submitProfile(data);
   });
 
   return (
+    <>
     <form onSubmit={onSubmit} className="flex flex-col gap-5">
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="businessName">Business Name</Label>
@@ -227,7 +259,16 @@ export function ProfileForm({
 
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="whatsapp">WhatsApp</Label>
-          <Input id="whatsapp" {...register("whatsapp")} />
+          <Input id="whatsapp" disabled={whatsappSameAsPhone} {...register("whatsapp")} />
+          <label className="flex items-center gap-1.5 text-xs font-normal text-muted-foreground">
+            <input
+              type="checkbox"
+              checked={whatsappSameAsPhone}
+              onChange={(e) => setWhatsappSameAsPhone(e.target.checked)}
+              className="size-3.5 rounded border-input"
+            />
+            Sama dengan Call Number
+          </label>
           {errors.whatsapp && (
             <p className="text-xs text-destructive">
               {errors.whatsapp.message}
@@ -270,5 +311,46 @@ export function ProfileForm({
         </Button>
       </div>
     </form>
+
+    <Dialog
+      open={pendingSubmit !== null}
+      onOpenChange={(open) => {
+        if (!open) setPendingSubmit(null);
+      }}
+    >
+      <DialogContent className="sm:max-w-sm">
+        <div className="flex flex-col items-center gap-4 py-4 text-center">
+          <MessageCircleIcon className="size-14 text-amber-500" strokeWidth={1.5} />
+          <DialogTitle className="text-lg">Confirm Your WhatsApp Number</DialogTitle>
+          <DialogDescription className="text-sm leading-6 text-muted-foreground">
+            Make sure this number is correct and active on WhatsApp:
+            <br />
+            <span className="font-semibold text-foreground">{pendingSubmit?.whatsapp}</span>
+            <br />
+            Organizers will use it to reach you about your applications.
+          </DialogDescription>
+          <div className="mt-4 flex w-full gap-2">
+            <button
+              type="button"
+              onClick={() => setPendingSubmit(null)}
+              className="flex-1 rounded-md border border-input px-4 py-2.5 text-sm font-medium hover:bg-muted"
+            >
+              Edit Number
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                if (pendingSubmit) submitProfile(pendingSubmit);
+                setPendingSubmit(null);
+              }}
+              className="flex-1 rounded-md bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+            >
+              Yes, It&apos;s Correct
+            </button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+    </>
   );
 }

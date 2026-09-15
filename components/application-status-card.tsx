@@ -2,7 +2,8 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { MapPinIcon, ZapIcon, MessageCircleIcon, CheckCircleIcon, XCircleIcon, BanIcon } from "lucide-react";
+import Link from "next/link";
+import { MapPinIcon, ZapIcon, MessageCircleIcon, CheckCircleIcon, XCircleIcon, BanIcon, StarIcon } from "lucide-react";
 import { AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { formatDateDisplay } from "@/lib/date";
@@ -79,6 +80,7 @@ export function ApplicationStatusCard({ row }: { row: VendorApplicationRow }) {
   const daysUntilEvent = Math.floor((row.eventStartDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
   const canCancel = row.status === "CONFIRMED" && daysUntilEvent > 7;
   const isPaymentExpired = row.paymentDeadline ? row.paymentDeadline.getTime() <= Date.now() : false;
+  const hasEventEnded = row.eventEndDate.getTime() <= Date.now();
   const estimatedPlatformFee = row.platformFee ?? Math.round(row.pricePerSlot * 0.05);
   const estimatedGrandTotal = row.grandTotal ?? row.pricePerSlot + estimatedPlatformFee;
 
@@ -167,8 +169,8 @@ export function ApplicationStatusCard({ row }: { row: VendorApplicationRow }) {
               <h3 className="text-sm font-semibold">Application Information</h3>
               <Field label="Application ID" value={row.displayId} />
               <Field label="Business Category" value={row.businessCategory} />
-              <Field label="Slot Number" value={row.slotNumber?.toString() ?? "-"} />
-              <Field label="Description" value={row.description ?? "-"} />
+              {/* <Field label="Slot Number" value={row.slotNumber?.toString() ?? "-"} />
+              <Field label="Description" value={row.description ?? "-"} /> */}
             </div>
 
             <div className="flex flex-col gap-2 py-3 sm:px-5 sm:py-0">
@@ -263,6 +265,15 @@ export function ApplicationStatusCard({ row }: { row: VendorApplicationRow }) {
                     <CheckCircleIcon className="size-4" />
                     {row.status === "COMPLETED" ? "Completed" : "Paid & Confirmed"}
                   </span>
+                  {(row.status === "CONFIRMED" || row.status === "COMPLETED") && hasEventEnded && (
+                    <Link
+                      href={`/applications/${row.id}/review`}
+                      className="flex items-center gap-1.5 rounded-md border bg-white px-3 py-1.5 text-xs"
+                    >
+                      <StarIcon className="size-3.5 text-amber-500" />
+                      Leave a review
+                    </Link>
+                  )}
                   {row.status === "CONFIRMED" && whatsappLink && (
                     <a
                       href={whatsappLink}
