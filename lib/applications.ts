@@ -62,6 +62,8 @@ export type VendorApplicationRow = {
   cancelReason: string | null;
   cancelledAt: Date | null;
   organizerWhatsapp: string | null;
+  name: string;
+  businessName: string;
 };
 
 function toDisplayId(id: string): string {
@@ -79,6 +81,12 @@ export async function getVendorApplications(
     },
     orderBy: { appliedAt: filters.sort === "oldest" ? "asc" : "desc" },
     include: {
+      vendor: {
+        select: {
+          name: true,
+          businessName: true,
+        },
+      },
       area: {
         select: {
           name: true,
@@ -115,6 +123,8 @@ export async function getVendorApplications(
     description: application.description,
     slotNumber: application.slotNumber,
     status: application.status,
+    name: application.vendor.name,
+    businessName: application.vendor.businessName ?? "",
     pricePerSlot: application.area.pricePerSlot,
     totalPrice: application.totalPrice,
     platformFee: application.platformFee,

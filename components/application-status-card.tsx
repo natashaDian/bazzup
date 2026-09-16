@@ -22,6 +22,7 @@ import { ReviewDialog } from "@/components/review-dialog";
 import { cn } from "@/lib/utils";
 import type { VendorApplicationRow } from "@/lib/applications";
 import type { ApplicationStatus } from "@prisma/client";
+import { DownloadReceiptButton } from "@/components/download-receipt-button";
 
 const STATUS_BADGE_CLASS: Record<ApplicationStatus, string> = {
   PENDING: "bg-amber-100 text-amber-800",
@@ -328,6 +329,19 @@ export function ApplicationStatusCard({ row }: { row: VendorApplicationRow }) {
                     <CheckCircleIcon className="size-4" />
                     {row.status === "COMPLETED" ? "Completed" : "Paid & Confirmed"}
                   </span>
+                  <DownloadReceiptButton
+                     data = {{
+                      applicationId:row.id,
+                      vendorName: row.name,
+                      businessName: row.businessName,
+                      bazaarTitle:row.bazaarTitle,
+                      areaName:row.areaName,
+                      paymentConfirmedAt:row.paymentConfirmedAt,
+                      pricePerSlot:row.pricePerSlot,
+                      platformFee:estimatedPlatformFee,
+                      grandTotal:estimatedGrandTotal,
+                     }}
+                     />
                   {row.status === "COMPLETED" && (
                     <ReviewDialog applicationId={row.id} bazaarTitle={row.bazaarTitle} />
                   )}
