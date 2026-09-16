@@ -1,15 +1,19 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import {
-  MessageCircle,
   X,
   Send,
   Sparkles,
   MapPin,
   Calendar,
+  Maximize2,
+  Minimize2,
 } from "lucide-react";
+
+import buzzyLogo from "./assets/buzzy logo.png";
 
 type ChatBazaarResult = {
   id: string;
@@ -53,6 +57,22 @@ function formatDate(dateStr: string) {
     month: "short",
     year: "numeric",
   });
+}
+
+function BuzzyAvatar({ className }: { className?: string }) {
+  return (
+    <div
+      className={`flex items-center justify-center overflow-hidden rounded-full bg-white/20 ${className ?? "size-9"}`}
+    >
+      <Image
+        src={buzzyLogo}
+        alt="Buzzy"
+        width={28}
+        height={28}
+        className="size-[75%] object-contain"
+      />
+    </div>
+  );
 }
 
 function BazaarResultCard({ bazaar }: { bazaar: ChatBazaarResult }) {
@@ -129,21 +149,25 @@ function BazaarResultCard({ bazaar }: { bazaar: ChatBazaarResult }) {
 
 function TypingIndicator() {
   return (
-    <div className="flex items-center gap-1 bg-secondary/15 rounded-xl rounded-tl-sm px-3 py-2.5 w-fit">
-      <span className="size-1.5 rounded-full bg-secondary animate-bounce [animation-delay:-0.3s]" />
-      <span className="size-1.5 rounded-full bg-secondary animate-bounce [animation-delay:-0.15s]" />
-      <span className="size-1.5 rounded-full bg-secondary animate-bounce" />
+    <div className="flex items-center gap-2">
+      <BuzzyAvatar className="size-6 mt-0.5" />
+      <div className="flex items-center gap-1 bg-secondary/15 rounded-xl rounded-tl-sm px-3 py-2.5 w-fit">
+        <span className="size-1.5 rounded-full bg-secondary animate-bounce [animation-delay:-0.3s]" />
+        <span className="size-1.5 rounded-full bg-secondary animate-bounce [animation-delay:-0.15s]" />
+        <span className="size-1.5 rounded-full bg-secondary animate-bounce" />
+      </div>
     </div>
   );
 }
 
 export function VendorChatWidget() {
   const [open, setOpen] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: "assistant",
       content:
-        "Hai! Ceritain usaha kamu, nanti aku carikan bazaar yang cocok ya.",
+        "Halo! Aku Buzzy 👋\nCeritain usaha kamu, nanti aku bantu carikan bazaar yang cocok ya.",
     },
   ]);
   const [input, setInput] = useState("");
@@ -157,6 +181,11 @@ export function VendorChatWidget() {
       behavior: "smooth",
     });
   }, [messages, isLoading]);
+
+  function closeChat() {
+    setOpen(false);
+    setExpanded(false);
+  }
 
   async function sendMessage(overrideText?: string) {
     const text = overrideText ?? input;
@@ -200,7 +229,7 @@ export function VendorChatWidget() {
         ...prev,
         {
           role: "assistant",
-          content: "Waduh, ada masalah koneksi. Coba lagi ya.",
+          content: "Yah, tunggu sebentar ya 😅 Aku lagi coba proses dulu. Boleh dicoba kirim lagi?",
         },
       ]);
       setQuickReplies([]);
@@ -210,97 +239,144 @@ export function VendorChatWidget() {
   }
 
   return (
-    <div className="fixed bottom-5 right-5 z-50">
-      {open ? (
+    <>
+      {open && expanded && (
         <div
-          className="w-80 bg-card border border-input rounded-2xl overflow-hidden flex flex-col shadow-xl"
-          style={{ maxHeight: "70vh" }}
-        >
-          <div className="bg-gradient-to-br from-accent to-primary px-4 py-3.5 flex items-center gap-2.5">
-            <div className="size-9 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-              <Sparkles className="size-4 text-white" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-sm font-medium text-white">Bazaar Assistant</p>
-              <p className="text-[10px] text-white/75">
-                Biasanya balas dalam beberapa detik
-              </p>
-            </div>
-            <button onClick={() => setOpen(false)} className="ml-auto shrink-0">
-              <X className="size-4 text-white" />
-            </button>
-          </div>
-
-          <div
-            ref={scrollRef}
-            className="flex-1 overflow-y-auto px-3 py-3 flex flex-col gap-2.5 min-h-[240px]"
-          >
-            {messages.map((msg, i) => (
-              <div
-                key={i}
-                className={`flex flex-col ${msg.role === "user" ? "items-end" : "items-start"}`}
-              >
-                <div
-                  className={`max-w-[85%] rounded-2xl px-3 py-2 text-xs leading-relaxed ${
-                    msg.role === "user"
-                      ? "bg-accent text-accent-foreground rounded-tr-sm"
-                      : "bg-secondary/15 text-foreground rounded-tl-sm"
-                  }`}
-                >
-                  {msg.content}
-                </div>
-                {msg.bazaars && msg.bazaars.length > 0 && (
-                  <div className="w-full">
-                    {msg.bazaars.map((b) => (
-                      <BazaarResultCard key={b.id} bazaar={b} />
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-
-            {isLoading && <TypingIndicator />}
-
-            {!isLoading && quickReplies.length > 0 && (
-              <div className="flex flex-col gap-1.5 mt-1">
-                {quickReplies.map((reply) => (
-                  <button
-                    key={reply}
-                    onClick={() => sendMessage(reply)}
-                    className="text-left text-[11px] px-3 py-2 rounded-xl border border-accent/30 text-accent hover:bg-accent/5"
-                  >
-                    {reply}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <div className="px-3 py-2.5 border-t border-input flex items-center gap-1.5">
-            <input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-              placeholder="Ketik pesan..."
-              className="flex-1 border border-input rounded-full px-3.5 py-2 text-xs bg-background"
-            />
-            <button
-              onClick={() => sendMessage()}
-              disabled={isLoading}
-              className="size-8 rounded-full bg-accent text-accent-foreground flex items-center justify-center shrink-0"
-            >
-              <Send className="size-3.5" />
-            </button>
-          </div>
-        </div>
-      ) : (
-        <button
-          onClick={() => setOpen(true)}
-          className="size-14 rounded-full bg-gradient-to-br from-accent to-primary text-white flex items-center justify-center shadow-lg"
-        >
-          <MessageCircle className="size-6" />
-        </button>
+          aria-hidden="true"
+          onClick={() => setExpanded(false)}
+          className="fixed inset-0 z-40 bg-black/10 backdrop-blur-xs animate-in fade-in-0 duration-150"
+        />
       )}
-    </div>
+
+      <div
+        className={
+          expanded
+            ? "fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
+            : "fixed bottom-5 right-5 z-50"
+        }
+      >
+        {open ? (
+          <div
+            className={`flex flex-col overflow-hidden rounded-2xl border border-input bg-card shadow-xl transition-all duration-200 ease-out animate-in fade-in-0 zoom-in-95 ${
+              expanded
+                ? "h-[min(680px,85vh)] w-full max-w-lg"
+                : "max-h-[70vh] w-[calc(100vw-2.5rem)] max-w-80"
+            }`}
+          >
+            <div className="bg-gradient-to-br from-accent to-primary px-4 py-3.5 flex items-center gap-2.5 shrink-0">
+              <BuzzyAvatar />
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-white">Bazaar Assistant</p>
+                <p className="text-[10px] text-white/75">
+                  Biasanya balas dalam beberapa detik
+                </p>
+              </div>
+              <div className="ml-auto flex shrink-0 items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => setExpanded((prev) => !prev)}
+                  aria-label={expanded ? "Perkecil chat" : "Perbesar chat"}
+                  className="rounded-full p-1.5 text-white/90 transition-colors hover:bg-white/10"
+                >
+                  {expanded ? (
+                    <Minimize2 className="size-3.5" />
+                  ) : (
+                    <Maximize2 className="size-3.5" />
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={closeChat}
+                  aria-label="Tutup chat"
+                  className="rounded-full p-1.5 text-white/90 transition-colors hover:bg-white/10"
+                >
+                  <X className="size-4" />
+                </button>
+              </div>
+            </div>
+
+            <div
+              ref={scrollRef}
+              className={`flex-1 overflow-y-auto px-3 py-3 flex flex-col gap-3 ${
+                expanded ? "min-h-0" : "min-h-[240px]"
+              }`}
+            >
+              {messages.map((msg, i) =>
+                msg.role === "user" ? (
+                  <div key={i} className="flex flex-col items-end animate-in fade-in-0 slide-in-from-bottom-1 duration-200">
+                    <div className="max-w-[85%] rounded-2xl px-3 py-2 text-xs leading-relaxed bg-accent text-accent-foreground rounded-tr-sm">
+                      {msg.content}
+                    </div>
+                  </div>
+                ) : (
+                  <div key={i} className="flex w-full items-start gap-2 animate-in fade-in-0 slide-in-from-bottom-1 duration-200">
+                    <BuzzyAvatar className="size-6 mt-0.5" />
+                    <div className="flex max-w-[85%] min-w-0 flex-col gap-1">
+                      <div className="w-fit max-w-full rounded-2xl px-3 py-2 text-xs leading-relaxed whitespace-pre-line bg-secondary/15 text-foreground rounded-tl-sm">
+                        {msg.content}
+                      </div>
+                      {msg.bazaars && msg.bazaars.length > 0 && (
+                        <div className="w-full">
+                          {msg.bazaars.map((b) => (
+                            <BazaarResultCard key={b.id} bazaar={b} />
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ),
+              )}
+
+              {isLoading && <TypingIndicator />}
+
+              {!isLoading && quickReplies.length > 0 && (
+                <div className="flex flex-col gap-1.5 mt-1">
+                  {quickReplies.map((reply) => (
+                    <button
+                      key={reply}
+                      onClick={() => sendMessage(reply)}
+                      className="text-left text-[11px] px-3 py-2 rounded-xl border border-accent/30 text-accent hover:bg-accent/5"
+                    >
+                      {reply}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="px-3 py-2.5 border-t border-input flex items-center gap-1.5 shrink-0">
+              <input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                placeholder="Ketik pesan..."
+                className="flex-1 border border-input rounded-full px-3.5 py-2 text-xs bg-background"
+              />
+              <button
+                onClick={() => sendMessage()}
+                disabled={isLoading}
+                className="size-8 rounded-full bg-accent text-accent-foreground flex items-center justify-center shrink-0"
+              >
+                <Send className="size-3.5" />
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button
+            onClick={() => setOpen(true)}
+            aria-label="Buka chat Buzzy"
+            className="size-14 rounded-full bg-gradient-to-br from-accent to-primary text-white flex items-center justify-center shadow-lg"
+          >
+            <Image
+              src={buzzyLogo}
+              alt="Buzzy"
+              width={40}
+              height={40}
+              className="size-9 object-contain"
+            />
+          </button>
+        )}
+      </div>
+    </>
   );
 }

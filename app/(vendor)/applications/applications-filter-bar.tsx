@@ -72,7 +72,7 @@ export function ApplicationsFilterBar({
           })
         }
       >
-        <SelectTrigger className="h-11 w-full rounded-xl border-[#E8E1EF] bg-white px-3.5 text-[#3B1F4A] focus-visible:border-[#7A5CA8] sm:w-52">
+        <SelectTrigger className="!h-11 w-full rounded-xl border-[#E8E1EF] bg-white px-3.5 text-[#3B1F4A] focus-visible:border-[#7A5CA8] sm:w-52">
           <SelectValue>{(value: string) => statusLabel(value)}</SelectValue>
         </SelectTrigger>
         <SelectContent>
@@ -99,7 +99,7 @@ export function ApplicationsFilterBar({
         value={initialSort ?? "newest"}
         onValueChange={(value) => navigate({ sort: value ?? "newest" })}
       >
-        <SelectTrigger className="h-11 w-full rounded-xl border-[#E8E1EF] bg-white px-3.5 text-[#3B1F4A] focus-visible:border-[#7A5CA8] sm:w-44">
+        <SelectTrigger className="!h-11 w-full rounded-xl border-[#E8E1EF] bg-white px-3.5 text-[#3B1F4A] focus-visible:border-[#7A5CA8] sm:w-44">
           <SelectValue>
             {(value: string) =>
               value === "oldest" ? "Oldest First" : "Newest First"

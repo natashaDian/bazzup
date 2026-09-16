@@ -39,12 +39,14 @@ export default async function VendorHomePage() {
         {/* =====================================================
             HERO
         ====================================================== */}
-        <section className="home-hero relative isolate flex flex-col overflow-hidden pb-2">
+        <section className="home-hero relative isolate flex flex-col pb-2">
 
-          {/* Animated background glow */}
+          {/* Animated background glow - no overflow clipping here, so the
+              soft blurred edges fade out naturally instead of being cut
+              off by a hard boundary. */}
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
+            className="pointer-events-none absolute inset-0 -z-10"
           >
             <div className="home-gradient home-gradient-one" />
             <div className="home-gradient home-gradient-two" />

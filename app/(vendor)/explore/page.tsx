@@ -30,7 +30,7 @@ export default async function ExplorePage({
   const [cities, bazaars] = await Promise.all([getBazaarCities(), getExploreBazaars(where)]);
 
   return (
-    <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 bg-white px-4 py-6 lg:px-6">
+    <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 bg-white px-6 py-10 md:px-10 md:py-12 lg:px-16">
       <IncompleteProfileDialog defaultOpen={incompleteProfile} />
       <div>
         <h1 className="text-2xl font-bold text-[#3B1F4A]">Explore Bazaar</h1>

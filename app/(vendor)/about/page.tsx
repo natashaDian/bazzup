@@ -19,9 +19,11 @@ import {
   UsersIcon,
   UsersRoundIcon,
 } from "lucide-react";
+import Image from "next/image";
 import { buttonVariants } from "@/components/ui/button";
 import { AboutTestimonialCarousel, type Testimonial } from "@/components/about-testimonial-carousel";
 import { AboutScrollLink } from "@/components/about-scroll-link";
+import aboutUsIllustration from "@/components/assets/about us illustration.png";
 
 export const metadata: Metadata = {
   title: "About - BazzUp",
@@ -224,8 +226,8 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section id="purpose" className="mx-auto w-full max-w-6xl scroll-mt-16 px-6 pb-20 sm:px-8 sm:pb-24">
-        <div className="grid grid-cols-1 gap-8 rounded-2xl bg-[#F3EAFB] p-8 sm:p-12 lg:grid-cols-[1.1fr_auto_1fr]">
+      <section id="purpose" className="mx-auto mt-10 w-full max-w-6xl scroll-mt-16 px-6 pb-12 sm:mt-14 sm:px-8 sm:pb-16">
+        <div className="grid grid-cols-1 gap-8 rounded-2xl bg-[#F3EAFB] p-8 shadow-[0_10px_30px_rgba(122,92,168,0.10)] sm:p-12 lg:grid-cols-[1.1fr_auto_1fr]">
           <div className="flex flex-col justify-center gap-3">
             <h2 className="text-2xl font-bold text-[#3B1F4A] sm:text-3xl">Our Purpose</h2>
             <p className="text-[#6B7280]">
@@ -263,7 +265,7 @@ export default function AboutPage() {
         steps={ORGANIZER_STEPS}
       />
 
-      <section className="mx-auto w-full max-w-6xl px-6 pb-20 sm:px-8 sm:pb-24">
+      <section className="mx-auto w-full max-w-6xl px-6 pb-12 sm:px-8 sm:pb-16">
         <h2 className="mb-8 text-center text-2xl font-bold text-[#3B1F4A] sm:mb-10 sm:text-3xl">
           Why Choose BazzUp?
         </h2>
@@ -271,7 +273,7 @@ export default function AboutPage() {
           {WHY_CHOOSE_ITEMS.map(({ icon: Icon, title, description }) => (
             <div
               key={title}
-              className="flex flex-col items-center gap-3 rounded-2xl border border-[#E8E1EF] bg-white p-8 text-center"
+              className="flex flex-col items-center gap-3 rounded-2xl border border-[#E8E1EF] bg-white p-8 text-center shadow-[0_10px_30px_rgba(122,92,168,0.10)]"
             >
               <span className="flex size-12 items-center justify-center rounded-full bg-[#7A5CA8]/10 text-[#7A5CA8]">
                 <Icon className="size-5" />
@@ -283,19 +285,23 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-6xl px-6 pb-20 sm:px-8 sm:pb-24">
+      <section className="mx-auto w-full max-w-6xl px-6 pb-12 sm:px-8 sm:pb-16">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_1.3fr] lg:gap-8">
-          <div className="flex flex-col justify-center rounded-2xl bg-[#F3EAFB] p-8 sm:p-10 lg:p-12">
-            <h2 className="text-2xl font-bold text-[#3B1F4A] sm:text-3xl">
-              What they Says About BazzUp
-            </h2>
+          <div className="relative min-h-[280px] overflow-hidden rounded-2xl shadow-[0_10px_30px_rgba(122,92,168,0.10)]">
+            <Image
+              src={aboutUsIllustration}
+              alt="Illustration of a BazzUp bazaar"
+              fill
+              sizes="(min-width: 1024px) 40vw, 100vw"
+              className="object-cover"
+            />
           </div>
           <AboutTestimonialCarousel testimonials={TESTIMONIALS} />
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-6xl px-6 pb-20 sm:px-8 sm:pb-24">
-        <div className="flex flex-col items-center gap-6 rounded-2xl bg-[#F3EAFB] px-6 py-12 text-center sm:px-10 sm:py-16">
+      <section className="mx-auto w-full max-w-6xl px-6 pb-12 sm:px-8 sm:pb-16">
+        <div className="flex flex-col items-center gap-6 rounded-2xl bg-[#F3EAFB] px-6 py-12 text-center shadow-[0_10px_30px_rgba(122,92,168,0.10)] sm:px-10 sm:py-16">
           <h2 className="text-2xl font-bold text-[#3B1F4A] sm:text-3xl">
             A Better Bazaar Experience for Everyone
           </h2>
@@ -322,45 +328,13 @@ export default function AboutPage() {
           </a>
         </div>
       </section>
-
-      <footer className="border-t border-[#E8E1EF]">
-        <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-4 px-6 py-8 sm:flex-row sm:justify-between sm:px-8">
-          <div className="flex items-center gap-2">
-            <span className="flex size-8 items-center justify-center rounded-lg bg-[#7A5CA8] text-white">
-              <SparklesIcon className="size-4" />
-            </span>
-            <div>
-              <p className="text-sm font-bold text-[#3B1F4A]">BazzUp</p>
-              <p className="text-[10px] font-medium tracking-wide text-[#6B7280]">
-                BOOST YOUR BAZAAR
-              </p>
-            </div>
-          </div>
-
-          <nav className="flex items-center gap-6 text-sm font-medium">
-            <Link href="/vendor" className="text-[#6B7280] hover:text-[#3B1F4A]">
-              Home
-            </Link>
-            <Link href="/explore" className="text-[#6B7280] hover:text-[#3B1F4A]">
-              Explore
-            </Link>
-            <Link href="/about" className="text-[#3B1F4A]">
-              About
-            </Link>
-          </nav>
-
-          <p className="text-xs text-[#6B7280]">
-            &copy; {new Date().getFullYear()} BazzUp. All rights reserved.
-          </p>
-        </div>
-      </footer>
     </main>
   );
 }
 
 function StepsSection({ title, subtitle, steps }: { title: string; subtitle: string; steps: Step[] }) {
   return (
-    <section className="mx-auto w-full max-w-6xl px-6 pb-20 sm:px-8 sm:pb-24">
+    <section className="mx-auto w-full max-w-6xl px-6 pb-12 sm:px-8 sm:pb-16">
       <div className="mb-8 flex flex-col gap-1.5 sm:mb-10">
         <h2 className="text-2xl font-bold text-[#3B1F4A] sm:text-3xl">{title}</h2>
         <p className="text-[#6B7280]">{subtitle}</p>
@@ -368,7 +342,7 @@ function StepsSection({ title, subtitle, steps }: { title: string; subtitle: str
       <div className="flex flex-col gap-4 lg:flex-row lg:items-stretch">
         {steps.map(({ icon: Icon, title: stepTitle, description }, index) => (
           <div key={stepTitle} className="flex items-stretch gap-2 lg:flex-1">
-            <div className="flex flex-1 flex-col items-center justify-center gap-3 rounded-xl border border-[#E8E1EF] bg-white p-6 text-center transition-all duration-300 ease-in-out hover:-translate-y-1 hover:border-[#DCC8EE] hover:shadow-[0_10px_24px_rgba(122,92,168,0.10)]">
+            <div className="flex flex-1 flex-col items-center justify-center gap-3 rounded-xl border border-[#E8E1EF] bg-white p-6 text-center shadow-[0_10px_30px_rgba(122,92,168,0.10)] transition-all duration-300 ease-in-out hover:-translate-y-1 hover:border-[#DCC8EE] hover:shadow-[0_14px_34px_rgba(122,92,168,0.13)]">
               <span className="flex size-12 items-center justify-center rounded-full bg-[#7A5CA8]/10 text-[#7A5CA8]">
                 <Icon className="size-5" />
               </span>

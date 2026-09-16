@@ -39,8 +39,8 @@ export function ApplyToAreaButton({ bazaarId, areaId, alreadyApplied, soldOut }:
   }, [state.success]);
 
   return (
-    <form action={formAction} className="flex flex-col items-start gap-2">
-      <Button type="submit" disabled={disabled}>
+    <form action={formAction} className="flex flex-col items-stretch gap-2">
+      <Button type="submit" disabled={disabled} className="w-full">
         {isPending ? "Submitting..." : "Apply for This Area"}
       </Button>
       {errorMessage && <p className="text-xs text-destructive">{errorMessage}</p>}

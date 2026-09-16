@@ -24,10 +24,10 @@ export default function OrganizerRegisterPage() {
     >
       <LoginBackground />
 
-      <div className="relative mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-[#E8E1EF] bg-white/95 md:flex-row">
+      <div className="relative mx-auto flex w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-[#E8E1EF] bg-white/95 md:min-h-[calc(100vh-4rem)] md:max-h-[900px] md:flex-row">
 
         {/* Left Section */}
-        <section className="flex w-full items-center justify-center border-b border-[#E8E1EF] px-8 py-8 md:w-[42%] md:border-b-0 md:border-r md:px-10 lg:px-12">
+        <section className="flex w-full items-center justify-center px-8 py-8 md:w-[42%] md:border-r md:border-[#E8E1EF] md:px-10 lg:px-12">
           <div className="flex max-w-sm flex-col items-center text-center">
 
             {/* Logo */}
@@ -43,7 +43,7 @@ export default function OrganizerRegisterPage() {
             </div>
 
             {/* Heading */}
-            <h1 className="text-4xl font-bold leading-tight tracking-tight text-[#3B1F4A]">
+            <h1 className="hidden text-4xl font-bold leading-tight tracking-tight text-[#3B1F4A] md:block">
               Create Spaces
               <br />
               for Greater
@@ -52,7 +52,7 @@ export default function OrganizerRegisterPage() {
             </h1>
 
             {/* Description */}
-            <p className="mt-5 max-w-sm text-base leading-7 text-[#6B7280]">
+            <p className="mt-5 hidden max-w-sm text-base leading-7 text-[#6B7280] md:block">
               Join as an organizer and bring amazing bazaar events to life
               with the right vendors.
             </p>

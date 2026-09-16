@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { AtSignIcon, GlobeIcon, MessageCircleIcon, PhoneIcon } from "lucide-react";
+import { AtSignIcon, ChevronRightIcon, GlobeIcon, MessageCircleIcon, PhoneIcon } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Dialog,
@@ -23,8 +23,11 @@ export function OrganizerInfoDialog({ name, contact }: OrganizerInfoDialogProps)
 
   return (
     <Dialog>
-      <DialogTrigger className="text-sm font-medium text-primary hover:underline">
-        View Organizer &rarr;
+      <DialogTrigger
+        aria-label="View Organizer"
+        className="flex size-8 shrink-0 items-center justify-center rounded-full text-primary transition-colors hover:bg-primary/10"
+      >
+        <ChevronRightIcon className="size-5" />
       </DialogTrigger>
       <DialogContent className="sm:max-w-sm">
         <div className="flex flex-col items-center gap-3 py-2 text-center">

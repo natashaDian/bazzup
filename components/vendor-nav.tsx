@@ -141,6 +141,10 @@ export function Nav({ user }: { user: User }) {
 
           {navItems.map((item) => {
             const active = item.href === activeHref;
+            // "About" is the least essential item - below laptop widths the
+            // pill nav doesn't have room for all four items without
+            // overflowing/scrolling, so it's hidden until there's space.
+            const responsiveClass = item.label === "About" ? "hidden lg:inline-flex" : "";
 
             return (
               <Link
@@ -153,8 +157,8 @@ export function Nav({ user }: { user: User }) {
                 aria-current={active ? "page" : undefined}
                 className={
                   active
-                    ? "relative z-10 whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium text-white transition-colors duration-300 sm:px-5 sm:py-2 sm:text-sm"
-                    : "relative z-10 whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium text-[#3B1F4A] transition-colors duration-300 hover:bg-[#F3EAFB] hover:text-[#7A5CA8] sm:px-5 sm:py-2 sm:text-sm"
+                    ? `relative z-10 whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium text-white transition-colors duration-300 sm:px-5 sm:py-2 sm:text-sm ${responsiveClass}`
+                    : `relative z-10 whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium text-[#3B1F4A] transition-colors duration-300 hover:bg-[#F3EAFB] hover:text-[#7A5CA8] sm:px-5 sm:py-2 sm:text-sm ${responsiveClass}`
                 }
               >
                 {item.label}

@@ -1,20 +1,48 @@
 import type { Metadata } from "next";
 
+import Image from "next/image";
+import { Inter } from "next/font/google";
+
 import { RegisterForm } from "../register-form";
+import { LoginBackground } from "../../../components/login-background";
+import bazzupLogo from "../../../components/assets/bazzup logo.png";
 
 export const metadata: Metadata = {
   title: "Create Vendor Account - BazzUp",
 };
 
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+});
+
 export default function VendorRegisterPage() {
   return (
-    <main className="min-h-screen bg-white px-6 py-8 md:px-10 md:py-10">
-      <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-6xl flex-col overflow-hidden rounded-2xl border border-[#B98CDE] bg-white md:flex-row">
+    <main
+      className={`${inter.className} relative min-h-screen overflow-x-hidden bg-white px-6 py-6 md:px-10 md:py-8`}
+    >
+      <LoginBackground />
+
+      <div className="relative mx-auto flex w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-[#E8E1EF] bg-white/95 md:min-h-[calc(100vh-4rem)] md:max-h-[900px] md:flex-row">
 
         {/* Left Side */}
-        <section className="flex w-full flex-col justify-center border-b border-[#B98CDE] bg-[#FAF8FF] px-8 py-12 md:w-[42%] md:border-b-0 md:border-r md:px-12 lg:px-16">
-          <div className="max-w-md">
-            <h1 className="text-4xl font-bold leading-tight tracking-tight text-[#3B1F4A]">
+        <section className="flex w-full items-center justify-center px-8 py-8 md:w-[42%] md:border-r md:border-[#E8E1EF] md:px-10 lg:px-12">
+          <div className="flex max-w-sm flex-col items-center text-center">
+
+            {/* Logo */}
+            <div className="mb-7">
+              <Image
+                src={bazzupLogo}
+                alt="BazzUp"
+                width={100}
+                height={45}
+                className="h-auto w-[90px]"
+                priority
+              />
+            </div>
+
+            {/* Heading */}
+            <h1 className="hidden text-4xl font-bold leading-tight tracking-tight text-[#3B1F4A] md:block">
               Good Products
               <br />
               Deserve
@@ -22,7 +50,8 @@ export default function VendorRegisterPage() {
               Bigger Stages
             </h1>
 
-            <p className="mt-6 max-w-sm text-base font-normal leading-7 text-[#6B7280]">
+            {/* Description */}
+            <p className="mt-5 hidden max-w-sm text-base leading-7 text-[#6B7280] md:block">
               Join as a vendor and get access to various bazaar events across
               your city.
             </p>
@@ -30,7 +59,7 @@ export default function VendorRegisterPage() {
         </section>
 
         {/* Right Side */}
-        <section className="flex w-full flex-col bg-white px-8 py-12 md:w-[58%] md:px-14 lg:px-16">
+        <section className="flex w-full items-start overflow-y-auto px-8 py-8 md:w-[58%] md:px-10 lg:px-12">
 
           {/* <div className="flex justify-end">
             <p className="text-sm font-normal text-[#6B7280]">
@@ -50,25 +79,27 @@ export default function VendorRegisterPage() {
             </p>
           </div> */}
 
-          <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center">
+          <div className="mx-auto my-auto flex w-full max-w-md flex-col">
 
-            <div className="mb-10">
-              <h2 className="text-2xl font-bold tracking-tight text-[#3B1F4A]">
+            {/* Heading */}
+            <div className="mb-7">
+              <h2 className="text-3xl font-bold tracking-tight text-[#3B1F4A]">
                 Create Vendor Account
               </h2>
 
-              <p className="mt-2 text-base font-normal text-[#6B7280]">
+              <p className="mt-2 text-base text-[#6B7280]">
                 Tell us about your business
               </p>
             </div>
 
-            <div className="mb-6">
-              <h3 className="text-xl font-semibold text-[#3B1F4A]">
+            {/* Form Section */}
+            <div>
+              <h3 className="mb-5 text-lg font-semibold text-[#3B1F4A]">
                 Basic Information
               </h3>
-            </div>
 
-            <RegisterForm role="VENDOR" />
+              <RegisterForm role="VENDOR" />
+            </div>
 
           </div>
         </section>

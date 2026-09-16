@@ -18,14 +18,14 @@ const inter = Inter({
 export default function LoginPage() {
   return (
     <main
-      className={`${inter.className} relative h-screen overflow-hidden bg-white px-6 py-6 md:px-10 md:py-8`}
+      className={`${inter.className} relative min-h-screen overflow-x-hidden bg-white px-6 py-6 md:px-10 md:py-8`}
     >
       <LoginBackground />
 
-      <div className="login-container relative mx-auto flex h-full max-h-[900px] max-w-5xl flex-col overflow-hidden rounded-2xl border border-[#E8E1EF] bg-white/95 md:flex-row">
+      <div className="login-container relative mx-auto flex w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-[#E8E1EF] bg-white/95 md:min-h-[calc(100vh-4rem)] md:max-h-[900px] md:flex-row">
 
         {/* Left Section */}
-        <section className="login-panel-left flex w-full items-center justify-center border-b border-[#E8E1EF] px-8 py-8 md:w-[42%] md:border-b-0 md:border-r md:px-10 lg:px-12">
+        <section className="login-panel-left flex w-full items-center justify-center px-8 py-8 md:w-[42%] md:border-r md:border-[#E8E1EF] md:px-10 lg:px-12">
           <div className="flex max-w-sm flex-col items-center text-center">
 
             {/* Logo */}
@@ -41,14 +41,14 @@ export default function LoginPage() {
             </div>
 
             {/* Heading */}
-            <h1 className="login-heading text-4xl font-bold leading-tight tracking-tight text-[#3B1F4A]">
+            <h1 className="login-heading hidden text-4xl font-bold leading-tight tracking-tight text-[#3B1F4A] md:block">
               From Local Events
               <br />
               to Bigger Opportunities
             </h1>
 
             {/* Description */}
-            <p className="login-description mt-5 max-w-sm text-base leading-7 text-[#6B7280]">
+            <p className="login-description mt-5 hidden max-w-sm text-base leading-7 text-[#6B7280] md:block">
               BazzUp connects organizers and vendors in one platform —
               making every bazaar easier, faster, and more impactful.
             </p>
