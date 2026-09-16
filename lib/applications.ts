@@ -17,6 +17,21 @@ export const APPLICATION_STATUSES: {
   { value: "COMPLETED", label: "Completed" },
 ];
 
+// No cron/scheduler in this app, so a CONFIRMED application never moves to
+// COMPLETED on its own once the bazaar's event is over. Called once before
+// listing a vendor's applications so the "Leave a review" button (gated on
+// status === "COMPLETED" in ApplicationStatusCard) actually has something to
+// key off of.
+export async function syncCompletedApplications(): Promise<void> {
+  await prisma.application.updateMany({
+    where: {
+      status: "CONFIRMED",
+      area: { bazaar: { eventEndDate: { lt: new Date() } } },
+    },
+    data: { status: "COMPLETED" },
+  });
+}
+
 export type VendorApplicationRow = {
   id: string;
   displayId: string;

@@ -5,6 +5,7 @@ import { requireVendor } from "@/lib/auth";
 import {
   APPLICATION_STATUSES,
   getVendorApplications,
+  syncCompletedApplications,
   type VendorApplicationRow,
 } from "@/lib/applications";
 import { ApplicationsFilterBar } from "./applications-filter-bar";
@@ -46,6 +47,7 @@ export default async function ApplicationStatusPage({
   const rawSort = firstValue(sp.sort) === "oldest" ? "oldest" : "newest";
   const status = isApplicationStatus(rawStatus) ? rawStatus : undefined;
 
+  await syncCompletedApplications();
   const allRows = await getVendorApplications(user.id, {
     status,
     sort: rawSort,
