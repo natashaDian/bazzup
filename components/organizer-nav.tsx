@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { BellIcon, SparklesIcon } from "lucide-react";
+import { SparklesIcon, UserIcon, ImageIcon, LogOutIcon } from "lucide-react";
+import { NotificationBell } from "@/components/notification-bell";
 import type { User } from "@prisma/client";
 
 export function OrganizerNav({ user }: { user: User }) {
@@ -37,7 +38,7 @@ export function OrganizerNav({ user }: { user: User }) {
         </nav>
       </div>
       <div className="flex items-center gap-3">
-        <BellIcon className="size-5 text-muted-foreground" />
+        <NotificationBell className="size-5 text-muted-foreground" />
         <div className="flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-secondary text-xs font-medium text-secondary-foreground">
           {user.profileImageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element

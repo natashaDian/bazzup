@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { requireVendor } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { createNotification } from "@/lib/notifications";
 
 export type PaymentActionState = {
   error?: string;
@@ -24,10 +25,17 @@ async function getApplicationForVendor(
       vendorId: true,
       totalPrice: true,
       platformFee: true,
+      vendor: { select: { name: true, businessName: true } },
       area: {
         select: {
           pricePerSlot: true,
-          bazaar: { select: { eventStartDate: true } },
+          bazaar: {
+            select: {
+              title: true,
+              eventStartDate: true,
+              organizerId: true,
+            },
+          },
         },
       },
     },
@@ -124,6 +132,13 @@ export async function simulatePaymentAction(
     },
   });
 
+  const vendorName = application.vendor.businessName || application.vendor.name;
+  await createNotification({
+    userId: application.area.bazaar.organizerId,
+    message: `${vendorName} confirmed payment for ${application.area.bazaar.title}`,
+    linkUrl: `/organizer/applications/${applicationId}`,
+  });
+
   revalidatePath("/applications");
   return {};
 }
@@ -153,6 +168,13 @@ export async function cancelApplicationAction(
   await prisma.application.update({
     where: { id: applicationId },
     data: { status: "CANCELLED", cancelledAt: new Date() },
+  });
+
+  const vendorName = application.vendor.businessName || application.vendor.name;
+  await createNotification({
+    userId: application.area.bazaar.organizerId,
+    message: `${vendorName} cancelled their application for ${application.area.bazaar.title}`,
+    linkUrl: `/organizer/applications/${applicationId}`,
   });
 
   revalidatePath("/applications");
