@@ -3,14 +3,14 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Star, Package, ExternalLink } from "lucide-react";
+import { ArrowLeft, Package, ExternalLink } from "lucide-react";
 import type { ApplicationDetail } from "@/lib/applications";
 import {
   approveApplicationAction,
   rejectApplicationAction,
 } from "@/app/(organizer)/organizer/applications/actions";
 
-const STATUS_STYLE: Record<
+const STATUS_STYLE: Record <
   string,
   { bg: string; text: string; label: string }
 > = {
@@ -246,12 +246,6 @@ export function ApplicationDetailClient({
             </p>
 
             <div className="flex flex-col gap-2 mb-3.5 text-xs">
-              <span className="flex items-center gap-1.5 text-muted-foreground">
-                <Star className="size-3.5 text-accent" />
-                {application.vendorStats.averageRating
-                  ? `${application.vendorStats.averageRating.toFixed(1)} rating`
-                  : "No ratings yet"}
-              </span>
               <span className="flex items-center gap-1.5 text-muted-foreground">
                 <Package className="size-3.5 text-accent" />
                 {application.vendorStats.bazaarsJoined} bazaars joined

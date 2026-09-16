@@ -66,7 +66,6 @@ export async function submitBazaarReviewAction(
     },
   });
 
-  revalidatePath(`/applications/${applicationId}/review`);
   revalidatePath("/applications");
 
   return { success: "Thanks for your review!" };

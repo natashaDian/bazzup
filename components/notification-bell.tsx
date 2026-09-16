@@ -2,10 +2,11 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Bell } from "lucide-react";
+import { Bell, X } from "lucide-react";
 import {
   markNotificationReadAction,
   markAllNotificationsReadAction,
+  deleteNotificationAction,
 } from "@/lib/notification-actions";
 
 type NotificationItem = {
@@ -81,6 +82,20 @@ export function NotificationBell() {
     }
   }
 
+  async function handleDelete(
+    e: React.MouseEvent,
+    notification: NotificationItem,
+  ) {
+    e.stopPropagation();
+
+    setNotifications((prev) => prev.filter((n) => n.id !== notification.id));
+    if (!notification.isRead) {
+      setUnreadCount((prev) => Math.max(prev - 1, 0));
+    }
+
+    await deleteNotificationAction(notification.id);
+  }
+
   async function handleMarkAllRead() {
     await markAllNotificationsReadAction();
     setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
@@ -119,19 +134,21 @@ export function NotificationBell() {
           <div className="max-h-80 overflow-y-auto">
             {notifications.length > 0 ? (
               notifications.map((notification) => (
-                <button
+                <div
                   key={notification.id}
                   onClick={() => handleNotificationClick(notification)}
-                  className={`w-full flex gap-2.5 px-4 py-3 text-left border-b last:border-b-0 hover:bg-secondary/5 ${
+                  className={`group relative flex gap-2.5 px-4 py-3 text-left border-b last:border-b-0 hover:bg-secondary/5 cursor-pointer ${
                     !notification.isRead ? "bg-accent/5" : ""
                   }`}
                 >
                   {!notification.isRead && (
                     <span className="size-1.5 rounded-full bg-accent mt-1.5 shrink-0" />
                   )}
-                  <div className={notification.isRead ? "ml-4" : ""}>
+                  <div
+                    className={`flex-1 min-w-0 ${notification.isRead ? "ml-4" : ""}`}
+                  >
                     <p
-                      className={`text-xs ${notification.isRead ? "text-muted-foreground" : ""}`}
+                      className={`text-xs pr-5 ${notification.isRead ? "text-muted-foreground" : ""}`}
                     >
                       {notification.message}
                     </p>
@@ -139,7 +156,14 @@ export function NotificationBell() {
                       {formatRelativeTime(notification.createdAt)}
                     </p>
                   </div>
-                </button>
+                  <button
+                    onClick={(e) => handleDelete(e, notification)}
+                    aria-label="Delete notification"
+                    className="absolute top-3 right-3 text-muted-foreground opacity-0 group-hover:opacity-100 hover:text-destructive"
+                  >
+                    <X className="size-3.5" />
+                  </button>
+                </div>
               ))
             ) : (
               <div className="px-4 py-8 text-center text-sm text-muted-foreground">

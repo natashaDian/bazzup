@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowLeft,
-  Star,
   Package,
   Phone,
   AtSign,
@@ -78,12 +77,6 @@ export default async function VendorPublicProfilePage({
         )}
 
         <div className="flex flex-wrap gap-x-5 gap-y-2 text-xs text-muted-foreground border-t border-secondary/15 pt-4">
-          <span className="flex items-center gap-1.5">
-            <Star className="size-3.5 text-accent" />
-            {vendor.averageRating
-              ? `${vendor.averageRating.toFixed(1)} rating`
-              : "No ratings yet"}
-          </span>
           <span className="flex items-center gap-1.5">
             <Package className="size-3.5 text-accent" />
             {vendor.bazaarsJoined} bazaars joined

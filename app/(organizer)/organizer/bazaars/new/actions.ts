@@ -30,6 +30,7 @@ export async function createBazaarAction(
     longitude: String(formData.get("longitude") ?? ""),
     eventStartDate: String(formData.get("eventStartDate") ?? ""),
     eventEndDate: String(formData.get("eventEndDate") ?? ""),
+    facilities: String(formData.get("facilities") ?? ""),
   };
 
   const parsed = createBazaarSchema.safeParse(raw);
@@ -54,6 +55,7 @@ export async function createBazaarAction(
       longitude: parsed.data.longitude,
       eventStartDate: new Date(parsed.data.eventStartDate),
       eventEndDate: new Date(parsed.data.eventEndDate),
+      facilities: parsed.data.facilities || null,
       status: "DRAFT",
     },
   });

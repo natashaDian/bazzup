@@ -138,6 +138,11 @@ export async function simulatePaymentAction(
     message: `${vendorName} confirmed payment for ${application.area.bazaar.title}`,
     linkUrl: `/organizer/applications/${applicationId}`,
   });
+  await createNotification({
+    userId: application.vendorId,
+    message: `Your payment for ${application.area.bazaar.title} has been received. Download your receipt from the Status page.`,
+    linkUrl: "/applications",
+  });
 
   revalidatePath("/applications");
   return {};

@@ -73,7 +73,6 @@ export default async function BazaarDetailPage({ params }: PageParams) {
       bazaar.areas.map((area) => area.categoryWanted).filter((c): c is string => Boolean(c))
     ),
   ];
-  const hasElectricity = bazaar.areas.some((area) => area.hasElectricity);
   const maxTraffic = bazaar.areas.reduce(
     (max, area) => (area.estimatedTraffic && area.estimatedTraffic > max ? area.estimatedTraffic : max),
     0
@@ -155,9 +154,22 @@ export default async function BazaarDetailPage({ params }: PageParams) {
 
             <div className="flex flex-col gap-2 rounded-2xl border border-[#EEE4FA] bg-white p-5 shadow-[0_2px_10px_rgba(122,92,168,0.05)] sm:p-6">
               <h2 className="text-lg font-semibold text-[#3B1F4A]">What to Expect</h2>
-              <p className="text-sm leading-6 text-[#6B7280]">
-                Facility details for this bazaar haven&apos;t been added yet.
-              </p>
+              {bazaar.facilities.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {bazaar.facilities.map((facility) => (
+                    <span
+                      key={facility}
+                      className="rounded-full bg-[#F3EAFB] px-2.5 py-1 text-xs font-medium text-[#7A5CA8]"
+                    >
+                      {facility}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm leading-6 text-[#6B7280]">
+                  Facility details for this bazaar haven&apos;t been added yet.
+                </p>
+              )}
             </div>
           </div>
 
@@ -207,11 +219,6 @@ export default async function BazaarDetailPage({ params }: PageParams) {
                   value={`~${maxTraffic} visitors/day`}
                 />
               )}
-              <InfoRow
-                icon={<ZapIcon className="size-4" />}
-                label="Facilities"
-                value={hasElectricity ? "Electricity" : "Not specified"}
-              />
             </div>
           </div>
 
