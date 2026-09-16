@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { requireOrganizer } from "@/lib/auth";
+import { requireUser } from "@/lib/auth";
 import { getNotifications, getUnreadCount } from "@/lib/notifications";
 
 export async function GET() {
-  const user = await requireOrganizer();
+  const user = await requireUser();
 
   const [notifications, unreadCount] = await Promise.all([
     getNotifications(user.id),

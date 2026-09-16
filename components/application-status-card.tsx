@@ -336,6 +336,7 @@ export function ApplicationStatusCard({ row }: { row: VendorApplicationRow }) {
                       businessName: row.businessName,
                       bazaarTitle:row.bazaarTitle,
                       areaName:row.areaName,
+                      slotNumber:row.slotNumber,
                       paymentConfirmedAt:row.paymentConfirmedAt,
                       pricePerSlot:row.pricePerSlot,
                       platformFee:estimatedPlatformFee,

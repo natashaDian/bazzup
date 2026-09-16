@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { requireOrganizer } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { createNotification } from "@/lib/notifications";
 
 export type ApplicationActionState = {
   error?: string;
@@ -17,8 +18,12 @@ async function assertApplicationOwnership(
     select: {
       status: true,
       areaId: true,
+      vendorId: true,
       area: {
-        select: { bazaarId: true, bazaar: { select: { organizerId: true } } },
+        select: {
+          bazaarId: true,
+          bazaar: { select: { organizerId: true, title: true } },
+        },
       },
     },
   });
@@ -73,6 +78,12 @@ export async function approveApplicationAction(
       approvedAt: new Date(),
       paymentDeadline: new Date(Date.now() + 24 * 60 * 60 * 1000),
     },
+  });
+
+  await createNotification({
+    userId: application.vendorId,
+    message: `Your application for ${application.area.bazaar.title} was approved! Please complete payment within 24 hours.`,
+    linkUrl: "/applications",
   });
 
   revalidatePath("/organizer/applications");

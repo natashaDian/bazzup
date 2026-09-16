@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import {
-  BellIcon,
   UserIcon,
   PackageIcon,
   ImageIcon,
@@ -15,6 +14,7 @@ import {
 
 import type { User } from "@prisma/client";
 import { signOutAction } from "@/lib/sign-out";
+import { NotificationBell } from "@/components/notification-bell";
 
 import bazzupLogo from "./assets/bazzup logo.png";
 
@@ -166,13 +166,7 @@ export function Nav({ user }: { user: User }) {
 
       {/* Right: Notification + Profile */}
       <div className="flex items-center justify-end gap-1 sm:gap-4">
-        <button
-          type="button"
-          aria-label="Notifications"
-          className="rounded-full p-2 transition-colors duration-200 hover:bg-[#F3EAFB]"
-        >
-          <BellIcon className="size-4 text-muted-foreground sm:size-5" />
-        </button>
+        <NotificationBell />
 
         <div className="relative" ref={menuRef}>
           <button

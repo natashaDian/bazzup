@@ -34,7 +34,10 @@ export const vendorProfileSchema = z
       .string()
       .trim()
       .min(1, "Nomor telepon wajib diisi.")
-      .max(20, "Nomor telepon maksimal 20 karakter."),
+      .max(20, "Nomor telepon maksimal 20 karakter.")
+      .refine((val) => val.replace(/\D/g, "").length >= 10, {
+        message: "Nomor telepon minimal 10 digit.",
+      }),
     instagram: z
       .string()
       .trim()

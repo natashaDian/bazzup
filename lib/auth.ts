@@ -40,3 +40,14 @@ export function requireOrganizer(): Promise<User> {
 export function requireVendor(): Promise<User> {
   return requireRole("VENDOR");
 }
+
+// Any signed-in user, regardless of role - for things like notifications
+// that belong to a user, not to a role (vendor and organizer both read
+// their own via this).
+export async function requireUser(): Promise<User> {
+  const user = await getCurrentUser();
+  if (!user) {
+    redirect("/login");
+  }
+  return user;
+}

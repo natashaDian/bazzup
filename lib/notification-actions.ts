@@ -1,11 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requireOrganizer } from "@/lib/auth";
+import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 export async function markNotificationReadAction(notificationId: string) {
-  const user = await requireOrganizer();
+  const user = await requireUser();
 
   const notification = await prisma.notification.findUnique({
     where: { id: notificationId },
@@ -21,18 +21,18 @@ export async function markNotificationReadAction(notificationId: string) {
     data: { isRead: true },
   });
 
-  revalidatePath("/organizer");
+  revalidatePath(user.role === "VENDOR" ? "/vendor" : "/organizer");
   return {};
 }
 
 export async function markAllNotificationsReadAction() {
-  const user = await requireOrganizer();
+  const user = await requireUser();
 
   await prisma.notification.updateMany({
     where: { userId: user.id, isRead: false },
     data: { isRead: true },
   });
 
-  revalidatePath("/organizer");
+  revalidatePath(user.role === "VENDOR" ? "/vendor" : "/organizer");
   return {};
 }
