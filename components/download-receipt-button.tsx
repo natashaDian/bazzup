@@ -60,7 +60,6 @@ export function DownloadReceiptButton({data}:{data:ReceiptData}) {
         ["Nama Usaha", data.businessName],
         ["Bazaar", data.bazaarTitle],
         ["Area", data.areaName],
-        ["Nomor Slot", data.slotNumber ? `No. ${data.slotNumber}` : "-"],
         ["Waktu Pembayaran", paymentConfirmedAtText],
         ["Metode Pembayaran", "-"],
         ];
