@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { AboutTestimonialCarousel, type Testimonial } from "@/components/about-testimonial-carousel";
+import { AboutScrollLink } from "@/components/about-scroll-link";
 
 export const metadata: Metadata = {
   title: "About - BazzUp",
@@ -190,30 +191,36 @@ const TESTIMONIALS: Testimonial[] = [
 export default function AboutPage() {
   return (
     <main className="flex flex-1 flex-col bg-white" style={ACCENT_THEME_VARS}>
-      <section className="mx-auto flex w-full max-w-4xl flex-col items-center gap-6 px-6 py-20 text-center sm:px-8 sm:py-28">
-        <h1 className="text-3xl font-bold text-balance text-[#3B1F4A] sm:text-5xl">
-          Connecting Communities Through Meaningful Bazaars
-        </h1>
-        <p className="max-w-2xl text-base text-[#6B7280] sm:text-lg">
-          BazzUp is a platform that helps vendors discover bazaar events and makes it easier for
-          organizers to manage their events. We believe in the power of local communities, creative
-          businesses, and real connections — all in one place.
-        </p>
-        <div className="flex flex-wrap items-center justify-center gap-3">
-          <Link href="/explore" className={buttonVariants({ size: "lg", className: "gap-1.5" })}>
-            Explore Bazaars
-            <ArrowRightIcon className="size-4" />
-          </Link>
-          <a
-            href="#purpose"
-            className={buttonVariants({
-              variant: "outline",
-              size: "lg",
-              className: "border-[#7A5CA8] text-[#7A5CA8] hover:bg-[#F3EAFB]",
-            })}
-          >
-            Learn More
-          </a>
+      <section className="relative isolate flex w-full flex-col items-center overflow-hidden">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+          <div className="login-gradient absolute -top-40 -left-40 size-[600px] rounded-full sm:size-[800px]" />
+        </div>
+
+        <div className="mx-auto flex w-full max-w-4xl flex-col items-center gap-6 px-6 py-20 text-center sm:px-8 sm:py-28">
+          <h1 className="text-3xl font-bold text-balance text-[#3B1F4A] sm:text-5xl">
+            Connecting Communities Through Meaningful Bazaars
+          </h1>
+          <p className="max-w-2xl text-base text-[#6B7280] sm:text-lg">
+            BazzUp is a platform that helps vendors discover bazaar events and makes it easier for
+            organizers to manage their events. We believe in the power of local communities, creative
+            businesses, and real connections — all in one place.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <Link href="/explore" className={buttonVariants({ size: "lg", className: "gap-1.5" })}>
+              Explore Bazaars
+              <ArrowRightIcon className="size-4" />
+            </Link>
+            <AboutScrollLink
+              href="#purpose"
+              className={buttonVariants({
+                variant: "outline",
+                size: "lg",
+                className: "border-[#7A5CA8] text-[#7A5CA8] transition-colors duration-200 hover:bg-[#F3EAFB]",
+              })}
+            >
+              Learn More
+            </AboutScrollLink>
+          </div>
         </div>
       </section>
 
@@ -287,7 +294,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-5xl px-6 pb-20 sm:px-8 sm:pb-24">
+      <section className="mx-auto w-full max-w-6xl px-6 pb-20 sm:px-8 sm:pb-24">
         <div className="flex flex-col items-center gap-6 rounded-2xl bg-[#F3EAFB] px-6 py-12 text-center sm:px-10 sm:py-16">
           <h2 className="text-2xl font-bold text-[#3B1F4A] sm:text-3xl">
             A Better Bazaar Experience for Everyone
@@ -360,11 +367,8 @@ function StepsSection({ title, subtitle, steps }: { title: string; subtitle: str
       </div>
       <div className="flex flex-col gap-4 lg:flex-row lg:items-stretch">
         {steps.map(({ icon: Icon, title: stepTitle, description }, index) => (
-          <div key={stepTitle} className="flex items-center gap-2 lg:flex-1">
-            <div className="flex flex-1 flex-col gap-3 rounded-xl border border-[#E8E1EF] bg-white p-6 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:border-[#DCC8EE] hover:shadow-[0_10px_24px_rgba(122,92,168,0.10)]">
-              <span className="flex size-7 items-center justify-center rounded-full bg-[#7A5CA8] text-xs font-semibold text-white">
-                {index + 1}
-              </span>
+          <div key={stepTitle} className="flex items-stretch gap-2 lg:flex-1">
+            <div className="flex flex-1 flex-col items-center justify-center gap-3 rounded-xl border border-[#E8E1EF] bg-white p-6 text-center transition-all duration-300 ease-in-out hover:-translate-y-1 hover:border-[#DCC8EE] hover:shadow-[0_10px_24px_rgba(122,92,168,0.10)]">
               <span className="flex size-12 items-center justify-center rounded-full bg-[#7A5CA8]/10 text-[#7A5CA8]">
                 <Icon className="size-5" />
               </span>
@@ -372,7 +376,7 @@ function StepsSection({ title, subtitle, steps }: { title: string; subtitle: str
               <p className="text-sm text-[#6B7280]">{description}</p>
             </div>
             {index < steps.length - 1 && (
-              <ChevronRightIcon className="hidden size-5 shrink-0 text-[#B98CDE] lg:block" />
+              <ChevronRightIcon className="hidden size-5 shrink-0 self-center text-[#B98CDE] lg:block" />
             )}
           </div>
         ))}

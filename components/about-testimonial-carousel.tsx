@@ -38,7 +38,7 @@ export function AboutTestimonialCarousel({ testimonials }: { testimonials: Testi
     <div className="relative flex flex-col justify-between gap-7 rounded-2xl border border-[#E8E1EF] bg-white p-8 shadow-[0_2px_16px_rgba(122,92,168,0.07)] sm:p-10">
       <QuoteIcon className="absolute top-7 right-7 size-9 text-[#B98CDE]/40 sm:top-8 sm:right-8" />
 
-      <div className="flex flex-col gap-5">
+      <div key={index} className="flex flex-col gap-5 duration-200 animate-in fade-in-0">
         <div className="flex items-center gap-3">
           <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#F3EAFB] text-sm font-semibold text-[#7A5CA8]">
             {initials(current.name)}
@@ -65,7 +65,7 @@ export function AboutTestimonialCarousel({ testimonials }: { testimonials: Testi
             type="button"
             onClick={goPrev}
             aria-label="Previous testimonial"
-            className="flex size-9 items-center justify-center rounded-full border border-[#E8E1EF] text-[#3B1F4A] transition-colors duration-200 hover:border-[#7A5CA8] hover:text-[#7A5CA8]"
+            className="flex size-9 items-center justify-center rounded-full border border-[#E8E1EF] text-[#3B1F4A] transition-all duration-200 hover:border-[#7A5CA8] hover:text-[#7A5CA8] active:scale-90"
           >
             <ChevronLeftIcon className="size-4" />
           </button>
@@ -73,7 +73,7 @@ export function AboutTestimonialCarousel({ testimonials }: { testimonials: Testi
             type="button"
             onClick={goNext}
             aria-label="Next testimonial"
-            className="flex size-9 items-center justify-center rounded-full border border-[#E8E1EF] text-[#3B1F4A] transition-colors duration-200 hover:border-[#7A5CA8] hover:text-[#7A5CA8]"
+            className="flex size-9 items-center justify-center rounded-full border border-[#E8E1EF] text-[#3B1F4A] transition-all duration-200 hover:border-[#7A5CA8] hover:text-[#7A5CA8] active:scale-90"
           >
             <ChevronRightIcon className="size-4" />
           </button>
