@@ -19,6 +19,20 @@ export const NON_TERMINAL_APPLICATION_STATUSES: ApplicationStatus[] = [
   "CONFIRMED",
 ];
 
+// Applications that were APPROVED but whose 24-hour payment window has
+// passed without payment should no longer occupy a slot - this "lazily"
+// expires them whenever bazaar/area data is read, since there's no cron
+// job in this hackathon build.
+export async function expireOverdueApplications(): Promise<void> {
+  await prisma.application.updateMany({
+    where: {
+      status: "APPROVED",
+      paymentDeadline: { lt: new Date() },
+    },
+    data: { status: "EXPIRED" },
+  });
+}
+
 export async function getVendorAppliedAreaIds(
   vendorId: string,
   areaIds: string[],
@@ -113,10 +127,14 @@ export async function getBazaarCities(): Promise<string[]> {
 }
 
 export async function getRecommendedBazaars(
-  businessType: string | null, targetMarket: string | null,
+  businessType: string | null,
+  targetMarket: string | null,
   limit?: number,
 ): Promise<(BazaarCard & { matchScore: number })[]> {
-  const baseWhere: Prisma.BazaarWhereInput = { status: "ACTIVE", eventStartDate: { gte: new Date() } };
+  const baseWhere: Prisma.BazaarWhereInput = {
+    status: "ACTIVE",
+    eventStartDate: { gte: new Date() },
+  };
 
   const bazaars = await prisma.bazaar.findMany({
     where: baseWhere,
@@ -130,7 +148,9 @@ export async function getRecommendedBazaars(
           categoryWanted: true,
           _count: {
             select: {
-              applications: { where: { status: { in: OCCUPYING_APPLICATION_STATUSES } } },
+              applications: {
+                where: { status: { in: OCCUPYING_APPLICATION_STATUSES } },
+              },
             },
           },
           // Needed by calculateMatchScore():
@@ -160,7 +180,9 @@ export async function getRecommendedBazaars(
 
 // Omit `limit` to get every upcoming bazaar (used by the "See all" pages) -
 // the home page passes an explicit limit for its teaser cards.
-export async function getUpcomingBazaars(limit?: number): Promise<BazaarCard[]> {
+export async function getUpcomingBazaars(
+  limit?: number,
+): Promise<BazaarCard[]> {
   const now = new Date();
   const in30Days = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
 
@@ -355,6 +377,7 @@ export type BazaarDetail = {
   eventEndDate: Date;
   status: BazaarStatus;
   images: string[];
+  facilities: string[];
   organizerName: string;
   organizerContact: BazaarOrganizerContact;
   areas: BazaarAreaDetail[];
@@ -372,6 +395,12 @@ function toBazaarDetail(bazaar: BazaarWithDetailData): BazaarDetail {
     eventEndDate: bazaar.eventEndDate,
     status: bazaar.status,
     images: bazaar.images.map((image) => image.url),
+    facilities: bazaar.facilities
+      ? bazaar.facilities
+          .split(",")
+          .map((f) => f.trim())
+          .filter(Boolean)
+      : [],
     organizerName: bazaar.organizer.businessName ?? bazaar.organizer.name,
     organizerContact: {
       businessDesc: bazaar.organizer.businessDesc,
@@ -395,6 +424,8 @@ function toBazaarDetail(bazaar: BazaarWithDetailData): BazaarDetail {
   };
 }
 export async function getBazaarById(id: string): Promise<BazaarDetail | null> {
+  await expireOverdueApplications();
+
   const bazaar = await prisma.bazaar.findUnique({
     where: { id },
     include: bazaarDetailInclude,
@@ -427,6 +458,8 @@ export async function getOrganizerBazaars(
   organizerId: string,
   filters: { status?: string; q?: string } = {},
 ): Promise<OrganizerBazaarCardData[]> {
+  await expireOverdueApplications();
+
   const where: Prisma.BazaarWhereInput = { organizerId };
 
   if (filters.status && filters.status !== "ALL") {
@@ -481,5 +514,107 @@ export async function getOrganizerBazaars(
     status: bazaar.status,
     areaCount: areaCountPerBazaar.get(bazaar.id) ?? 0,
     pendingApplicationsCount: pendingPerBazaar.get(bazaar.id) ?? 0,
+  }));
+}
+
+export type BazaarCompletionSummary = {
+  totalAreas: number;
+  totalVendorsConfirmed: number;
+  totalRevenue: number;
+  eventStartDate: Date;
+  eventEndDate: Date;
+  areaBreakdown: { areaName: string; filled: number; totalSlot: number }[];
+};
+
+export async function getBazaarCompletionSummary(
+  bazaarId: string,
+): Promise<BazaarCompletionSummary | null> {
+  await expireOverdueApplications();
+
+  const bazaar = await prisma.bazaar.findUnique({
+    where: { id: bazaarId },
+    select: {
+      eventStartDate: true,
+      eventEndDate: true,
+      areas: {
+        select: {
+          name: true,
+          totalSlot: true,
+          _count: {
+            select: {
+              applications: {
+                where: { status: { in: OCCUPYING_APPLICATION_STATUSES } },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!bazaar) return null;
+
+  const totalAreas = bazaar.areas.length;
+  const totalVendorsConfirmed = bazaar.areas.reduce(
+    (sum, area) => sum + area._count.applications,
+    0,
+  );
+
+  const revenueResult = await prisma.application.aggregate({
+    where: {
+      status: { in: ["CONFIRMED", "COMPLETED"] },
+      area: { bazaarId },
+    },
+    _sum: { platformFee: true },
+  });
+
+  return {
+    totalAreas,
+    totalVendorsConfirmed,
+    totalRevenue: revenueResult._sum.platformFee ?? 0,
+    eventStartDate: bazaar.eventStartDate,
+    eventEndDate: bazaar.eventEndDate,
+    areaBreakdown: bazaar.areas.map((area) => ({
+      areaName: area.name,
+      filled: area._count.applications,
+      totalSlot: area.totalSlot,
+    })),
+  };
+}
+
+export type BazaarConfirmedVendor = {
+  id: string;
+  vendorName: string;
+  category: string | null;
+  areaName: string;
+  status: ApplicationStatus;
+};
+
+export async function getBazaarConfirmedVendors(
+  bazaarId: string,
+): Promise<BazaarConfirmedVendor[]> {
+  await expireOverdueApplications();
+
+  const applications = await prisma.application.findMany({
+    where: {
+      status: { in: OCCUPYING_APPLICATION_STATUSES },
+      area: { bazaarId },
+    },
+    select: {
+      id: true,
+      businessCategory: true,
+      status: true,
+      vendor: { select: { name: true, businessName: true } },
+      area: { select: { name: true } },
+    },
+    orderBy: { vendor: { businessName: "asc" } },
+  });
+
+  return applications.map((app) => ({
+    id: app.id,
+    vendorName: app.vendor.businessName || app.vendor.name,
+    category: app.businessCategory,
+    areaName: app.area.name,
+    status: app.status,
   }));
 }

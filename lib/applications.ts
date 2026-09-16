@@ -1,6 +1,7 @@
 import "server-only";
 import type { ApplicationStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { expireOverdueApplications } from "@/lib/bazaars";
 
 export const APPLICATION_STATUSES: {
   value: ApplicationStatus;
@@ -74,6 +75,8 @@ export async function getVendorApplications(
   vendorId: string,
   filters: { status?: ApplicationStatus; sort?: "newest" | "oldest" },
 ): Promise<VendorApplicationRow[]> {
+  await expireOverdueApplications();
+
   const applications = await prisma.application.findMany({
     where: {
       vendorId,
@@ -175,6 +178,8 @@ export async function getApplicationsBoard(
   organizerId: string,
   filters: { bazaarId?: string; q?: string; sort?: string } = {},
 ) {
+  await expireOverdueApplications();
+
   const where = {
     area: {
       bazaar: {
@@ -259,7 +264,7 @@ export async function getApplicationsBoard(
 
 export async function getOrganizerBazaarOptionsForFilter(organizerId: string) {
   return prisma.bazaar.findMany({
-    where: { organizerId },
+    where: { organizerId, status: { not: "DRAFT" } },
     select: { id: true, title: true },
     orderBy: { title: "asc" },
   });
@@ -295,7 +300,6 @@ export type ApplicationDetail = {
     title: string;
   };
   vendorStats: {
-    averageRating: number | null;
     bazaarsJoined: number;
     products: { id: string; name: string; price: number }[];
     portfolios: { id: string; bazaarName: string; eventDate: Date }[];
@@ -313,6 +317,8 @@ export async function getApplicationDetail(
   applicationId: string,
   organizerId: string,
 ): Promise<ApplicationDetail | null> {
+  await expireOverdueApplications();
+
   const application = await prisma.application.findUnique({
     where: { id: applicationId },
     select: {
@@ -359,11 +365,7 @@ export async function getApplicationDetail(
     return null;
   }
 
-  const [ratings, bazaarsJoined, products, portfolios] = await Promise.all([
-    prisma.review.aggregate({
-      where: { revieweeId: application.vendor.id, type: "ORGANIZER_TO_VENDOR" },
-      _avg: { rating: true },
-    }),
+  const [bazaarsJoined, products, portfolios] = await Promise.all([
     prisma.application.count({
       where: { vendorId: application.vendor.id, status: "COMPLETED" },
     }),
@@ -403,7 +405,6 @@ export async function getApplicationDetail(
     },
     bazaar: application.area.bazaar,
     vendorStats: {
-      averageRating: ratings._avg.rating,
       bazaarsJoined,
       products,
       portfolios,
@@ -425,7 +426,6 @@ export type VendorPublicProfile = {
   website: string | null;
   profileImageUrl: string | null;
   isVerifiedVendor: boolean;
-  averageRating: number | null;
   bazaarsJoined: number;
   products: {
     id: string;
@@ -465,11 +465,7 @@ export async function getVendorPublicProfile(
 
   if (!vendor) return null;
 
-  const [ratings, bazaarsJoined, products, portfolios] = await Promise.all([
-    prisma.review.aggregate({
-      where: { revieweeId: vendorId, type: "ORGANIZER_TO_VENDOR" },
-      _avg: { rating: true },
-    }),
+  const [bazaarsJoined, products, portfolios] = await Promise.all([
     prisma.application.count({
       where: { vendorId, status: "COMPLETED" },
     }),
@@ -487,7 +483,6 @@ export async function getVendorPublicProfile(
 
   return {
     ...vendor,
-    averageRating: ratings._avg.rating,
     bazaarsJoined,
     products,
     portfolios,

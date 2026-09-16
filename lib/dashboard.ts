@@ -293,7 +293,11 @@ export async function getUpcomingBazaars(
   const now = new Date();
 
   const bazaars = await prisma.bazaar.findMany({
-    where: { organizerId, eventStartDate: { gte: now } },
+    where: {
+      organizerId,
+      status: { not: "DRAFT" },
+      eventStartDate: { gte: now },
+    },
     orderBy: { eventStartDate: "asc" },
     take: 3,
     select: { id: true, title: true, eventStartDate: true },
