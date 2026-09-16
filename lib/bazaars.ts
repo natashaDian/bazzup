@@ -114,7 +114,7 @@ export async function getBazaarCities(): Promise<string[]> {
 
 export async function getRecommendedBazaars(
   businessType: string | null, targetMarket: string | null,
-  limit = 3,
+  limit?: number,
 ): Promise<(BazaarCard & { matchScore: number })[]> {
   const baseWhere: Prisma.BazaarWhereInput = { status: "ACTIVE", eventStartDate: { gte: new Date() } };
 
@@ -144,20 +144,23 @@ export async function getRecommendedBazaars(
 
   const vendor = { businessType, targetMarket };
 
-  return bazaars
+  const sorted = bazaars
     .map((bazaar) => {
       const bestScore = bazaar.areas.reduce((max, area) => {
         const { score } = calculateMatchScore({ area, vendor });
         return Math.max(max, score);
       }, 0);
- 
+
       return { ...toBazaarCard(bazaar), matchScore: bestScore };
     })
-    .sort((a, b) => b.matchScore - a.matchScore)
-    .slice(0, limit);
+    .sort((a, b) => b.matchScore - a.matchScore);
+
+  return limit === undefined ? sorted : sorted.slice(0, limit);
 }
 
-export async function getUpcomingBazaars(limit = 3): Promise<BazaarCard[]> {
+// Omit `limit` to get every upcoming bazaar (used by the "See all" pages) -
+// the home page passes an explicit limit for its teaser cards.
+export async function getUpcomingBazaars(limit?: number): Promise<BazaarCard[]> {
   const now = new Date();
   const in30Days = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
 

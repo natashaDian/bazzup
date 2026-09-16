@@ -7,6 +7,23 @@ import { createAreaAction, type AreaActionState } from "@/lib/areas";
 
 const initialState: AreaActionState = {};
 
+const VISITOR_PROFILES = [
+  "Pelajar & Mahasiswa",
+  "Pekerja Kantoran",
+  "Keluarga & Anak-anak",
+  "Wisatawan",
+  "Semua Kalangan",
+];
+
+function formatThousands(value: string): string {
+  const digitsOnly = value.replace(/\D/g, "");
+  return digitsOnly.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+function parseThousands(value: string): string {
+  return value.replace(/\D/g, "");
+}
+
 const emptyForm = {
   name: "",
   description: "",
@@ -174,12 +191,18 @@ export function AreaFormModal({
                 Price per slot *
               </label>
               <input
-                name="pricePerSlot"
-                type="number"
-                min={1}
-                value={form.pricePerSlot}
-                onChange={(e) => updateField("pricePerSlot", e.target.value)}
+                type="text"
+                inputMode="numeric"
+                value={formatThousands(form.pricePerSlot)}
+                onChange={(e) =>
+                  updateField("pricePerSlot", parseThousands(e.target.value))
+                }
                 className="w-full px-3 py-2 rounded-lg border border-input bg-card text-sm"
+              />
+              <input
+                type="hidden"
+                name="pricePerSlot"
+                value={form.pricePerSlot}
               />
               {state.fieldErrors?.pricePerSlot && (
                 <p className="text-xs text-destructive mt-1">
@@ -274,13 +297,19 @@ export function AreaFormModal({
             <label className="text-xs text-muted-foreground block mb-1">
               Visitor profile *
             </label>
-            <input
+            <select
               name="visitorProfile"
-              placeholder="e.g. families, students"
               value={form.visitorProfile}
               onChange={(e) => updateField("visitorProfile", e.target.value)}
               className="w-full px-3 py-2 rounded-lg border border-input bg-card text-sm"
-            />
+            >
+              <option value="">Select visitor profile</option>
+              {VISITOR_PROFILES.map((profile) => (
+                <option key={profile} value={profile}>
+                  {profile}
+                </option>
+              ))}
+            </select>
             {state.fieldErrors?.visitorProfile && (
               <p className="text-xs text-destructive mt-1">
                 {state.fieldErrors.visitorProfile}

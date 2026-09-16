@@ -7,6 +7,23 @@ import { updateAreaAction, type AreaActionState } from "@/lib/areas";
 
 const initialState: AreaActionState = {};
 
+const VISITOR_PROFILES = [
+  "Pelajar & Mahasiswa",
+  "Pekerja Kantoran",
+  "Keluarga & Anak-anak",
+  "Wisatawan",
+  "Semua Kalangan",
+];
+
+function formatThousands(value: string): string {
+  const digitsOnly = value.replace(/\D/g, "");
+  return digitsOnly.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+function parseThousands(value: string): string {
+  return value.replace(/\D/g, "");
+}
+
 type AreaImage = { id: string; url: string };
 type Area = {
   id: string;
@@ -334,12 +351,19 @@ export function AreaEditModal({
             <label className="text-xs text-muted-foreground block mb-1">
               Visitor profile *
             </label>
-            <input
+            <select
               name="visitorProfile"
               value={form.visitorProfile}
               onChange={(e) => updateField("visitorProfile", e.target.value)}
               className="w-full px-3 py-2 rounded-lg border border-input bg-card text-sm"
-            />
+            >
+              <option value="">Select visitor profile</option>
+              {VISITOR_PROFILES.map((profile) => (
+                <option key={profile} value={profile}>
+                  {profile}
+                </option>
+              ))}
+            </select>
             {state.fieldErrors?.visitorProfile && (
               <p className="text-xs text-destructive mt-1">
                 {state.fieldErrors.visitorProfile}

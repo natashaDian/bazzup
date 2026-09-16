@@ -77,6 +77,7 @@ export async function updateVendorProfileAction(
 }
 
 const MAX_PHOTO_SIZE = 2 * 1024 * 1024;
+const MAX_BUSINESS_LOGO_SIZE = 1 * 1024 * 1024;
 const ALLOWED_PHOTO_TYPES = ["image/png", "image/jpeg", "image/webp"];
 const PHOTO_BUCKET = "vendor-profiles";
 
@@ -99,8 +100,8 @@ export async function uploadBusinessPhotoAction(
   if (!ALLOWED_PHOTO_TYPES.includes(file.type)) {
     return { error: "Format file harus PNG, JPG, atau WEBP." };
   }
-  if (file.size > MAX_PHOTO_SIZE) {
-    return { error: "Ukuran file maksimal 2MB." };
+  if (file.size > MAX_BUSINESS_LOGO_SIZE) {
+    return { error: "Ukuran logo maksimal 1MB." };
   }
 
   const extension =
@@ -156,6 +157,7 @@ export async function createProductAction(
 
   const raw = {
     name: String(formData.get("name") ?? ""),
+    description: String(formData.get("description") ?? ""),
     price: String(formData.get("price") ?? ""),
   };
 
@@ -209,6 +211,7 @@ export async function createProductAction(
     data: {
       vendorId: user.id,
       name: parsed.data.name,
+      description: parsed.data.description || null,
       price: parsed.data.price,
       imageUrl,
     },
@@ -311,6 +314,7 @@ export async function updateProductAction(
 
   const raw = {
     name: String(formData.get("name") ?? ""),
+    description: String(formData.get("description") ?? ""),
     price: String(formData.get("price") ?? ""),
   };
 
@@ -361,7 +365,12 @@ export async function updateProductAction(
 
   await prisma.product.update({
     where: { id },
-    data: { name: parsed.data.name, price: parsed.data.price, imageUrl },
+    data: {
+      name: parsed.data.name,
+      description: parsed.data.description || null,
+      price: parsed.data.price,
+      imageUrl,
+    },
   });
 
   revalidatePath("/profile");
