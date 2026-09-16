@@ -146,9 +146,22 @@ export default async function BazaarDetailPage({ params }: PageParams) {
 
             <div className="flex flex-col gap-2 rounded-xl border bg-card p-5">
               <h2 className="text-lg font-semibold">What to Expect</h2>
-              <p className="text-sm text-muted-foreground">
-                Facility details for this bazaar haven&apos;t been added yet.
-              </p>
+              {bazaar.facilities.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {bazaar.facilities.map((facility) => (
+                    <span
+                      key={facility}
+                      className="text-xs px-2.5 py-1 rounded-full bg-secondary/10 text-secondary-foreground"
+                    >
+                      {facility}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  Facility details for this bazaar haven&apos;t been added yet.
+                </p>
+              )}
             </div>
           </div>
 
@@ -197,11 +210,6 @@ export default async function BazaarDetailPage({ params }: PageParams) {
                 value={`~${maxTraffic} visitors/day`}
               />
             )}
-            <InfoRow
-              icon={<ZapIcon className="size-4" />}
-              label="Facilities"
-              value={hasElectricity ? "Electricity" : "Not specified"}
-            />
           </div>
 
           <div
