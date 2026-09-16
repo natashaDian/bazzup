@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ImagePlus } from "lucide-react";
 import { LocationPicker } from "@/components/location-picker";
@@ -22,6 +22,53 @@ export default function CreateBazaarPage() {
     longitude: 106.8456,
   });
 
+  const [form, setForm] = useState({
+    title: "",
+    description: "",
+    eventStartDate: "",
+    eventEndDate: "",
+  });
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (state.fieldErrors) setFieldErrors(state.fieldErrors);
+  }, [state]);
+
+  function updateField<K extends keyof typeof form>(key: K, value: string) {
+    setForm((prev) => ({ ...prev, [key]: value }));
+    setFieldErrors((prev) => ({ ...prev, [key]: "" }));
+  }
+
+  function validateClientSide() {
+    const errors: Record<string, string> = {};
+    if (!form.title.trim() || form.title.trim().length < 3) {
+      errors.title = "Title must be at least 3 characters";
+    }
+    if (!form.description.trim() || form.description.trim().length < 100) {
+      errors.description = "Description must be at least 100 characters";
+    }
+    if (!form.eventStartDate) {
+      errors.eventStartDate = "Start date is required";
+    }
+    if (!form.eventEndDate) {
+      errors.eventEndDate = "End date is required";
+    } else if (
+      form.eventStartDate &&
+      new Date(form.eventEndDate) < new Date(form.eventStartDate)
+    ) {
+      errors.eventEndDate = "End date must be on or after the start date";
+    }
+    return errors;
+  }
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    const errors = validateClientSide();
+    if (Object.keys(errors).length > 0) {
+      e.preventDefault();
+      setFieldErrors(errors);
+    }
+  }
+
   function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (file) setPhotoPreview(URL.createObjectURL(file));
@@ -35,7 +82,7 @@ export default function CreateBazaarPage() {
           Fill in the event details to create a new bazaar.
         </p>
 
-        <form action={formAction} className="space-y-4">
+        <form action={formAction} onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block">
               <div className="h-28 border border-dashed border-secondary rounded-lg flex flex-col items-center justify-center text-accent bg-secondary/10 cursor-pointer overflow-hidden">
@@ -73,26 +120,38 @@ export default function CreateBazaarPage() {
             </label>
             <input
               name="title"
+              value={form.title}
+              onChange={(e) => updateField("title", e.target.value)}
               placeholder="Enter bazaar title"
               className="w-full px-3 py-2 rounded-lg border border-input bg-card text-sm"
             />
-            {state.fieldErrors?.title && (
+            {fieldErrors.title && (
               <p className="text-xs text-destructive mt-1">
-                {state.fieldErrors.title}
+                {fieldErrors.title}
               </p>
             )}
           </div>
 
           <div>
             <label className="text-xs text-muted-foreground block mb-1">
-              Description
+              Description *
             </label>
             <textarea
               name="description"
-              rows={2}
-              placeholder="Tell people about your bazaar"
+              value={form.description}
+              onChange={(e) => updateField("description", e.target.value)}
+              rows={4}
+              placeholder="Tell people about your bazaar (minimum 100 characters)"
               className="w-full px-3 py-2 rounded-lg border border-input bg-card text-sm resize-none"
             />
+            <p className="text-[11px] text-muted-foreground mt-1">
+              {form.description.trim().length}/100 characters minimum
+            </p>
+            {fieldErrors.description && (
+              <p className="text-xs text-destructive mt-1">
+                {fieldErrors.description}
+              </p>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-3">
@@ -103,11 +162,13 @@ export default function CreateBazaarPage() {
               <input
                 type="date"
                 name="eventStartDate"
+                value={form.eventStartDate}
+                onChange={(e) => updateField("eventStartDate", e.target.value)}
                 className="w-full px-3 py-2 rounded-lg border border-input bg-card text-sm"
               />
-              {state.fieldErrors?.eventStartDate && (
+              {fieldErrors.eventStartDate && (
                 <p className="text-xs text-destructive mt-1">
-                  {state.fieldErrors.eventStartDate}
+                  {fieldErrors.eventStartDate}
                 </p>
               )}
             </div>
@@ -118,11 +179,13 @@ export default function CreateBazaarPage() {
               <input
                 type="date"
                 name="eventEndDate"
+                value={form.eventEndDate}
+                onChange={(e) => updateField("eventEndDate", e.target.value)}
                 className="w-full px-3 py-2 rounded-lg border border-input bg-card text-sm"
               />
-              {state.fieldErrors?.eventEndDate && (
+              {fieldErrors.eventEndDate && (
                 <p className="text-xs text-destructive mt-1">
-                  {state.fieldErrors.eventEndDate}
+                  {fieldErrors.eventEndDate}
                 </p>
               )}
             </div>
@@ -143,10 +206,8 @@ export default function CreateBazaarPage() {
             value={locationData.longitude}
           />
 
-          {state.fieldErrors?.address && (
-            <p className="text-xs text-destructive">
-              {state.fieldErrors.address}
-            </p>
+          {fieldErrors.address && (
+            <p className="text-xs text-destructive">{fieldErrors.address}</p>
           )}
           {state.error && (
             <p className="text-sm text-destructive">{state.error}</p>
