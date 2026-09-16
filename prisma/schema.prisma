@@ -49,6 +49,7 @@ model Bazaar {
   longitude      Float?
   eventStartDate DateTime
   eventEndDate   DateTime
+  facilities     String?
   status         BazaarStatus @default(DRAFT)
   createdAt      DateTime     @default(now())
 

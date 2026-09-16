@@ -8,6 +8,8 @@ import { createBazaarAction, type CreateBazaarState } from "./actions";
 
 const initialState: CreateBazaarState = {};
 
+const FACILITY_OPTIONS = ["Meja", "Kursi", "Rak", "Karpet", "Tripod"];
+
 export default function CreateBazaarPage() {
   const router = useRouter();
   const [state, formAction, isPending] = useActionState(
@@ -21,6 +23,7 @@ export default function CreateBazaarPage() {
     latitude: -6.2088,
     longitude: 106.8456,
   });
+  const [facilities, setFacilities] = useState<string[]>([]);
 
   const [form, setForm] = useState({
     title: "",
@@ -37,6 +40,14 @@ export default function CreateBazaarPage() {
   function updateField<K extends keyof typeof form>(key: K, value: string) {
     setForm((prev) => ({ ...prev, [key]: value }));
     setFieldErrors((prev) => ({ ...prev, [key]: "" }));
+  }
+
+  function toggleFacility(facility: string) {
+    setFacilities((prev) =>
+      prev.includes(facility)
+        ? prev.filter((f) => f !== facility)
+        : [...prev, facility],
+    );
   }
 
   function validateClientSide() {
@@ -209,6 +220,28 @@ export default function CreateBazaarPage() {
           {fieldErrors.address && (
             <p className="text-xs text-destructive">{fieldErrors.address}</p>
           )}
+
+          <p className="text-xs font-medium text-primary uppercase tracking-wide">
+            Facilities
+          </p>
+          <div className="grid grid-cols-2 gap-2">
+            {FACILITY_OPTIONS.map((facility) => (
+              <label
+                key={facility}
+                className="flex items-center gap-2 px-3 py-2 rounded-lg border border-input bg-card text-sm cursor-pointer"
+              >
+                <input
+                  type="checkbox"
+                  checked={facilities.includes(facility)}
+                  onChange={() => toggleFacility(facility)}
+                  className="accent-accent"
+                />
+                {facility}
+              </label>
+            ))}
+          </div>
+          <input type="hidden" name="facilities" value={facilities.join(",")} />
+
           {state.error && (
             <p className="text-sm text-destructive">{state.error}</p>
           )}

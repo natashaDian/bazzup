@@ -113,10 +113,14 @@ export async function getBazaarCities(): Promise<string[]> {
 }
 
 export async function getRecommendedBazaars(
-  businessType: string | null, targetMarket: string | null,
+  businessType: string | null,
+  targetMarket: string | null,
   limit?: number,
 ): Promise<(BazaarCard & { matchScore: number })[]> {
-  const baseWhere: Prisma.BazaarWhereInput = { status: "ACTIVE", eventStartDate: { gte: new Date() } };
+  const baseWhere: Prisma.BazaarWhereInput = {
+    status: "ACTIVE",
+    eventStartDate: { gte: new Date() },
+  };
 
   const bazaars = await prisma.bazaar.findMany({
     where: baseWhere,
@@ -130,7 +134,9 @@ export async function getRecommendedBazaars(
           categoryWanted: true,
           _count: {
             select: {
-              applications: { where: { status: { in: OCCUPYING_APPLICATION_STATUSES } } },
+              applications: {
+                where: { status: { in: OCCUPYING_APPLICATION_STATUSES } },
+              },
             },
           },
           // Needed by calculateMatchScore():
@@ -160,7 +166,9 @@ export async function getRecommendedBazaars(
 
 // Omit `limit` to get every upcoming bazaar (used by the "See all" pages) -
 // the home page passes an explicit limit for its teaser cards.
-export async function getUpcomingBazaars(limit?: number): Promise<BazaarCard[]> {
+export async function getUpcomingBazaars(
+  limit?: number,
+): Promise<BazaarCard[]> {
   const now = new Date();
   const in30Days = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
 
@@ -355,6 +363,7 @@ export type BazaarDetail = {
   eventEndDate: Date;
   status: BazaarStatus;
   images: string[];
+  facilities: string[];
   organizerName: string;
   organizerContact: BazaarOrganizerContact;
   areas: BazaarAreaDetail[];
@@ -372,6 +381,12 @@ function toBazaarDetail(bazaar: BazaarWithDetailData): BazaarDetail {
     eventEndDate: bazaar.eventEndDate,
     status: bazaar.status,
     images: bazaar.images.map((image) => image.url),
+    facilities: bazaar.facilities
+      ? bazaar.facilities
+          .split(",")
+          .map((f) => f.trim())
+          .filter(Boolean)
+      : [],
     organizerName: bazaar.organizer.businessName ?? bazaar.organizer.name,
     organizerContact: {
       businessDesc: bazaar.organizer.businessDesc,

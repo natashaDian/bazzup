@@ -12,6 +12,7 @@ export const createBazaarSchema = z
     longitude: z.coerce.number(),
     eventStartDate: z.string().min(1, "Start date is required"),
     eventEndDate: z.string().min(1, "End date is required"),
+    facilities: z.string().optional(),
   })
   .refine(
     (data) => new Date(data.eventEndDate) >= new Date(data.eventStartDate),
