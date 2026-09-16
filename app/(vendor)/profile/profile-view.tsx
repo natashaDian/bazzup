@@ -29,6 +29,8 @@ function initials(name: string) {
 }
 
 const uploadInitialState: UploadBusinessPhotoState = {};
+const MAX_BUSINESS_LOGO_SIZE = 1 * 1024 * 1024;
+const ALLOWED_PHOTO_TYPES = ["image/png", "image/jpeg", "image/webp"];
 
 export function ProfileView({ user }: { user: User }) {
   const [mode, setMode] = useState<"view" | "edit">("view");
@@ -39,9 +41,26 @@ export function ProfileView({ user }: { user: User }) {
   const displayUser = { ...user, profileImageUrl: photoUrl };
 
   function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
+    const input = e.target;
+    const file = input.files?.[0];
     if (!file) return;
 
+    // Validated here (before any preview/upload) so an oversized file never
+    // reaches the server action - Next's server actions silently reject
+    // request bodies over its own default limit with an uncaught error,
+    // which never reached our own "file too large" message.
+    if (!ALLOWED_PHOTO_TYPES.includes(file.type)) {
+      setUploadState({ error: "Format file harus PNG, JPG, atau WEBP." });
+      input.value = "";
+      return;
+    }
+    if (file.size > MAX_BUSINESS_LOGO_SIZE) {
+      setUploadState({ error: "Ukuran logo maksimal 1MB." });
+      input.value = "";
+      return;
+    }
+
+    setUploadState(uploadInitialState);
     setPhotoUrl(URL.createObjectURL(file));
 
     const fd = new FormData();

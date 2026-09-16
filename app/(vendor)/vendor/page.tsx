@@ -18,8 +18,8 @@ export default async function VendorHomePage() {
 
   const [cities, recommended, upcoming] = await Promise.all([
     getBazaarCities(),
-    getRecommendedBazaars(user.businessType, user.targetMarket),
-    getUpcomingBazaars(),
+    getRecommendedBazaars(user.businessType, user.targetMarket, 4),
+    getUpcomingBazaars(4),
   ]);
 
   return (
