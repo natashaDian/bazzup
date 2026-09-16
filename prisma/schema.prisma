@@ -21,6 +21,7 @@ model User {
   businessDesc     String?
   isVerifiedVendor Boolean  @default(false)
   profileImageUrl  String?
+  coverImageUrl    String?
   instagram        String?
   whatsapp         String?
   tiktok           String?
