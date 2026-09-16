@@ -350,10 +350,14 @@ export function OrganizerDashboardClient({
             {attentionItems.length > 0 ? (
               attentionItems.map((item, i) => {
                 const Icon = ATTENTION_ICON[item.type];
+                const href =
+                  item.type === "pending"
+                    ? `/organizer/applications?bazaarId=${item.bazaarId}`
+                    : `/organizer/bazaars/${item.bazaarId}`;
                 return (
                   <Link
                     key={i}
-                    href={`/organizer/bazaars/${item.bazaarId}`}
+                    href={href}
                     className={`group flex items-center justify-between px-4 py-3 transition-colors hover:bg-secondary/10 ${
                       i < attentionItems.length - 1
                         ? "border-b border-secondary/10"
