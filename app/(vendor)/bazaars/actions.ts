@@ -11,6 +11,7 @@ import {
   ALREADY_APPLIED_MESSAGE,
   SLOT_SOLD_OUT_MESSAGE,
 } from "@/lib/application-messages";
+import { createNotification } from "@/lib/notifications";
 
 export type ApplyToAreaState = {
   error?: string;
@@ -23,7 +24,7 @@ function calculateMatchScore(params: {
   vendorTargetMarket: string | null;
   areaVisitorProfile: string | null;
 }): number {
-  let score = 20; // baseline for every applicant
+  let score = 20;
 
   if (
     params.vendorCategory &&
@@ -61,6 +62,7 @@ export async function applyToAreaAction(
       totalSlot: true,
       categoryWanted: true,
       visitorProfile: true,
+      bazaar: { select: { title: true, organizerId: true } },
       _count: {
         select: {
           applications: {
@@ -98,7 +100,7 @@ export async function applyToAreaAction(
     areaVisitorProfile: area.visitorProfile,
   });
 
-  await prisma.application.create({
+  const application = await prisma.application.create({
     data: {
       areaId,
       vendorId: user.id,
@@ -106,6 +108,13 @@ export async function applyToAreaAction(
       status: "PENDING",
       matchScore,
     },
+  });
+
+  const vendorName = user.businessName || user.name;
+  await createNotification({
+    userId: area.bazaar.organizerId,
+    message: `New application from ${vendorName} for ${area.bazaar.title}`,
+    linkUrl: `/organizer/applications/${application.id}`,
   });
 
   revalidatePath(`/bazaars/${bazaarId}`);
