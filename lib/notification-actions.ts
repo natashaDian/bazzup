@@ -36,3 +36,23 @@ export async function markAllNotificationsReadAction() {
   revalidatePath("/organizer");
   return {};
 }
+
+export async function deleteNotificationAction(notificationId: string) {
+  const user = await requireOrganizer();
+
+  const notification = await prisma.notification.findUnique({
+    where: { id: notificationId },
+    select: { userId: true },
+  });
+
+  if (!notification || notification.userId !== user.id) {
+    return { error: "Notification not found." };
+  }
+
+  await prisma.notification.delete({
+    where: { id: notificationId },
+  });
+
+  revalidatePath("/organizer");
+  return {};
+}
