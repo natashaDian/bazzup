@@ -3,6 +3,7 @@ import { requireOrganizer } from "@/lib/auth";
 import { OrganizerNav } from "@/components/organizer-nav";
 import { OrganizerTopbar } from "@/components/organizer-topbar";
 import { SidebarProvider } from "@/components/organizer-sidebar-context";
+import { Footer } from "@/components/footer";
 
 export default async function OrganizerLayout({
   children,
@@ -12,7 +13,7 @@ export default async function OrganizerLayout({
   // Enforces the organizer-only route guard; the user record itself is
   // fetched again by OrganizerTopbar and by each page (cached per request
   // via React's `cache()` in lib/auth.ts, so this costs nothing extra).
-  await requireOrganizer();
+  const user = await requireOrganizer();
 
   return (
     <SidebarProvider>
@@ -23,6 +24,7 @@ export default async function OrganizerLayout({
             lg breakpoint) sits over its empty left side. */}
         <OrganizerTopbar />
         {children}
+        <Footer role={user.role} />
       </div>
     </SidebarProvider>
   );
