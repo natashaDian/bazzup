@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import {
   Calendar,
@@ -8,12 +11,13 @@ import {
   Send,
   Users,
   ChartBar,
-  Star,
 } from "lucide-react";
 import type { OrganizerBazaarCardData } from "@/lib/bazaars";
 import { formatDateDisplay } from "@/lib/date";
+import { BazaarSummaryModal } from "@/components/bazaar-summary-modal";
+import { BazaarVendorsModal } from "@/components/bazaar-vendors-modal";
 
-const STATUS_CONFIG: Record<
+const STATUS_CONFIG: Record <
   string,
   { label: string; textClass: string; barClass: string }
 > = {
@@ -130,6 +134,9 @@ export function OrganizerBazaarCard({
 }
 
 function ActionButtons({ bazaar }: { bazaar: OrganizerBazaarCardData }) {
+  const [showSummary, setShowSummary] = useState(false);
+  const [showVendors, setShowVendors] = useState(false);
+
   const secondaryClass =
     "flex-1 flex items-center justify-center gap-1.5 bg-secondary/15 text-primary text-xs py-2.5 rounded-lg transition-colors hover:bg-secondary/25";
   const primaryClass =
@@ -165,14 +172,31 @@ function ActionButtons({ bazaar }: { bazaar: OrganizerBazaarCardData }) {
 
   if (bazaar.status === "COMPLETED") {
     return (
-      <div className="flex gap-2.5">
-        <Link href={detailHref} className={secondaryClass}>
-          <ChartBar className="size-3.5" /> View summary
-        </Link>
-        <Link href={detailHref} className={primaryClass}>
-          <Star className="size-3.5" /> Rate vendors
-        </Link>
-      </div>
+      <>
+        <div className="flex gap-2.5">
+          <button onClick={() => setShowSummary(true)} className={secondaryClass}>
+            <ChartBar className="size-3.5" /> View summary
+          </button>
+          <button onClick={() => setShowVendors(true)} className={primaryClass}>
+            <Users className="size-3.5" /> View vendors
+          </button>
+        </div>
+
+        {showSummary && (
+          <BazaarSummaryModal
+            bazaarTitle={bazaar.title}
+            bazaarId={bazaar.id}
+            onClose={() => setShowSummary(false)}
+          />
+        )}
+        {showVendors && (
+          <BazaarVendorsModal
+            bazaarTitle={bazaar.title}
+            bazaarId={bazaar.id}
+            onClose={() => setShowVendors(false)}
+          />
+        )}
+      </>
     );
   }
 
