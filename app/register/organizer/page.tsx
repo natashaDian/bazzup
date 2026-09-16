@@ -83,16 +83,6 @@ export default function OrganizerRegisterPage() {
               <RegisterForm role="ORGANIZER" />
             </div>
 
-            {/* Login Link */}
-            <p className="mt-7 text-center text-sm text-[#6B7280]">
-              Already have an account?{" "}
-              <Link
-                href="/login"
-                className="font-medium text-[#7A5CA8] transition-colors duration-200 hover:text-[#3B1F4A] hover:underline"
-              >
-                Log in
-              </Link>
-            </p>
           </div>
         </section>
       </div>

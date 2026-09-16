@@ -32,7 +32,7 @@ export default function VendorRegisterPage() {
         {/* Right Side */}
         <section className="flex w-full flex-col bg-white px-8 py-12 md:w-[58%] md:px-14 lg:px-16">
 
-          <div className="flex justify-end">
+          {/* <div className="flex justify-end">
             <p className="text-sm font-normal text-[#6B7280]">
               Already have an account?{" "}
               <a
@@ -48,7 +48,7 @@ export default function VendorRegisterPage() {
                 Log in
               </a>
             </p>
-          </div>
+          </div> */}
 
           <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center">
 

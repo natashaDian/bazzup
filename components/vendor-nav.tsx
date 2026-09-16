@@ -59,9 +59,12 @@ export function Nav({ user }: { user: User }) {
     },
   ];
 
-  const activeHref = navItems.find((item) =>
-    isNavItemActive(pathname, item.href),
-  )?.href;
+  // /allbazaar/* ("See All" destinations reached from the Home page's
+  // Recommended/Upcoming sections) should keep "Home" highlighted rather
+  // than showing no active item.
+  const activeHref = pathname.startsWith("/allbazaar")
+    ? "/vendor"
+    : navItems.find((item) => isNavItemActive(pathname, item.href))?.href;
 
   useLayoutEffect(() => {
     const activeEl = activeHref ? itemRefs.current.get(activeHref) : undefined;
@@ -137,7 +140,7 @@ export function Nav({ user }: { user: User }) {
           )}
 
           {navItems.map((item) => {
-            const active = isNavItemActive(pathname, item.href);
+            const active = item.href === activeHref;
 
             return (
               <Link

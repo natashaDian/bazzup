@@ -55,34 +55,34 @@ export default async function ApplicationStatusPage({
     : allRows;
 
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-8">
-      <div className="flex flex-col gap-1">
-        <h1 className="text-3xl font-bold">Application Status</h1>
-        <p className="text-muted-foreground">
+    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-10 px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
+      <div className="flex flex-col gap-2">
+        <h1 className="text-3xl font-bold text-[#3B1F4A] sm:text-4xl">Application Status</h1>
+        <p className="text-[#6B7280]">
           Track the status of the bazaars you&apos;ve applied to.
         </p>
       </div>
 
-      <ApplicationsFilterBar
-        statuses={APPLICATION_STATUSES}
-        initialStatus={status}
-        initialSearch={rawSearch}
-        initialSort={rawSort}
-      />
+      <div className="flex flex-col gap-5">
+        <ApplicationsFilterBar
+          statuses={APPLICATION_STATUSES}
+          initialStatus={status}
+          initialSearch={rawSearch}
+          initialSort={rawSort}
+        />
 
-      <p className="text-sm text-muted-foreground">
-        {rows.length} applications
-      </p>
+        <p className="text-sm text-[#6B7280]">{rows.length} applications</p>
+      </div>
 
       {rows.length === 0 ? (
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-[#6B7280]">
           No applications match these filters.
         </p>
       ) : (
         <Accordion
           key={`${status ?? ""}|${rawSearch ?? ""}|${rawSort}`}
           defaultValue={[rows[0].id]}
-          className="rounded-xl border bg-card px-4"
+          className="gap-4"
         >
           {rows.map((row) => (
             <ApplicationStatusCard key={row.id} row={row} />

@@ -12,7 +12,8 @@ import {
 } from "@/lib/bazaars";
 
 import { BazaarSearchDialog } from "@/components/bazaar-search-dialog";
-import { BazaarCard } from "@/components/bazaar-card";
+import { UpcomingBazaarCard } from "@/components/upcoming-bazaar-card";
+import { RecommendedBazaarJumbotron } from "@/components/recommended-bazaar-jumbotron";
 import { DialogTrigger } from "@/components/ui/dialog";
 import { IncompleteProfileDialog } from "@/components/incomplete-profile-dialog";
 import { isVendorProfileComplete } from "@/lib/vendor-profile";
@@ -153,7 +154,7 @@ export default async function VendorHomePage() {
         {/* =====================================================
             RECOMMENDED
         ====================================================== */}
-        <section className="home-section mt-16 flex flex-col">
+        <section className="home-section mt-24 flex flex-col lg:mt-28">
           <div className="flex items-end justify-between gap-4">
             <div>
               <h2 className="text-2xl font-bold tracking-tight text-[#3B1F4A] sm:text-[26px]">
@@ -166,7 +167,7 @@ export default async function VendorHomePage() {
             </div>
 
             <Link
-              href="/explore"
+              href="/allbazaar/recommended"
               className="
                 group
                 flex shrink-0 items-center gap-1.5
@@ -199,44 +200,7 @@ export default async function VendorHomePage() {
                 </p>
               </div>
             ) : (
-              <div
-                className="
-                  grid grid-cols-1 gap-5
-                  lg:grid-cols-2
-                  xl:grid-cols-3
-                "
-              >
-                {recommended.map((bazaar) => (
-                  <Link
-                    key={bazaar.id}
-                    href={`/bazaars/${bazaar.id}`}
-                    className="
-                      group
-                      block rounded-2xl
-                      focus-visible:outline-none
-                      focus-visible:ring-2
-                      focus-visible:ring-[#7A5CA8]
-                      focus-visible:ring-offset-2
-                    "
-                  >
-                    <div
-                      className="
-                        overflow-hidden
-                        rounded-2xl
-                        border border-[#EEE8F5]
-                        bg-white
-                        shadow-[0_4px_18px_rgba(122,92,168,0.05)]
-                        transition-all duration-300 ease-out
-                        group-hover:-translate-y-1
-                        group-hover:border-[#DCC8EE]
-                        group-hover:shadow-[0_12px_30px_rgba(122,92,168,0.10)]
-                      "
-                    >
-                      <BazaarCard bazaar={bazaar} />
-                    </div>
-                  </Link>
-                ))}
-              </div>
+              <RecommendedBazaarJumbotron bazaars={recommended} />
             )}
           </div>
         </section>
@@ -333,7 +297,7 @@ export default async function VendorHomePage() {
             </div>
 
             <Link
-              href="/explore"
+              href="/allbazaar/upcoming"
               className="
                 group
                 flex shrink-0 items-center gap-1.5
@@ -400,7 +364,7 @@ export default async function VendorHomePage() {
                         group-hover:shadow-[0_12px_30px_rgba(122,92,168,0.10)]
                       "
                     >
-                      <BazaarCard bazaar={bazaar} />
+                      <UpcomingBazaarCard bazaar={bazaar} />
                     </div>
                   </Link>
                 ))}

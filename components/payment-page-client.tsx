@@ -3,10 +3,20 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { Check, ArrowLeft } from "lucide-react";
 import { simulatePaymentAction, type PaymentPageData } from "@/lib/payment";
+import gopayLogo from "@/components/assets/logo-ewallet-gopay.png";
+import ovoLogo from "@/components/assets/logo-ewallet-ovo.png";
+import danaLogo from "@/components/assets/logo-ewallet-dana.png";
 
 const EWALLET_PROVIDERS = ["GoPay", "OVO", "DANA"];
+
+const EWALLET_LOGOS: Record<string, typeof gopayLogo> = {
+  GoPay: gopayLogo,
+  OVO: ovoLogo,
+  DANA: danaLogo,
+};
 
 function formatRupiah(amount: number) {
   return new Intl.NumberFormat("id-ID", {
@@ -188,7 +198,13 @@ export function PaymentPageClient({
                           : "border border-input text-muted-foreground"
                       }`}
                     >
-                      {p}
+                      <Image
+                        src={EWALLET_LOGOS[p]}
+                        alt={p}
+                        width={64}
+                        height={16}
+                        className="h-4 w-auto object-contain"
+                      />
                     </button>
                   ))}
                 </div>

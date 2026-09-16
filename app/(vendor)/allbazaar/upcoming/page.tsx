@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { requireVendor } from "@/lib/auth";
 import { getUpcomingBazaars} from "@/lib/bazaars";
-import { BazaarCard } from "@/components/bazaar-card";
+import { UpcomingBazaarCard } from "@/components/upcoming-bazaar-card";
 
 export const metadata: Metadata = {
   title: "allupcoming - BazzUp",
@@ -16,7 +16,7 @@ const [upcoming] = await Promise.all([
     getUpcomingBazaars()
   ]);
 return(
-    <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-10 px-4 py-10 bg-white">
+    <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-10 px-6 py-10 md:px-10 md:py-12 lg:px-16 bg-white">
         <section className="flex flex-col gap-4">
             <h1 className="text-3xl font-bold sm:text-4xl">Upcoming Bazaars</h1>
             <p className="text-base text-muted-foreground">
@@ -29,7 +29,7 @@ return(
                 {upcoming.map((bazaar) => (
                 <Link key={bazaar.id} href={`/bazaars/${bazaar.id}`}
                 className="transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg">
-                    <BazaarCard bazaar={bazaar} />
+                    <UpcomingBazaarCard bazaar={bazaar} />
                 </Link>
                 ))}
             </div>
