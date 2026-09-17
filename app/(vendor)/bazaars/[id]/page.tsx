@@ -141,7 +141,7 @@ export default async function BazaarDetailPage({ params }: PageParams) {
                 <p className="text-sm font-semibold text-[#3B1F4A]">{bazaar.organizerName}</p>
               </div>
             </div>
-            <OrganizerInfoDialog name={bazaar.organizerName} contact={bazaar.organizerContact} />
+            <OrganizerInfoDialog name={bazaar.organizerName} contact={bazaar.organizerContact} rating={null} />
           </div>
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-[1.4fr_1fr]">

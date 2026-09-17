@@ -1,5 +1,23 @@
 import "server-only";
+import type { User } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+
+const REQUIRED_ORGANIZER_FIELDS = [
+  "businessName",
+  "businessDesc",
+  "phone",
+  "whatsapp",
+  "profileImageUrl",
+] as const satisfies readonly (keyof User)[];
+
+// Mirrors isVendorProfileComplete in lib/vendor-profile.ts - same required-
+// field bar, just for the organizer side of the User model.
+export function isOrganizerProfileComplete(user: User): boolean {
+  return REQUIRED_ORGANIZER_FIELDS.every((field) => {
+    const value = user[field];
+    return typeof value === "string" && value.trim().length > 0;
+  });
+}
 
 export type OrganizerProfileData = {
   id: string;

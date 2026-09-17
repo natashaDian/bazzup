@@ -38,7 +38,7 @@ export async function markAllNotificationsReadAction() {
 }
 
 export async function deleteNotificationAction(notificationId: string) {
-  const user = await requireOrganizer();
+  const user = await requireUser();
 
   const notification = await prisma.notification.findUnique({
     where: { id: notificationId },
@@ -53,6 +53,6 @@ export async function deleteNotificationAction(notificationId: string) {
     where: { id: notificationId },
   });
 
-  revalidatePath("/organizer");
+  revalidatePath(user.role === "VENDOR" ? "/vendor" : "/organizer");
   return {};
 }

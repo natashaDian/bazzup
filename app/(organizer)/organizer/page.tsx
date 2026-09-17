@@ -12,8 +12,10 @@ import {
   getOrganizerBazaarOptions,
 } from "@/lib/dashboard";
 import { getGreeting } from "@/lib/greeting";
+import { isOrganizerProfileComplete } from "@/lib/organizer-profile";
 import { OrganizerDashboardClient } from "@/components/organizer-dashboard-client";
 import { CreateFirstBazaarPopup } from "@/components/create-first-bazaar-popup";
+import { IncompleteProfileDialog } from "@/components/incomplete-profile-dialog";
 
 export const metadata: Metadata = {
   title: "Dashboard - BazzUp",
@@ -54,12 +56,27 @@ export default async function OrganizerDashboardPage({
 
   const greeting = getGreeting();
   const displayName = user.businessName || user.name;
+  const profileComplete = isOrganizerProfileComplete(user);
 
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 sm:py-10 lg:px-10 lg:py-12">
+      <IncompleteProfileDialog
+        defaultOpen={!profileComplete}
+        title="Complete Your Organizer Profile First"
+        description={
+          <>
+            Vendors need your business details to decide whether to apply.
+            <br />
+            Please fill in your profile before creating a bazaar.
+          </>
+        }
+        profileHref="/organizer/profile"
+      />
+      {/* Only offered once the profile is done, so the two popups never
+          stack - see IncompleteProfileDialog above for the first step. */}
       <CreateFirstBazaarPopup
         hasBazaars={bazaarOptions.length > 0}
-        justLoggedIn={justLoggedIn}
+        justLoggedIn={justLoggedIn && profileComplete}
       />
       <OrganizerDashboardClient
         greeting={greeting}
