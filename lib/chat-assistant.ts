@@ -76,7 +76,7 @@ export async function searchBazaarsForChat(params: {
     },
   });
 
-  return bazaars
+  const results = bazaars
     .filter((b) => b.areas.length > 0)
     .map((bazaar) => {
       const totalSlot = bazaar.areas.reduce((sum, a) => sum + a.totalSlot, 0);
@@ -100,4 +100,8 @@ export async function searchBazaarsForChat(params: {
         minPricePerSlot: prices.length > 0 ? Math.min(...prices) : null,
       };
     });
+
+  console.log("hasil query:", results.length, JSON.stringify(results.slice(0, 2)));
+
+  return results;
 }

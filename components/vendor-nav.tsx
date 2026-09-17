@@ -96,7 +96,7 @@ export function Nav({ user }: { user: User }) {
   }, []);
 
   return (
-  <header className="border-b border-[#E5E0EB] bg-card">
+  <header className="sticky top-0 z-20 border-b border-[#E5E0EB] bg-card">
     <div className="mx-auto grid min-h-[72px] grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 px-3 sm:min-h-[88px] sm:px-6 md:px-10 lg:grid-cols-3 lg:px-16">
 
       {/* Left: Logo + Tagline */}
@@ -151,8 +151,8 @@ export function Nav({ user }: { user: User }) {
                 aria-current={active ? "page" : undefined}
                 className={
                   active
-                    ? `relative z-10 whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium text-white transition-colors duration-300 sm:px-5 sm:py-2 ${responsiveClass}`
-                    : `relative z-10 whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium text-[#3B1F4A] transition-colors duration-300 hover:bg-[#F3EAFB] hover:text-[#7A5CA8] sm:px-5 sm:py-2 ${responsiveClass}`
+                    ? `relative z-10 whitespace-nowrap rounded-full px-3 py-1.5 text-[10px] font-medium text-white transition-colors duration-300 sm:px-5 sm:py-2 sm:text-xs ${responsiveClass}`
+                    : `relative z-10 whitespace-nowrap rounded-full px-3 py-1.5 text-[10px] font-medium text-[#3B1F4A] transition-colors duration-300 hover:bg-[#F3EAFB] hover:text-[#7A5CA8] sm:px-5 sm:py-2 sm:text-xs ${responsiveClass}`
                 }
               >
                 {item.label}

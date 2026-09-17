@@ -9,9 +9,12 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 const SEARCH_TOOL = {
   functionDeclarations: [
     {
-      name: "search_bazaar",
+      name: "search_bazaars",
       description:
-        "Search for active bazaars that vendors can apply to, filtered by category, city, and max price per slot.",
+        "Cari bazaar aktif di database BazzUp yang bisa dilamar vendor. " +
+        "WAJIB dipanggil setiap kali user menanyakan bazaar, event, tempat " +
+        "berjualan, harga slot, atau lokasi — meskipun pertanyaannya umum. " +
+        "Jangan menjawab soal bazaar dari pengetahuan sendiri.",
       parameters: {
         type: Type.OBJECT,
         properties: {
@@ -47,9 +50,12 @@ export async function POST(req: Request) {
   const user = await requireVendor();
   const { messages } = await req.json();
 
-  const systemInstruction = `You are a helpful bazaar-finding assistant for BazzUp, a marketplace connecting bazaar organizers with vendors.
+const systemInstruction = `You are a helpful bazaar-finding assistant for BazzUp, a marketplace connecting bazaar organizers with vendors.
 The vendor you're talking to sells: ${user.businessType || "unknown category"}.
 Help them find bazaars that match what they're looking for using the search_bazaars tool.
+Call search_bazaars as soon as the vendor mentions anything about what they sell, their city, or budget — don't ask clarifying questions first, just search with whatever you have.
+You have NO built-in knowledge about any bazaar. Every piece of bazaar information must come from the search_bazaars tool.
+If the vendor asks anything about bazaars, events, slots, prices, or locations, you MUST call search_bazaars first before answering — even if the question is vague or general. Call it with no arguments if you have nothing specific to filter on.
 Always respond in Indonesian, in a friendly and concise way.
 Do NOT use markdown formatting like asterisks or bullet points, just write in plain natural sentences.
 When you find matching bazaars, briefly explain why each one fits before the app shows the details.
@@ -62,20 +68,37 @@ Keep your text responses short (1-3 sentences), the actual bazaar cards will be 
     }),
   );
 
-  try {
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents,
-      config: {
-        systemInstruction,
-        tools: [SEARCH_TOOL],
-      },
-    });
+  const MAX_TOOL_ROUNDS = 3;
 
-    const functionCall = response.functionCalls?.[0];
+  try {
+    let turnContents = contents;
     let searchResults = null;
 
-    if (functionCall && functionCall.name === "search_bazaars") {
+    for (let round = 0; round <= MAX_TOOL_ROUNDS; round++) {
+      const response = await ai.models.generateContent({
+        model: "gemini-flash-lite-latest",
+        contents: turnContents,
+        config: {
+          systemInstruction,
+          tools: [SEARCH_TOOL],
+        },
+      });
+
+      console.log("functionCalls:", JSON.stringify(response.functionCalls));
+
+      const functionCall = response.functionCalls?.[0];
+
+      if (!functionCall || functionCall.name !== "search_bazaars") {
+        return NextResponse.json({
+          text:
+            response.text ||
+            (searchResults
+              ? "Maaf, belum nemu bazaar yang cocok. Coba kategori, kota, atau budget lain ya."
+              : ""),
+          bazaars: searchResults,
+        });
+      }
+
       const args = functionCall.args as {
         category?: string;
         city?: string;
@@ -83,9 +106,9 @@ Keep your text responses short (1-3 sentences), the actual bazaar cards will be 
       };
       searchResults = await searchBazaarsForChat(args);
 
-      const followUpContents: Content[] = [
-        ...contents,
-        { role: "model", parts: [{ functionCall }] },
+      turnContents = [
+        ...turnContents,
+        response.candidates![0].content!,
         {
           role: "user",
           parts: [
@@ -98,22 +121,11 @@ Keep your text responses short (1-3 sentences), the actual bazaar cards will be 
           ],
         },
       ];
-
-      const followUp = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
-        contents: followUpContents,
-        config: { systemInstruction, tools: [SEARCH_TOOL] },
-      });
-
-      return NextResponse.json({
-        text: followUp.text || "",
-        bazaars: searchResults,
-      });
     }
 
     return NextResponse.json({
-      text: response.text || "",
-      bazaars: null,
+      text: "Maaf, belum nemu bazaar yang cocok. Coba kategori, kota, atau budget lain ya.",
+      bazaars: searchResults,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "";
