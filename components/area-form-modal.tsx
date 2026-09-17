@@ -3,16 +3,48 @@
 import { useState, useActionState, useEffect } from "react";
 import { X, ImagePlus } from "lucide-react";
 import { BUSINESS_CATEGORIES } from "@/lib/constants";
+import { useFormDraft } from "@/hooks/use-form-draft";
 import { createAreaAction, type AreaActionState } from "@/lib/areas";
 
 const initialState: AreaActionState = {};
 
-const emptyForm = {
+const VISITOR_PROFILES = [
+  "Pelajar & Mahasiswa",
+  "Pekerja Kantoran",
+  "Keluarga & Anak-anak",
+  "Wisatawan",
+  "Semua Kalangan",
+];
+
+function formatThousands(value: string): string {
+  const digitsOnly = value.replace(/\D/g, "");
+  return digitsOnly.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+function parseThousands(value: string): string {
+  return value.replace(/\D/g, "");
+}
+
+type AreaDraft = {
+  name: string;
+  description: string;
+  totalSlot: string;
+  pricePerSlot: string;
+  categoryWanted: string[];
+  categoryWantedOther: string;
+  estimatedTraffic: string;
+  visitorProfile: string;
+  peakHoursStart: string;
+  peakHoursEnd: string;
+  hasElectricity: boolean;
+};
+
+const emptyForm: AreaDraft = {
   name: "",
   description: "",
   totalSlot: "",
   pricePerSlot: "",
-  categoryWanted: [] as string[],
+  categoryWanted: [],
   categoryWantedOther: "",
   estimatedTraffic: "",
   visitorProfile: "",
@@ -34,15 +66,23 @@ export function AreaFormModal({
     initialState,
   );
   const [previews, setPreviews] = useState<string[]>([]);
-  const [form, setForm] = useState(emptyForm);
+  const {
+    data: form,
+    setData: setForm,
+    clearDraft,
+    loaded: draftLoaded,
+  } = useFormDraft<AreaDraft>("draft-area", emptyForm);
 
   useEffect(() => {
-    if (state.success) onClose();
+    if (state.success) {
+      clearDraft();
+      onClose();
+    }
   }, [state.success]);
 
-  function updateField<K extends keyof typeof emptyForm>(
+  function updateField<K extends keyof AreaDraft>(
     key: K,
-    value: (typeof emptyForm)[K],
+    value: AreaDraft[K],
   ) {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
@@ -68,6 +108,18 @@ export function AreaFormModal({
     setPreviews(urls);
   }
 
+  const hasDraftContent =
+    draftLoaded &&
+    (form.name.trim() !== "" ||
+      form.description.trim() !== "" ||
+      form.totalSlot !== "" ||
+      form.pricePerSlot !== "" ||
+      form.categoryWanted.length > 0 ||
+      form.estimatedTraffic !== "" ||
+      form.visitorProfile !== "" ||
+      form.peakHoursStart !== "" ||
+      form.peakHoursEnd !== "");
+
   return (
     <div className="fixed inset-0 bg-black/45 flex items-center justify-center z-50 p-4">
       <div className="bg-card rounded-2xl p-5 w-full max-w-md max-h-[90vh] overflow-y-auto relative">
@@ -78,7 +130,7 @@ export function AreaFormModal({
           <X className="size-4" />
         </button>
 
-        <p className="text-base font-medium mb-4">Add area</p>
+        <p className="text-base font-medium mb-4">Tambah Area</p>
 
         {state.error && (
           <p className="text-xs text-destructive mb-3">{state.error}</p>
@@ -87,13 +139,12 @@ export function AreaFormModal({
         <form action={formAction} className="space-y-3">
           <div>
             <label className="text-xs text-muted-foreground block mb-1">
-              Photos
+              Foto
             </label>
             <label className="block h-24 border border-dashed border-secondary rounded-lg flex items-center justify-center gap-2 bg-secondary/10 cursor-pointer text-accent text-xs overflow-x-auto px-2">
               {previews.length > 0 ? (
                 <div className="flex gap-2">
                   {previews.map((url, i) => (
-                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       key={i}
                       src={url}
@@ -105,7 +156,7 @@ export function AreaFormModal({
               ) : (
                 <>
                   <ImagePlus className="size-4" />
-                  Upload photos
+                  Unggah Foto
                 </>
               )}
               <input
@@ -121,13 +172,13 @@ export function AreaFormModal({
 
           <div>
             <label className="text-xs text-muted-foreground block mb-1">
-              Area name *
+              Nama Area *
             </label>
             <input
               name="name"
               value={form.name}
               onChange={(e) => updateField("name", e.target.value)}
-              placeholder="e.g. Near main entrance"
+              placeholder="misalnya: dekat pintu masuk utama"
               className="w-full px-3 py-2 rounded-lg border border-input bg-card text-sm"
             />
             {state.fieldErrors?.name && (
@@ -139,7 +190,7 @@ export function AreaFormModal({
 
           <div>
             <label className="text-xs text-muted-foreground block mb-1">
-              Description
+              Deskripsi
             </label>
             <textarea
               name="description"
@@ -153,7 +204,7 @@ export function AreaFormModal({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-xs text-muted-foreground block mb-1">
-                Total slot *
+                Total Slot *
               </label>
               <input
                 name="totalSlot"
@@ -171,15 +222,21 @@ export function AreaFormModal({
             </div>
             <div>
               <label className="text-xs text-muted-foreground block mb-1">
-                Price per slot *
+                Harga per Slot *
               </label>
               <input
-                name="pricePerSlot"
-                type="number"
-                min={1}
-                value={form.pricePerSlot}
-                onChange={(e) => updateField("pricePerSlot", e.target.value)}
+                type="text"
+                inputMode="numeric"
+                value={formatThousands(form.pricePerSlot)}
+                onChange={(e) =>
+                  updateField("pricePerSlot", parseThousands(e.target.value))
+                }
                 className="w-full px-3 py-2 rounded-lg border border-input bg-card text-sm"
+              />
+              <input
+                type="hidden"
+                name="pricePerSlot"
+                value={form.pricePerSlot}
               />
               {state.fieldErrors?.pricePerSlot && (
                 <p className="text-xs text-destructive mt-1">
@@ -191,7 +248,7 @@ export function AreaFormModal({
 
           <div>
             <label className="text-xs text-muted-foreground block mb-1">
-              Category wanted *{" "}
+              Kategori yang Diinginkan *{" "}
               <span className="text-muted-foreground">
                 ({form.categoryWanted.length}/5)
               </span>
@@ -229,7 +286,7 @@ export function AreaFormModal({
                 onChange={(e) =>
                   updateField("categoryWantedOther", e.target.value)
                 }
-                placeholder="Specify custom category"
+                placeholder="Sebutkan kategori lainnya"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-card text-sm"
               />
             )}
@@ -247,12 +304,12 @@ export function AreaFormModal({
           </div>
 
           <p className="text-xs font-medium text-primary uppercase tracking-wide pt-1">
-            Match score details
+            Detail Skor Kecocokan
           </p>
 
           <div>
             <label className="text-xs text-muted-foreground block mb-1">
-              Estimated visitors per day *
+              Perkiraan Pengunjung per Hari *
             </label>
             <input
               name="estimatedTraffic"
@@ -272,15 +329,21 @@ export function AreaFormModal({
 
           <div>
             <label className="text-xs text-muted-foreground block mb-1">
-              Visitor profile *
+              Profil Pengunjung *
             </label>
-            <input
+            <select
               name="visitorProfile"
-              placeholder="e.g. families, students"
               value={form.visitorProfile}
               onChange={(e) => updateField("visitorProfile", e.target.value)}
               className="w-full px-3 py-2 rounded-lg border border-input bg-card text-sm"
-            />
+            >
+              <option value="">Pilih profil pengunjung</option>
+              {VISITOR_PROFILES.map((profile) => (
+                <option key={profile} value={profile}>
+                  {profile}
+                </option>
+              ))}
+            </select>
             {state.fieldErrors?.visitorProfile && (
               <p className="text-xs text-destructive mt-1">
                 {state.fieldErrors.visitorProfile}
@@ -290,7 +353,7 @@ export function AreaFormModal({
 
           <div>
             <label className="text-xs text-muted-foreground block mb-1">
-              Peak hours *
+              Jam Ramai *
             </label>
             <div className="grid grid-cols-2 gap-3">
               <div>
@@ -334,7 +397,7 @@ export function AreaFormModal({
               onChange={(e) => updateField("hasElectricity", e.target.checked)}
               className="size-4"
             />
-            Electricity available
+            Tersedia Listrik
           </label>
 
           <div className="flex gap-2 justify-end pt-3">
@@ -343,17 +406,23 @@ export function AreaFormModal({
               onClick={onClose}
               className="bg-secondary/15 text-muted-foreground px-4 py-2 rounded-lg text-sm"
             >
-              Cancel
+              Batal
             </button>
             <button
               type="submit"
               disabled={isPending}
               className="bg-accent text-accent-foreground px-4 py-2 rounded-lg text-sm"
             >
-              {isPending ? "Saving..." : "Save area"}
+              {isPending ? "Menyimpan..." : "Simpan Area"}
             </button>
           </div>
         </form>
+
+        {hasDraftContent && (
+          <p className="text-xs text-muted-foreground text-center mt-3">
+            Draft tersimpan otomatis di browser ini.
+          </p>
+        )}
       </div>
     </div>
   );

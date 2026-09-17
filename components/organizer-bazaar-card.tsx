@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import {
   Calendar,
@@ -8,32 +11,33 @@ import {
   Send,
   Users,
   ChartBar,
-  Star,
 } from "lucide-react";
 import type { OrganizerBazaarCardData } from "@/lib/bazaars";
 import { formatDateDisplay } from "@/lib/date";
+import { BazaarSummaryModal } from "@/components/bazaar-summary-modal";
+import { BazaarVendorsModal } from "@/components/bazaar-vendors-modal";
 
-const STATUS_CONFIG: Record<
+const STATUS_CONFIG: Record <
   string,
   { label: string; textClass: string; barClass: string }
 > = {
   DRAFT: {
-    label: "Draft",
+    label: "Draf",
     textClass: "text-gray-600",
     barClass: "bg-gray-300",
   },
   ACTIVE: {
-    label: "Active",
+    label: "Aktif",
     textClass: "text-[#3B6D11]",
     barClass: "bg-accent",
   },
   FULL: {
-    label: "Full",
+    label: "Penuh",
     textClass: "text-[#27500A]",
     barClass: "bg-[#639922]",
   },
   COMPLETED: {
-    label: "Completed",
+    label: "Selesai",
     textClass: "text-gray-500",
     barClass: "bg-gray-300",
   },
@@ -41,8 +45,10 @@ const STATUS_CONFIG: Record<
 
 export function OrganizerBazaarCard({
   bazaar,
+  autoOpenSummary = false,
 }: {
   bazaar: OrganizerBazaarCardData;
+  autoOpenSummary?: boolean;
 }) {
   const status = STATUS_CONFIG[bazaar.status] ?? STATUS_CONFIG.DRAFT;
   const filledSlot = bazaar.totalSlot - bazaar.slotsLeft;
@@ -52,10 +58,9 @@ export function OrganizerBazaarCard({
       : 0;
 
   return (
-    <div className="bg-card rounded-2xl overflow-hidden">
+    <div className="bg-card rounded-2xl overflow-hidden shadow-sm">
       <div className="relative h-32 bg-secondary/15 flex items-center justify-center">
         {bazaar.coverImageUrl && (
-          // eslint-disable-next-line @next/next/no-img-element
           <img
             src={bazaar.coverImageUrl}
             alt={bazaar.title}
@@ -68,7 +73,7 @@ export function OrganizerBazaarCard({
 
         <div className="absolute top-3 left-3 right-3 flex justify-between">
           <span className="text-xs px-2.5 py-1 rounded-full bg-card/90 text-muted-foreground">
-            {bazaar.categories[0] ?? "General"} · {bazaar.areaCount} areas
+            {bazaar.categories[0] ?? "Umum"} · {bazaar.areaCount} area
           </span>
           <span
             className={`text-xs px-2.5 py-1 rounded-full bg-card/90 ${status.textClass}`}
@@ -86,8 +91,8 @@ export function OrganizerBazaarCard({
         </p>
       </div>
 
-      <div className="p-4">
-        <div className="flex gap-3.5 text-xs text-muted-foreground mb-2.5">
+      <div className="p-5">
+        <div className="flex gap-4 text-xs text-muted-foreground mb-3">
           <span className="flex items-center gap-1">
             <Calendar className="size-3.5" />
             {formatDateDisplay(bazaar.eventStartDate)} -{" "}
@@ -100,51 +105,60 @@ export function OrganizerBazaarCard({
         </div>
 
         {bazaar.status === "DRAFT" ? (
-          <p className="text-xs text-muted-foreground mb-1.5">
-            Not published yet
+          <p className="text-xs text-muted-foreground mb-2">
+            Belum dipublikasikan
           </p>
         ) : (
-          <div className="flex items-center justify-between text-xs text-muted-foreground mb-1.5">
+          <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
             <span>
-              {filledSlot} of {bazaar.totalSlot} slots filled
+              {filledSlot} dari {bazaar.totalSlot} slot terisi
             </span>
             {bazaar.pendingApplicationsCount > 0 && (
-              <span className="text-accent font-medium">
-                {bazaar.pendingApplicationsCount} pending
+              <span className="text-[#7A5CA8] font-medium">
+                {bazaar.pendingApplicationsCount} menunggu
               </span>
             )}
           </div>
         )}
 
-        <div className="h-1.5 rounded-full bg-secondary/15 overflow-hidden mb-3.5">
+        <div className="h-1.5 rounded-full bg-secondary/15 overflow-hidden mb-4">
           <div
             className={`h-full ${status.barClass}`}
             style={{ width: `${percentFilled}%` }}
           />
         </div>
 
-        <ActionButtons bazaar={bazaar} />
+        <ActionButtons bazaar={bazaar} autoOpenSummary={autoOpenSummary} />
       </div>
     </div>
   );
 }
 
-function ActionButtons({ bazaar }: { bazaar: OrganizerBazaarCardData }) {
+function ActionButtons({
+  bazaar,
+  autoOpenSummary,
+}: {
+  bazaar: OrganizerBazaarCardData;
+  autoOpenSummary: boolean;
+}) {
+  const [showSummary, setShowSummary] = useState(autoOpenSummary);
+  const [showVendors, setShowVendors] = useState(false);
+
   const secondaryClass =
-    "flex-1 flex items-center justify-center gap-1.5 bg-secondary/15 text-accent text-xs py-2 rounded-lg";
+    "flex-1 flex items-center justify-center gap-1.5 bg-secondary/15 text-primary text-xs py-2.5 rounded-lg transition-colors hover:bg-secondary/25";
   const primaryClass =
-    "flex-1 flex items-center justify-center gap-1.5 bg-accent text-accent-foreground text-xs py-2 rounded-lg";
+    "flex-1 flex items-center justify-center gap-1.5 bg-accent text-white text-xs py-2.5 rounded-lg transition-colors hover:bg-[#a97bd1]";
 
   const detailHref = `/organizer/bazaars/${bazaar.id}`;
 
   if (bazaar.status === "DRAFT") {
     return (
-      <div className="flex gap-2">
+      <div className="flex gap-2.5">
         <Link href={detailHref} className={secondaryClass}>
-          <Eye className="size-3.5" /> Preview
+          <Eye className="size-3.5" /> Pratinjau
         </Link>
         <Link href={detailHref} className={primaryClass}>
-          <Send className="size-3.5" /> Publish
+          <Send className="size-3.5" /> Publikasikan
         </Link>
       </div>
     );
@@ -152,40 +166,71 @@ function ActionButtons({ bazaar }: { bazaar: OrganizerBazaarCardData }) {
 
   if (bazaar.status === "FULL") {
     return (
-      <div className="flex gap-2">
-        <Link href={detailHref} className={secondaryClass}>
-          <Users className="size-3.5" /> View vendors
-        </Link>
-        <Link href={detailHref} className={secondaryClass}>
-          <Settings className="size-3.5" /> Manage
-        </Link>
-      </div>
+      <>
+        <div className="flex gap-2.5">
+          <button onClick={() => setShowVendors(true)} className={secondaryClass}>
+            <Users className="size-3.5" /> Daftar vendor
+          </button>
+          <Link
+            href={`/organizer/applications?bazaarId=${bazaar.id}`}
+            className={primaryClass}
+          >
+            <Settings className="size-3.5" /> Kelola vendor
+          </Link>
+        </div>
+
+        {showVendors && (
+          <BazaarVendorsModal
+            bazaarTitle={bazaar.title}
+            bazaarId={bazaar.id}
+            onClose={() => setShowVendors(false)}
+          />
+        )}
+      </>
     );
   }
 
   if (bazaar.status === "COMPLETED") {
     return (
-      <div className="flex gap-2">
-        <Link href={detailHref} className={secondaryClass}>
-          <ChartBar className="size-3.5" /> View summary
-        </Link>
-        <Link href={detailHref} className={primaryClass}>
-          <Star className="size-3.5" /> Rate vendors
-        </Link>
-      </div>
+      <>
+        <div className="flex gap-2.5">
+          <button onClick={() => setShowSummary(true)} className={secondaryClass}>
+            <ChartBar className="size-3.5" /> Lihat ringkasan
+          </button>
+          <button onClick={() => setShowVendors(true)} className={primaryClass}>
+            <Users className="size-3.5" /> Lihat vendor
+          </button>
+        </div>
+
+        {showSummary && (
+          <BazaarSummaryModal
+            bazaarTitle={bazaar.title}
+            bazaarId={bazaar.id}
+            onClose={() => setShowSummary(false)}
+          />
+        )}
+        {showVendors && (
+          <BazaarVendorsModal
+            bazaarTitle={bazaar.title}
+            bazaarId={bazaar.id}
+            onClose={() => setShowVendors(false)}
+            showPaymentStatus={false}
+          />
+        )}
+      </>
     );
   }
 
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2.5">
       <Link
         href={`/organizer/applications?bazaarId=${bazaar.id}`}
         className={secondaryClass}
       >
-        <Inbox className="size-3.5" /> Applications
+        <Inbox className="size-3.5" /> Aplikasi
       </Link>
       <Link href={detailHref} className={secondaryClass}>
-        <Settings className="size-3.5" /> Manage
+        <Settings className="size-3.5" /> Kelola
       </Link>
     </div>
   );

@@ -1,6 +1,4 @@
 
-
-
 export type ScoreInput = {
     area:{
         categoryWanted: string|null;
@@ -26,7 +24,6 @@ export function calculateMatchScore({area, vendor}: ScoreInput): {
 }{
     const breakdown : ScoreBreakdown[] = [];
 
-    //perhitungan category - pertimbangan tertinggi (40)
     const categoryMatch = 
     !!vendor.businessType && area.categoryWanted === vendor.businessType;
     breakdown.push({

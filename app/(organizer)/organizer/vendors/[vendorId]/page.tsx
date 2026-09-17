@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowLeft,
-  Star,
   Package,
   Phone,
   AtSign,
@@ -12,6 +11,7 @@ import {
 } from "lucide-react";
 import { requireOrganizer } from "@/lib/auth";
 import { getVendorPublicProfile } from "@/lib/applications";
+import { formatRupiah } from "@/lib/currency";
 
 export default async function VendorPublicProfilePage({
   params,
@@ -35,14 +35,13 @@ export default async function VendorPublicProfilePage({
         className="flex items-center gap-1.5 text-accent text-xs mb-4"
       >
         <ArrowLeft className="size-3.5" />
-        Back to applications
+        Kembali ke pendaftaran
       </Link>
 
       <div className="bg-card rounded-2xl p-6 mb-4">
         <div className="flex items-center gap-4 mb-4">
           <div className="w-16 h-16 rounded-full bg-secondary/15 flex items-center justify-center overflow-hidden shrink-0">
             {vendor.profileImageUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={vendor.profileImageUrl}
                 alt={displayName}
@@ -59,7 +58,7 @@ export default async function VendorPublicProfilePage({
               <h1 className="text-lg font-medium">{displayName}</h1>
               {vendor.isVerifiedVendor && (
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#EAF3DE] text-[#27500A]">
-                  Verified
+                  Terverifikasi
                 </span>
               )}
             </div>
@@ -79,14 +78,8 @@ export default async function VendorPublicProfilePage({
 
         <div className="flex flex-wrap gap-x-5 gap-y-2 text-xs text-muted-foreground border-t border-secondary/15 pt-4">
           <span className="flex items-center gap-1.5">
-            <Star className="size-3.5 text-accent" />
-            {vendor.averageRating
-              ? `${vendor.averageRating.toFixed(1)} rating`
-              : "No ratings yet"}
-          </span>
-          <span className="flex items-center gap-1.5">
             <Package className="size-3.5 text-accent" />
-            {vendor.bazaarsJoined} bazaars joined
+            {vendor.bazaarsJoined} bazaar diikuti
           </span>
           {vendor.targetMarket && <span>Target: {vendor.targetMarket}</span>}
         </div>
@@ -117,7 +110,7 @@ export default async function VendorPublicProfilePage({
 
       {vendor.products.length > 0 && (
         <div className="mb-4">
-          <p className="text-sm font-medium mb-3">Products</p>
+          <p className="text-sm font-medium mb-3">Produk</p>
           <div className="flex gap-3 overflow-x-auto">
             {vendor.products.map((p) => (
               <div
@@ -126,7 +119,6 @@ export default async function VendorPublicProfilePage({
               >
                 <div className="h-24 bg-secondary/10 flex items-center justify-center">
                   {p.imageUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={p.imageUrl}
                       alt={p.name}
@@ -139,7 +131,7 @@ export default async function VendorPublicProfilePage({
                 <div className="p-2.5">
                   <p className="text-xs font-medium truncate">{p.name}</p>
                   <p className="text-xs text-muted-foreground">
-                    Rp {p.price.toLocaleString("id-ID")}
+                    {formatRupiah(p.price)}
                   </p>
                 </div>
               </div>
@@ -150,7 +142,7 @@ export default async function VendorPublicProfilePage({
 
       {vendor.portfolios.length > 0 && (
         <div>
-          <p className="text-sm font-medium mb-3">Portfolio</p>
+          <p className="text-sm font-medium mb-3">Portofolio</p>
           <div className="flex gap-3 overflow-x-auto">
             {vendor.portfolios.map((p) => (
               <div
@@ -183,7 +175,7 @@ export default async function VendorPublicProfilePage({
 
       {vendor.products.length === 0 && vendor.portfolios.length === 0 && (
         <div className="bg-card rounded-2xl p-8 text-center text-sm text-muted-foreground">
-          This vendor hasn't added any products or portfolio yet.
+          Vendor ini belum menambahkan produk atau portofolio.
         </div>
       )}
     </main>

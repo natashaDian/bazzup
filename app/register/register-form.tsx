@@ -35,7 +35,7 @@ export function RegisterForm({ role }: RegisterFormProps) {
           htmlFor="name"
           className="text-sm font-normal text-[#3B1F4A]"
         >
-          Full Name
+          Nama Lengkap
         </Label>
 
         <Input
@@ -43,7 +43,7 @@ export function RegisterForm({ role }: RegisterFormProps) {
           name="name"
           required
           autoComplete="name"
-          placeholder="Your full name"
+          placeholder="Nama lengkap"
           className="
             h-12
             rounded-lg
@@ -102,7 +102,7 @@ export function RegisterForm({ role }: RegisterFormProps) {
           htmlFor="password"
           className="text-sm font-normal text-[#3B1F4A]"
         >
-          Password
+          Kata Sandi
         </Label>
 
         <Input
@@ -112,7 +112,7 @@ export function RegisterForm({ role }: RegisterFormProps) {
           required
           minLength={8}
           autoComplete="new-password"
-          placeholder="Create a password"
+          placeholder="Buat kata sandi"
           className="
             h-12
             rounded-lg

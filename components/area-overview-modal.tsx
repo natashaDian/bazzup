@@ -11,6 +11,7 @@ import {
   ChevronRight,
   ImageIcon,
 } from "lucide-react";
+import { formatRupiah } from "@/lib/currency";
 
 type AreaImage = { id: string; url: string };
 type Area = {
@@ -51,7 +52,7 @@ export function AreaOverviewModal({
         <button
           onClick={onClose}
           className="absolute top-4 right-4 z-10 bg-card/90 rounded-full p-1.5 text-foreground"
-          aria-label="Close"
+          aria-label="Tutup"
         >
           <X className="size-4" />
         </button>
@@ -70,14 +71,14 @@ export function AreaOverviewModal({
                   <button
                     onClick={prevImage}
                     className="absolute left-3 top-1/2 -translate-y-1/2 bg-card/90 rounded-full p-1.5"
-                    aria-label="Previous photo"
+                    aria-label="Foto sebelumnya"
                   >
                     <ChevronLeft className="size-4" />
                   </button>
                   <button
                     onClick={nextImage}
                     className="absolute right-3 top-1/2 -translate-y-1/2 bg-card/90 rounded-full p-1.5"
-                    aria-label="Next photo"
+                    aria-label="Foto berikutnya"
                   >
                     <ChevronRight className="size-4" />
                   </button>
@@ -107,15 +108,15 @@ export function AreaOverviewModal({
 
           <div className="grid grid-cols-2 gap-3 mb-5">
             <div className="bg-secondary/10 rounded-xl p-3.5">
-              <p className="text-xs text-muted-foreground mb-1">Total slots</p>
+              <p className="text-xs text-muted-foreground mb-1">Total Slot</p>
               <p className="text-base font-medium">{area.totalSlot}</p>
             </div>
             <div className="bg-secondary/10 rounded-xl p-3.5">
               <p className="text-xs text-muted-foreground mb-1">
-                Price per slot
+                Harga per Slot
               </p>
               <p className="text-base font-medium">
-                Rp {area.pricePerSlot.toLocaleString("id-ID")}
+                {formatRupiah(area.pricePerSlot)}
               </p>
             </div>
           </div>
@@ -130,7 +131,7 @@ export function AreaOverviewModal({
             {area.estimatedTraffic !== null && (
               <div className="flex items-center gap-2.5 text-sm text-muted-foreground">
                 <TrendingUp className="size-4 text-accent shrink-0" />
-                <span>~{area.estimatedTraffic} visitors per day</span>
+                <span>~{area.estimatedTraffic} pengunjung per hari</span>
               </div>
             )}
             {area.visitorProfile && (
@@ -142,13 +143,13 @@ export function AreaOverviewModal({
             {area.peakHours && (
               <div className="flex items-center gap-2.5 text-sm text-muted-foreground">
                 <Clock className="size-4 text-accent shrink-0" />
-                <span>Peak hours: {area.peakHours}</span>
+                <span>Jam ramai: {area.peakHours}</span>
               </div>
             )}
             {area.hasElectricity && (
               <div className="flex items-center gap-2.5 text-sm text-muted-foreground">
                 <Zap className="size-4 text-accent shrink-0" />
-                <span>Electricity available</span>
+                <span>Tersedia Listrik</span>
               </div>
             )}
           </div>

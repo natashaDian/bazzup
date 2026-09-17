@@ -7,6 +7,23 @@ import { updateAreaAction, type AreaActionState } from "@/lib/areas";
 
 const initialState: AreaActionState = {};
 
+const VISITOR_PROFILES = [
+  "Pelajar & Mahasiswa",
+  "Pekerja Kantoran",
+  "Keluarga & Anak-anak",
+  "Wisatawan",
+  "Semua Kalangan",
+];
+
+function formatThousands(value: string): string {
+  const digitsOnly = value.replace(/\D/g, "");
+  return digitsOnly.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+function parseThousands(value: string): string {
+  return value.replace(/\D/g, "");
+}
+
 type AreaImage = { id: string; url: string };
 type Area = {
   id: string;
@@ -119,7 +136,7 @@ export function AreaEditModal({
           <X className="size-4" />
         </button>
 
-        <p className="text-base font-medium mb-4">Edit area</p>
+        <p className="text-base font-medium mb-4">Edit Area</p>
 
         {state.error && (
           <p className="text-xs text-destructive mb-3">{state.error}</p>
@@ -128,12 +145,11 @@ export function AreaEditModal({
         <form action={formAction} className="space-y-3">
           <div>
             <label className="text-xs text-muted-foreground block mb-1">
-              Existing photos
+              Foto Saat Ini
             </label>
             {area.images.length > 0 ? (
               <div className="flex gap-2 mb-2 overflow-x-auto">
                 {area.images.map((img) => (
-                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     key={img.id}
                     src={img.url}
@@ -144,18 +160,17 @@ export function AreaEditModal({
               </div>
             ) : (
               <p className="text-xs text-muted-foreground mb-2">
-                No photos yet.
+                Belum ada foto.
               </p>
             )}
 
             <label className="text-xs text-muted-foreground block mb-1">
-              Add more photos
+              Tambah Foto Lagi
             </label>
             <label className="block h-20 border border-dashed border-secondary rounded-lg flex items-center justify-center gap-2 bg-secondary/10 cursor-pointer text-accent text-xs overflow-x-auto px-2">
               {newPreviews.length > 0 ? (
                 <div className="flex gap-2">
                   {newPreviews.map((url, i) => (
-                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       key={i}
                       src={url}
@@ -167,7 +182,7 @@ export function AreaEditModal({
               ) : (
                 <>
                   <ImagePlus className="size-4" />
-                  Upload photos
+                  Unggah Foto
                 </>
               )}
               <input
@@ -183,7 +198,7 @@ export function AreaEditModal({
 
           <div>
             <label className="text-xs text-muted-foreground block mb-1">
-              Area name *
+              Nama Area *
             </label>
             <input
               name="name"
@@ -200,7 +215,7 @@ export function AreaEditModal({
 
           <div>
             <label className="text-xs text-muted-foreground block mb-1">
-              Description
+              Deskripsi
             </label>
             <textarea
               name="description"
@@ -214,7 +229,7 @@ export function AreaEditModal({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-xs text-muted-foreground block mb-1">
-                Total slot *
+                Total Slot *
               </label>
               <input
                 name="totalSlot"
@@ -232,7 +247,7 @@ export function AreaEditModal({
             </div>
             <div>
               <label className="text-xs text-muted-foreground block mb-1">
-                Price per slot *
+                Harga per Slot *
               </label>
               <input
                 name="pricePerSlot"
@@ -252,7 +267,7 @@ export function AreaEditModal({
 
           <div>
             <label className="text-xs text-muted-foreground block mb-1">
-              Category wanted *{" "}
+              Kategori yang Diinginkan *{" "}
               <span className="text-muted-foreground">
                 ({form.categoryWanted.length}/5)
               </span>
@@ -290,7 +305,7 @@ export function AreaEditModal({
                 onChange={(e) =>
                   updateField("categoryWantedOther", e.target.value)
                 }
-                placeholder="Specify custom category"
+                placeholder="Sebutkan kategori lainnya"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-card text-sm"
               />
             )}
@@ -308,12 +323,12 @@ export function AreaEditModal({
           </div>
 
           <p className="text-xs font-medium text-primary uppercase tracking-wide pt-1">
-            Match score details
+            Detail Skor Kecocokan
           </p>
 
           <div>
             <label className="text-xs text-muted-foreground block mb-1">
-              Estimated visitors per day *
+              Perkiraan Pengunjung per Hari *
             </label>
             <input
               name="estimatedTraffic"
@@ -332,14 +347,21 @@ export function AreaEditModal({
 
           <div>
             <label className="text-xs text-muted-foreground block mb-1">
-              Visitor profile *
+              Profil Pengunjung *
             </label>
-            <input
+            <select
               name="visitorProfile"
               value={form.visitorProfile}
               onChange={(e) => updateField("visitorProfile", e.target.value)}
               className="w-full px-3 py-2 rounded-lg border border-input bg-card text-sm"
-            />
+            >
+              <option value="">Pilih profil pengunjung</option>
+              {VISITOR_PROFILES.map((profile) => (
+                <option key={profile} value={profile}>
+                  {profile}
+                </option>
+              ))}
+            </select>
             {state.fieldErrors?.visitorProfile && (
               <p className="text-xs text-destructive mt-1">
                 {state.fieldErrors.visitorProfile}
@@ -349,7 +371,7 @@ export function AreaEditModal({
 
           <div>
             <label className="text-xs text-muted-foreground block mb-1">
-              Peak hours *
+              Jam Ramai *
             </label>
             <div className="grid grid-cols-2 gap-3">
               <div>
@@ -393,7 +415,7 @@ export function AreaEditModal({
               onChange={(e) => updateField("hasElectricity", e.target.checked)}
               className="size-4"
             />
-            Electricity available
+            Tersedia Listrik
           </label>
 
           <div className="flex gap-2 justify-end pt-3">
@@ -402,14 +424,14 @@ export function AreaEditModal({
               onClick={onClose}
               className="bg-secondary/15 text-muted-foreground px-4 py-2 rounded-lg text-sm"
             >
-              Cancel
+              Batal
             </button>
             <button
               type="submit"
               disabled={isPending}
               className="bg-accent text-accent-foreground px-4 py-2 rounded-lg text-sm"
             >
-              {isPending ? "Saving..." : "Save changes"}
+              {isPending ? "Menyimpan..." : "Simpan Perubahan"}
             </button>
           </div>
         </form>

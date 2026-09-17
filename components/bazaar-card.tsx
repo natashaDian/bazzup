@@ -9,7 +9,6 @@ export function BazaarCard({ bazaar }: { bazaar: BazaarCardData }) {
     <Card className="gap-3 overflow-hidden p-0 pb-4">
       <div className="aspect-video w-full bg-muted">
         {bazaar.coverImageUrl && (
-          // eslint-disable-next-line @next/next/no-img-element
           <img
             src={bazaar.coverImageUrl}
             alt={bazaar.title}
@@ -36,7 +35,7 @@ export function BazaarCard({ bazaar }: { bazaar: BazaarCardData }) {
 
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted-foreground">
-            {bazaar.slotsLeft} of {bazaar.totalSlot} slots left
+            Tersisa {bazaar.slotsLeft} dari {bazaar.totalSlot} slot
           </span>
           {bazaar.minPricePerSlot !== null && (
             <span className="font-medium">{formatRupiah(bazaar.minPricePerSlot)} / slot</span>

@@ -10,8 +10,6 @@ const REQUIRED_PROFILE_FIELDS = [
   "profileImageUrl",
 ] as const satisfies readonly (keyof User)[];
 
-// A vendor must fill in all of these before organizers can review them, so
-// the app blocks entry to bazaar detail pages until every field is set.
 export function isVendorProfileComplete(user: User): boolean {
   return REQUIRED_PROFILE_FIELDS.every((field) => {
     const value = user[field];

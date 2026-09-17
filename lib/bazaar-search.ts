@@ -26,8 +26,6 @@ export function parseBazaarSearchParams(input: BazaarSearchParamsInput): BazaarS
   };
 }
 
-// Bazaar dianggap cocok kalau rentang tanggal event-nya berpotongan
-// dengan rentang pencarian vendor (bukan harus persis sama).
 export function buildBazaarWhere(filters: BazaarSearchFilters): Prisma.BazaarWhereInput {
   const where: Prisma.BazaarWhereInput = { status: "ACTIVE" };
 

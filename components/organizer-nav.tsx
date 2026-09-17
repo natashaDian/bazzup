@@ -1,56 +1,203 @@
-import Link from "next/link";
-import { BellIcon, SparklesIcon } from "lucide-react";
-import type { User } from "@prisma/client";
+"use client";
 
-export function OrganizerNav({ user }: { user: User }) {
-  const initials =
-    user.name
-      .split(" ")
-      .map((part) => part[0])
-      .slice(0, 2)
-      .join("")
-      .toUpperCase() || "?";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+
+import {
+  InboxIcon,
+  LayoutDashboardIcon,
+  MenuIcon,
+  StoreIcon,
+  XIcon,
+} from "lucide-react";
+
+import { useSidebarCollapsed } from "@/components/organizer-sidebar-context";
+
+import bazzupLogo from "./assets/bazzup logo.png";
+
+const DESKTOP_QUERY = "(min-width: 1024px)";
+
+function isNavItemActive(pathname: string, href: string) {
+  if (href === "/organizer") {
+    return pathname === href;
+  }
+
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+const navItems = [
+  {
+    label: "Dashboard",
+    href: "/organizer",
+    icon: LayoutDashboardIcon,
+  },
+  {
+    label: "Bazaar Saya",
+    href: "/organizer/bazaars",
+    icon: StoreIcon,
+  },
+  {
+    label: "Pengajuan Masuk",
+    href: "/organizer/applications",
+    icon: InboxIcon,
+  },
+];
+
+type Indicator = { left: number; top: number; width: number; height: number };
+
+export function OrganizerNav() {
+  const pathname = usePathname();
+  const itemRefs = useRef<Map<string, HTMLAnchorElement>>(new Map());
+  const [indicator, setIndicator] = useState<Indicator | null>(null);
+  const { collapsed } = useSidebarCollapsed();
+
+  const [open, setOpen] = useState(false);
+
+  const activeHref = navItems.find((item) =>
+    isNavItemActive(pathname, item.href),
+  )?.href;
+
+  useEffect(() => {
+    const mql = window.matchMedia(DESKTOP_QUERY);
+    const sync = () => setOpen(mql.matches);
+
+    sync();
+
+    mql.addEventListener("change", sync);
+    return () => mql.removeEventListener("change", sync);
+  }, []);
+
+  useEffect(() => {
+    if (!window.matchMedia(DESKTOP_QUERY).matches) {
+      setOpen(false);
+    }
+  }, [pathname]);
+
+  useLayoutEffect(() => {
+    const activeEl = activeHref ? itemRefs.current.get(activeHref) : undefined;
+
+    if (!activeEl) {
+      setIndicator(null);
+      return;
+    }
+
+    const measure = () =>
+      setIndicator({
+        left: activeEl.offsetLeft,
+        top: activeEl.offsetTop,
+        width: activeEl.offsetWidth,
+        height: activeEl.offsetHeight,
+      });
+
+    measure();
+
+    const settleTimer = window.setTimeout(measure, 320);
+
+    window.addEventListener("resize", measure);
+    return () => {
+      window.removeEventListener("resize", measure);
+      window.clearTimeout(settleTimer);
+    };
+  }, [activeHref, collapsed]);
 
   return (
-    <header className="flex items-center justify-between gap-2 border-b bg-card px-4 py-3 sm:gap-6">
-      <div className="flex items-center gap-3 sm:gap-6">
-        <Link
-          href="/organizer"
-          className="flex items-center gap-1.5 font-bold text-primary"
+    <>
+      {/* Mobile menu toggle */}
+      <button
+        type="button"
+        onClick={() => setOpen((prev) => !prev)}
+        aria-label={open ? "Tutup menu" : "Buka menu"}
+        aria-expanded={open}
+        className="fixed left-4 top-4 z-50 flex size-10 items-center justify-center rounded-xl bg-white text-[#3B1F4A] shadow-md transition-colors duration-200 hover:bg-[#F3EAFB] lg:hidden"
+      >
+        {open ? <XIcon className="size-5" /> : <MenuIcon className="size-5" />}
+      </button>
+
+      {/* Mobile backdrop */}
+      {open && (
+        <div
+          aria-hidden="true"
+          onClick={() => setOpen(false)}
+          className="fixed inset-0 z-30 bg-black/40 lg:hidden"
+        />
+      )}
+
+      <aside
+        className={`fixed inset-y-0 left-0 z-40 isolate flex h-screen w-64 shrink-0 flex-col overflow-hidden bg-sidebar transition-[transform,width] duration-300 ease-out lg:sticky lg:top-0 lg:translate-x-0 ${
+          open ? "translate-x-0" : "-translate-x-full"
+        } ${collapsed ? "lg:w-20" : "lg:w-64"}`}
+      >
+        {/* Animated purple background glow - same treatment as the /vendor hero */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
         >
-          <SparklesIcon className="size-5" />
-          BazzUp
-        </Link>
-        <nav className="hidden items-center gap-4 text-sm font-medium text-muted-foreground sm:flex">
-          <Link href="/organizer" className="hover:text-foreground">
-            Dashboard
-          </Link>
-          <Link href="/organizer/bazaars" className="hover:text-foreground">
-            My Bazaars
-          </Link>
-          <Link
-            href="/organizer/applications"
-            className="hover:text-foreground"
-          >
-            Incoming Applications
-          </Link>
-        </nav>
-      </div>
-      <div className="flex items-center gap-3">
-        <BellIcon className="size-5 text-muted-foreground" />
-        <div className="flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-secondary text-xs font-medium text-secondary-foreground">
-          {user.profileImageUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={user.profileImageUrl}
-              alt={user.name}
-              className="size-8 object-cover"
-            />
-          ) : (
-            initials
-          )}
+          <div className="home-gradient home-gradient-one" />
+          <div className="home-gradient home-gradient-two" />
         </div>
-      </div>
-    </header>
+
+        <div
+          className={`relative z-10 flex items-center justify-center px-6 py-6 transition-[padding] duration-300 ${collapsed ? "lg:px-2" : ""}`}
+        >
+          <Link href="/organizer" className="flex w-fit items-center">
+            <Image
+              src={bazzupLogo}
+              alt="BazzUp"
+              width={90}
+              height={40}
+              className={`h-auto w-[90px] transition-[width] duration-300 ${
+                collapsed ? "lg:w-8" : "lg:w-[90px]"
+              }`}
+              priority
+            />
+          </Link>
+        </div>
+
+        <nav className="relative z-10 flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-4">
+          {indicator && (
+            <span
+              aria-hidden
+              className="absolute rounded-xl bg-[#7A5CA8] shadow-sm transition-all duration-300 ease-out"
+              style={{
+                left: indicator.left,
+                top: indicator.top,
+                width: indicator.width,
+                height: indicator.height,
+              }}
+            />
+          )}
+
+          {navItems.map((item) => {
+            const active = isNavItemActive(pathname, item.href);
+            const Icon = item.icon;
+
+            return (
+              <Link
+                key={item.href}
+                ref={(el) => {
+                  if (el) itemRefs.current.set(item.href, el);
+                  else itemRefs.current.delete(item.href);
+                }}
+                href={item.href}
+                title={collapsed ? item.label : undefined}
+                aria-current={active ? "page" : undefined}
+                className={
+                  active
+                    ? `relative z-10 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-white transition-colors duration-300 ${collapsed ? "lg:justify-center" : ""}`
+                    : `relative z-10 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-[#3B1F4A] transition-colors duration-300 hover:bg-[#F3EAFB] hover:text-[#7A5CA8] ${collapsed ? "lg:justify-center" : ""}`
+                }
+              >
+                <Icon className="size-4 shrink-0" />
+                <span className={collapsed ? "lg:hidden" : ""}>
+                  {item.label}
+                </span>
+              </Link>
+            );
+          })}
+        </nav>
+      </aside>
+    </>
   );
 }

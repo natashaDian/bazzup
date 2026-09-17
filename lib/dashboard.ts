@@ -30,7 +30,7 @@ export async function getDashboardStats(
         }),
         prisma.application.aggregate({
           where: { status: { in: CONFIRMED_STATUSES }, area: { bazaarId } },
-          _sum: { platformFee: true },
+          _sum: { totalPrice: true },
         }),
       ]);
 
@@ -39,7 +39,7 @@ export async function getDashboardStats(
       primaryValue: totalAreas,
       pendingApplications,
       confirmedVendors,
-      revenue: revenueResult._sum?.platformFee ?? 0,
+      revenue: revenueResult._sum?.totalPrice ?? 0,
     };
   }
 
@@ -60,7 +60,7 @@ export async function getDashboardStats(
           status: { in: CONFIRMED_STATUSES },
           area: { bazaar: { organizerId } },
         },
-        _sum: { platformFee: true },
+        _sum: { totalPrice: true },
       }),
     ]);
 
@@ -69,7 +69,7 @@ export async function getDashboardStats(
     primaryValue: activeBazaars,
     pendingApplications,
     confirmedVendors,
-    revenue: revenueResult._sum.platformFee ?? 0,
+    revenue: revenueResult._sum.totalPrice ?? 0,
   };
 }
 
@@ -162,7 +162,7 @@ export async function getTopCategories(
 }
 
 export type AttentionItem = {
-  type: "draft" | "pending" | "unrated";
+  type: "draft" | "pending" | "review";
   message: string;
   bazaarId: string;
 };
@@ -217,28 +217,26 @@ export async function getAttentionItems(
     }
   }
 
-  const completedUnrated = await prisma.bazaar.findMany({
+  const recentReviews = await prisma.review.findMany({
     where: {
-      organizerId,
-      status: "COMPLETED",
-      areas: {
-        some: {
-          applications: {
-            some: {
-              status: "COMPLETED",
-              reviews: { none: { type: "ORGANIZER_TO_VENDOR" } },
-            },
-          },
-        },
+      type: "VENDOR_TO_BAZAAR",
+      application: { area: { bazaar: { organizerId } } },
+    },
+    select: {
+      author: { select: { name: true, businessName: true } },
+      application: {
+        select: { area: { select: { bazaar: { select: { id: true, title: true } } } } },
       },
     },
-    select: { id: true, title: true },
+    orderBy: { createdAt: "desc" },
     take: 3,
   });
-  for (const bazaar of completedUnrated) {
+  for (const review of recentReviews) {
+    const vendorName = review.author.businessName || review.author.name;
+    const bazaar = review.application.area.bazaar;
     items.push({
-      type: "unrated",
-      message: `Rate vendors from ${bazaar.title}`,
+      type: "review",
+      message: `${vendorName} melakukan review terhadap ${bazaar.title}, yuk lihat reviewnya!`,
       bazaarId: bazaar.id,
     });
   }
@@ -293,7 +291,11 @@ export async function getUpcomingBazaars(
   const now = new Date();
 
   const bazaars = await prisma.bazaar.findMany({
-    where: { organizerId, eventStartDate: { gte: now } },
+    where: {
+      organizerId,
+      status: { not: "DRAFT" },
+      eventStartDate: { gte: now },
+    },
     orderBy: { eventStartDate: "asc" },
     take: 3,
     select: { id: true, title: true, eventStartDate: true },

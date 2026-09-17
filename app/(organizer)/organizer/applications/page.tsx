@@ -7,7 +7,7 @@ import {
 import { ApplicationsBoardClient } from "@/components/applications-board-client";
 
 export const metadata: Metadata = {
-  title: "Incoming Applications - BazzUp",
+  title: "Pendaftaran Masuk - BazzUp",
 };
 
 export default async function IncomingApplicationsPage({
@@ -24,7 +24,7 @@ export default async function IncomingApplicationsPage({
   ]);
 
   return (
-    <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-10">
+    <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-10">
       <ApplicationsBoardClient
         board={board}
         bazaarOptions={bazaarOptions}

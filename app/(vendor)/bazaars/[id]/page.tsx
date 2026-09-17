@@ -29,10 +29,10 @@ import { OrganizerInfoDialog } from "@/components/organizer-info-dialog";
 import { ApplyToAreaButton } from "./apply-to-area-button";
 
 const STATUS_LABEL: Record<string, { label: string; variant: "default" | "secondary" }> = {
-  ACTIVE: { label: "Open", variant: "default" },
-  FULL: { label: "Full", variant: "secondary" },
-  COMPLETED: { label: "Completed", variant: "secondary" },
-  DRAFT: { label: "Draft", variant: "secondary" },
+  ACTIVE: { label: "Terbuka", variant: "default" },
+  FULL: { label: "Penuh", variant: "secondary" },
+  COMPLETED: { label: "Selesai", variant: "secondary" },
+  DRAFT: { label: "Draf", variant: "secondary" },
 };
 
 type PageParams = { params: Promise<{ id: string }> };
@@ -54,9 +54,6 @@ export default async function BazaarDetailPage({ params }: PageParams) {
 
   const user = await getCurrentUser();
 
-  // Vendors are gated behind a complete profile so organizers always get
-  // usable info to review applications with - anyone getting here without
-  // one (direct link, back button, other cards) gets bounced back.
   if (user?.role === "VENDOR" && !isVendorProfileComplete(user)) {
     redirect("/explore?incompleteProfile=1");
   }
@@ -73,7 +70,6 @@ export default async function BazaarDetailPage({ params }: PageParams) {
       bazaar.areas.map((area) => area.categoryWanted).filter((c): c is string => Boolean(c))
     ),
   ];
-  const hasElectricity = bazaar.areas.some((area) => area.hasElectricity);
   const maxTraffic = bazaar.areas.reduce(
     (max, area) => (area.estimatedTraffic && area.estimatedTraffic > max ? area.estimatedTraffic : max),
     0
@@ -89,164 +85,191 @@ export default async function BazaarDetailPage({ params }: PageParams) {
     : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${bazaar.address}, ${bazaar.city}`)}`;
 
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-8">
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-        <div className="flex flex-col gap-6 lg:col-span-2">
+    <main className="mx-auto mt-6 flex w-full max-w-6xl flex-1 flex-col px-6 py-10 md:mt-8 md:px-10 md:py-12 lg:px-16">
+      <div className="grid grid-cols-1 gap-10 lg:grid-cols-3 lg:items-start">
+        <div className="flex flex-col gap-8 lg:col-span-2">
           <BazaarImageCarousel images={bazaar.images} title={bazaar.title} />
 
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-3">
             <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-3xl font-bold">{bazaar.title}</h1>
-              <Badge variant={status.variant}>{status.label}</Badge>
+              <h1 className="text-3xl font-bold text-[#3B1F4A] sm:text-[32px]">{bazaar.title}</h1>
+              <Badge
+                variant={status.variant}
+                className={`h-auto rounded-full px-3 py-1 text-xs font-semibold ${
+                  bazaar.status === "ACTIVE" ? "bg-[#4CAF50] text-white" : ""
+                }`}
+              >
+                {status.label}
+              </Badge>
             </div>
-            <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
-              <MapPinIcon className="size-4" />
-              {bazaar.city}
-            </p>
-            <div className="flex items-start justify-between gap-3">
-              <p className="flex min-w-0 flex-1 items-start gap-1.5 text-xs text-muted-foreground">
-                <MapPinIcon className="invisible mt-0.5 size-4 shrink-0" />
-                <span>{bazaar.address}</span>
+
+            <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-[#6B7280]">
+              <p className="flex min-w-0 flex-1 items-center gap-1.5">
+                <MapPinIcon className="size-4 shrink-0 text-[#B98CDE]" />
+                <span className="truncate">
+                  {bazaar.city} &middot; {bazaar.address}
+                </span>
               </p>
               <a
                 href={mapsUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="shrink-0 text-sm font-medium text-primary hover:underline"
+                className="shrink-0 text-sm font-medium text-[#7A5CA8] transition-colors duration-200 hover:text-[#3B1F4A]"
               >
-                View Maps &rarr;
+                Lihat Peta &rarr;
               </a>
             </div>
-            <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
-              <CalendarIcon className="size-4" />
+
+            <p className="flex items-center gap-1.5 text-sm text-[#6B7280]">
+              <CalendarIcon className="size-4 text-[#B98CDE]" />
               {formatDateDisplay(bazaar.eventStartDate)} - {formatDateDisplay(bazaar.eventEndDate)}
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-4 border-y py-4">
+          <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-[#EEE4FA] bg-[#FAF7FF] px-5 py-4 shadow-[0_2px_10px_rgba(122,92,168,0.05)]">
             <div className="flex items-center gap-3">
-              <Avatar>
-                <AvatarFallback>{organizerInitial}</AvatarFallback>
+              <Avatar size="lg">
+                <AvatarFallback className="bg-[#F3EAFB] font-semibold text-[#7A5CA8]">
+                  {organizerInitial}
+                </AvatarFallback>
               </Avatar>
               <div>
-                <p className="text-xs text-muted-foreground">Organized by</p>
-                <p className="text-sm font-medium">{bazaar.organizerName}</p>
+                <p className="text-xs text-[#6B7280]">Diselenggarakan oleh</p>
+                <p className="text-sm font-semibold text-[#3B1F4A]">{bazaar.organizerName}</p>
               </div>
             </div>
-            <OrganizerInfoDialog name={bazaar.organizerName} contact={bazaar.organizerContact} />
+            <OrganizerInfoDialog
+              name={bazaar.organizerName}
+              contact={bazaar.organizerContact}
+              rating={bazaar.organizerRating}
+            />
           </div>
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-[1.4fr_1fr]">
             {bazaar.description && (
-              <div className="flex flex-col gap-2">
-                <h2 className="text-xl font-semibold">About This Bazaar</h2>
-                <p className="text-base text-muted-foreground">{bazaar.description}</p>
+              <div className="flex flex-col gap-2 rounded-2xl border border-[#EEE4FA] bg-white p-5 shadow-[0_2px_10px_rgba(122,92,168,0.05)] sm:p-6">
+                <h2 className="text-lg font-semibold text-[#3B1F4A]">Tentang Bazaar Ini</h2>
+                <p className="text-sm leading-6 text-[#6B7280]">{bazaar.description}</p>
               </div>
             )}
 
-            <div className="flex flex-col gap-2 rounded-xl border bg-card p-5">
-              <h2 className="text-lg font-semibold">What to Expect</h2>
-              <p className="text-sm text-muted-foreground">
-                Facility details for this bazaar haven&apos;t been added yet.
-              </p>
+            <div className="flex flex-col gap-2 rounded-2xl border border-[#EEE4FA] bg-white p-5 shadow-[0_2px_10px_rgba(122,92,168,0.05)] sm:p-6">
+              <h2 className="text-lg font-semibold text-[#3B1F4A]">Apa yang Bisa Diharapkan</h2>
+              {bazaar.facilities.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {bazaar.facilities.map((facility) => (
+                    <span
+                      key={facility}
+                      className="rounded-full bg-[#F3EAFB] px-2.5 py-1 text-xs font-medium text-[#7A5CA8]"
+                    >
+                      {facility}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm leading-6 text-[#6B7280]">
+                  Detail fasilitas untuk bazaar ini belum ditambahkan.
+                </p>
+              )}
             </div>
           </div>
 
-          <div className="flex flex-col gap-3">
-            <h2 className="text-xl font-semibold">Event Highlights</h2>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <div className="flex flex-col gap-4">
+            <h2 className="text-lg font-semibold text-[#3B1F4A]">Sorotan Acara</h2>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               <HighlightStat
                 icon={<StoreIcon className="size-5" />}
                 value={`${confirmedVendorCount}+`}
-                label="Vendors"
+                label="Vendor"
               />
               <HighlightStat
                 icon={<UsersIcon className="size-5" />}
                 value={maxTraffic > 0 ? `~${maxTraffic}` : "-"}
-                label="Visitors / day"
+                label="Pengunjung / hari"
               />
               <HighlightStat
                 icon={<MapPinIcon className="size-5" />}
                 value={`${bazaar.areas.length}`}
-                label="Areas"
+                label="Area"
               />
             </div>
           </div>
         </div>
 
         <aside className="flex flex-col gap-6">
-          <div className="flex flex-col gap-4 rounded-xl border bg-card p-5">
-            <h2 className="text-lg font-semibold">Event Information</h2>
-            <InfoRow icon={<MapPinIcon className="size-4" />} label="City" value={bazaar.city} />
-            <InfoRow
-              icon={<CalendarIcon className="size-4" />}
-              label="Event Date"
-              value={`${formatDateDisplay(bazaar.eventStartDate)} - ${formatDateDisplay(bazaar.eventEndDate)}`}
-            />
-            {categories.length > 0 && (
+          <div className="flex flex-col gap-5 rounded-2xl border border-[#EEE4FA] bg-white p-5 shadow-[0_2px_10px_rgba(122,92,168,0.05)] sm:p-6">
+            <h2 className="text-lg font-semibold text-[#3B1F4A]">Informasi Acara</h2>
+            <div className="flex flex-col gap-4">
+              <InfoRow icon={<MapPinIcon className="size-4" />} label="Kota" value={bazaar.city} />
               <InfoRow
-                icon={<TagIcon className="size-4" />}
-                label="Category"
-                value={categories.join(", ")}
+                icon={<CalendarIcon className="size-4" />}
+                label="Tanggal Acara"
+                value={`${formatDateDisplay(bazaar.eventStartDate)} - ${formatDateDisplay(bazaar.eventEndDate)}`}
               />
-            )}
-            {maxTraffic > 0 && (
-              <InfoRow
-                icon={<TrendingUpIcon className="size-4" />}
-                label="Estimated Traffic"
-                value={`~${maxTraffic} visitors/day`}
-              />
-            )}
-            <InfoRow
-              icon={<ZapIcon className="size-4" />}
-              label="Facilities"
-              value={hasElectricity ? "Electricity" : "Not specified"}
-            />
+              {categories.length > 0 && (
+                <InfoRow
+                  icon={<TagIcon className="size-4" />}
+                  label="Kategori"
+                  value={categories.join(", ")}
+                />
+              )}
+              {maxTraffic > 0 && (
+                <InfoRow
+                  icon={<TrendingUpIcon className="size-4" />}
+                  label="Perkiraan Pengunjung"
+                  value={`~${maxTraffic} pengunjung/hari`}
+                />
+              )}
+            </div>
           </div>
 
           <div
             id="available-areas"
-            className="flex scroll-mt-20 flex-col gap-4 rounded-xl border bg-card p-5"
+            className="flex scroll-mt-20 flex-col gap-5 rounded-2xl border border-[#EEE4FA] bg-white p-5 shadow-[0_2px_10px_rgba(122,92,168,0.05)] sm:p-6"
           >
             <div className="flex flex-col gap-1">
-              <h2 className="text-lg font-semibold">Available Areas</h2>
-              <p className="text-xs text-muted-foreground">
-                Choose the perfect spot for your business
+              <h2 className="text-lg font-semibold text-[#3B1F4A]">Area yang Tersedia</h2>
+              <p className="text-xs text-[#6B7280]">
+                Pilih tempat yang pas untuk usahamu
               </p>
-              <p className="text-xs text-muted-foreground">Total {bazaar.areas.length} areas</p>
+              <p className="text-xs text-[#6B7280]">Total {bazaar.areas.length} area</p>
             </div>
 
             {bazaar.areas.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No areas have been set up yet.</p>
+              <p className="text-sm text-[#6B7280]">Belum ada area yang disiapkan.</p>
             ) : (
-              <Accordion defaultValue={[bazaar.areas[0].id]}>
+              <Accordion defaultValue={[bazaar.areas[0].id]} className="gap-3">
                 {bazaar.areas.map((area) => (
-                  <AccordionItem key={area.id} value={area.id}>
-                    <AccordionTrigger>
-                      <div className="flex flex-1 flex-wrap items-center justify-between gap-2 pr-2">
+                  <AccordionItem
+                    key={area.id}
+                    value={area.id}
+                    className="overflow-hidden rounded-xl border border-[#EEE4FA] bg-[#FAF7FF]"
+                  >
+                    <AccordionTrigger className="px-4 py-3.5 hover:no-underline">
+                      <div className="flex flex-1 flex-wrap items-center justify-between gap-2 pr-1">
                         <div>
-                          <p className="font-semibold">{area.name}</p>
+                          <p className="font-semibold text-[#3B1F4A]">{area.name}</p>
                           {area.categoryWanted && (
-                            <p className="text-xs font-normal text-muted-foreground">
+                            <p className="text-xs font-normal text-[#6B7280]">
                               {area.categoryWanted}
                             </p>
                           )}
                         </div>
                         <div className="text-right">
-                          <p className="font-semibold text-primary">
+                          <p className="font-semibold text-[#7A5CA8]">
                             {formatRupiah(area.pricePerSlot)}
                           </p>
-                          <p className="text-xs font-normal text-muted-foreground">per slot</p>
+                          <p className="text-xs font-normal text-[#6B7280]">per slot</p>
                         </div>
                       </div>
                     </AccordionTrigger>
-                    <AccordionContent>
-                      <div className="flex flex-col gap-4">
+                    <AccordionContent className="px-4 pb-4">
+                      <div className="flex flex-col gap-4 border-t border-[#EEE4FA] pt-4">
                         {area.description && (
-                          <p className="text-sm text-muted-foreground">{area.description}</p>
+                          <p className="text-sm text-[#6B7280]">{area.description}</p>
                         )}
                         {area.imageUrl && (
-                          <div className="aspect-video w-full overflow-hidden rounded-lg bg-muted">
+                          <div className="aspect-video w-full overflow-hidden rounded-lg bg-[#F3EAFB]">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                               src={area.imageUrl}
@@ -258,25 +281,25 @@ export default async function BazaarDetailPage({ params }: PageParams) {
                         <div className="flex flex-col gap-3">
                           <Stat
                             icon={<LayersIcon className="size-4" />}
-                            label="Total Slots"
-                            value={`${area.slotsLeft} of ${area.totalSlot} left`}
+                            label="Total Slot"
+                            value={`${area.slotsLeft} dari ${area.totalSlot} tersisa`}
                           />
                           <Stat
                             icon={<ZapIcon className="size-4" />}
-                            label="Electricity"
-                            value={area.hasElectricity ? "Yes" : "No"}
+                            label="Listrik"
+                            value={area.hasElectricity ? "Ya" : "Tidak"}
                           />
                           {area.estimatedTraffic !== null && (
                             <Stat
                               icon={<TrendingUpIcon className="size-4" />}
-                              label="Estimated Traffic"
-                              value={`~${area.estimatedTraffic}/day`}
+                              label="Perkiraan Pengunjung"
+                              value={`~${area.estimatedTraffic}/hari`}
                             />
                           )}
                           {area.categoryWanted && (
                             <Stat
                               icon={<TagIcon className="size-4" />}
-                              label="Category"
+                              label="Kategori"
                               value={area.categoryWanted}
                             />
                           )}
@@ -302,11 +325,11 @@ export default async function BazaarDetailPage({ params }: PageParams) {
 
 function InfoRow({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
   return (
-    <div className="flex items-start gap-2.5">
-      <span className="mt-0.5 text-muted-foreground">{icon}</span>
+    <div className="flex items-start gap-3">
+      <span className="mt-0.5 text-[#B98CDE]">{icon}</span>
       <div>
-        <p className="text-xs text-muted-foreground">{label}</p>
-        <p className="text-sm font-medium">{value}</p>
+        <p className="text-xs text-[#6B7280]">{label}</p>
+        <p className="text-sm font-medium text-[#3B1F4A]">{value}</p>
       </div>
     </div>
   );
@@ -314,23 +337,23 @@ function InfoRow({ icon, label, value }: { icon: ReactNode; label: string; value
 
 function HighlightStat({ icon, value, label }: { icon: ReactNode; value: string; label: string }) {
   return (
-    <div className="flex flex-col items-center gap-2 rounded-xl border bg-card p-5 text-center">
-      <span className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+    <div className="flex flex-col items-center gap-2 rounded-2xl border border-[#EEE4FA] bg-[#FAF7FF] p-6 text-center shadow-[0_2px_10px_rgba(122,92,168,0.05)]">
+      <span className="flex size-10 items-center justify-center rounded-full bg-[#F3EAFB] text-[#7A5CA8]">
         {icon}
       </span>
-      <p className="text-xl font-bold">{value}</p>
-      <p className="text-xs text-muted-foreground">{label}</p>
+      <p className="text-2xl font-bold text-[#3B1F4A]">{value}</p>
+      <p className="text-xs text-[#6B7280]">{label}</p>
     </div>
   );
 }
 
 function Stat({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
   return (
-    <div className="flex items-start gap-2.5">
-      <span className="mt-0.5 text-muted-foreground">{icon}</span>
+    <div className="flex items-start gap-3">
+      <span className="mt-0.5 text-[#B98CDE]">{icon}</span>
       <div>
-        <p className="text-xs text-muted-foreground">{label}</p>
-        <p className="font-bold">{value}</p>
+        <p className="text-xs text-[#6B7280]">{label}</p>
+        <p className="font-bold text-[#3B1F4A]">{value}</p>
       </div>
     </div>
   );

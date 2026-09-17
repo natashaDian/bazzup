@@ -53,16 +53,15 @@ export function ApplicationsFilterBar({
       }
     }, 400);
     return () => clearTimeout(handle);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search]);
 
   const statusLabel = (value: string) =>
     value === ALL_STATUS_VALUE
-      ? "All Status"
+      ? "Semua Status"
       : (statuses.find((s) => s.value === value)?.label ?? value);
 
   return (
-    <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
       <Select
         value={initialStatus ?? ALL_STATUS_VALUE}
         onValueChange={(value) =>
@@ -72,11 +71,11 @@ export function ApplicationsFilterBar({
           })
         }
       >
-        <SelectTrigger className="w-full sm:w-52">
+        <SelectTrigger className="!h-11 w-full rounded-xl border-[#E8E1EF] bg-white px-3.5 text-[#3B1F4A] focus-visible:border-[#7A5CA8] sm:w-52">
           <SelectValue>{(value: string) => statusLabel(value)}</SelectValue>
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value={ALL_STATUS_VALUE}>All Status</SelectItem>
+          <SelectItem value={ALL_STATUS_VALUE}>Semua Status</SelectItem>
           {statuses.map((status) => (
             <SelectItem key={status.value} value={status.value}>
               {status.label}
@@ -86,12 +85,12 @@ export function ApplicationsFilterBar({
       </Select>
 
       <div className="relative flex-1">
-        <SearchIcon className="absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
+        <SearchIcon className="absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-[#6B7280]" />
         <Input
           value={search}
           onChange={(event) => setSearch(event.target.value)}
-          placeholder="Search by application ID, event, or area..."
-          className="pl-8"
+          placeholder="Cari berdasarkan ID pengajuan, acara, atau area..."
+          className="h-11 rounded-xl border-[#E8E1EF] bg-white pl-10 text-[#3B1F4A] focus-visible:border-[#7A5CA8]"
         />
       </div>
 
@@ -99,16 +98,16 @@ export function ApplicationsFilterBar({
         value={initialSort ?? "newest"}
         onValueChange={(value) => navigate({ sort: value ?? "newest" })}
       >
-        <SelectTrigger className="w-full sm:w-44">
+        <SelectTrigger className="!h-11 w-full rounded-xl border-[#E8E1EF] bg-white px-3.5 text-[#3B1F4A] focus-visible:border-[#7A5CA8] sm:w-44">
           <SelectValue>
             {(value: string) =>
-              value === "oldest" ? "Oldest First" : "Newest First"
+              value === "oldest" ? "Terlama" : "Terbaru"
             }
           </SelectValue>
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="newest">Newest First</SelectItem>
-          <SelectItem value="oldest">Oldest First</SelectItem>
+          <SelectItem value="newest">Terbaru</SelectItem>
+          <SelectItem value="oldest">Terlama</SelectItem>
         </SelectContent>
       </Select>
     </div>

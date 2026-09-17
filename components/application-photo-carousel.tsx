@@ -36,14 +36,14 @@ export function ApplicationPhotoCarousel({ images }: { images: string[] }) {
         <>
           <button
             onClick={prev}
-            aria-label="Previous photo"
+            aria-label="Foto sebelumnya"
             className="absolute left-1.5 top-1/2 -translate-y-1/2 size-5 rounded-full bg-white flex items-center justify-center"
           >
             <ChevronLeft className="size-3" />
           </button>
           <button
             onClick={next}
-            aria-label="Next photo"
+            aria-label="Foto berikutnya"
             className="absolute right-1.5 top-1/2 -translate-y-1/2 size-5 rounded-full bg-white flex items-center justify-center"
           >
             <ChevronRight className="size-3" />

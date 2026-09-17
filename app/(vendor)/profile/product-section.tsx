@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useActionState, useEffect, useTransition } from "react";
+import { useState, useRef, useActionState, useEffect, useTransition } from "react";
 import { Eye, Pencil, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,13 +9,50 @@ import {
   deleteProductAction,
   type ProductActionState,
 } from "./actions";
+import { formatRupiah } from "@/lib/currency";
 
 type Product = {
   id: string;
   name: string;
+  description: string | null;
   price: number;
   imageUrl: string | null;
 };
+
+function ProductPhotoField({ hint }: { hint?: string }) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
+
+  return (
+    <div>
+      <label className="text-xs text-muted-foreground block mb-1">
+        Foto produk
+      </label>
+      <div className="flex items-center gap-2">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => inputRef.current?.click()}
+        >
+          Pilih File
+        </Button>
+        <span className="text-xs text-muted-foreground truncate">
+          {fileName ?? "Belum ada file dipilih"}
+        </span>
+      </div>
+      <input
+        ref={inputRef}
+        type="file"
+        name="photo"
+        accept="image/*"
+        className="hidden"
+        onChange={(e) => setFileName(e.target.files?.[0]?.name ?? null)}
+      />
+      {hint && <p className="text-xs text-muted-foreground mt-1">{hint}</p>}
+    </div>
+  );
+}
 
 const initialState: ProductActionState = {};
 
@@ -75,7 +112,7 @@ export function ProductSection({ products }: { products: Product[] }) {
             <div className="p-3">
               <p className="text-sm font-medium truncate">{product.name}</p>
               <p className="text-sm text-muted-foreground">
-                Rp {product.price.toLocaleString("id-ID")}
+                {formatRupiah(product.price)}
               </p>
             </div>
 
@@ -127,22 +164,12 @@ export function ProductSection({ products }: { products: Product[] }) {
               <p className="text-xs text-red-500 mb-2">{addState.error}</p>
             )}
             <form action={addAction} className="space-y-3">
-              <div>
-                <label className="text-xs text-muted-foreground block mb-1">
-                  Foto produk
-                </label>
-                <input
-                  type="file"
-                  name="photo"
-                  accept="image/*"
-                  className="text-sm"
-                />
-                {addState.fieldErrors?.photo && (
-                  <p className="text-xs text-red-500 mt-1">
-                    {addState.fieldErrors.photo}
-                  </p>
-                )}
-              </div>
+              <ProductPhotoField />
+              {addState.fieldErrors?.photo && (
+                <p className="text-xs text-red-500 -mt-2">
+                  {addState.fieldErrors.photo}
+                </p>
+              )}
               <div>
                 <label className="text-xs text-muted-foreground block mb-1">
                   Nama produk
@@ -155,6 +182,22 @@ export function ProductSection({ products }: { products: Product[] }) {
                 {addState.fieldErrors?.name && (
                   <p className="text-xs text-red-500 mt-1">
                     {addState.fieldErrors.name}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground block mb-1">
+                  Deskripsi produk
+                </label>
+                <textarea
+                  name="description"
+                  rows={3}
+                  className="w-full border rounded-md px-3 py-2 text-sm"
+                  placeholder="Ceritakan sedikit tentang produk ini"
+                />
+                {addState.fieldErrors?.description && (
+                  <p className="text-xs text-red-500 mt-1">
+                    {addState.fieldErrors.description}
                   </p>
                 )}
               </div>
@@ -215,8 +258,13 @@ export function ProductSection({ products }: { products: Product[] }) {
             </div>
             <p className="font-medium text-base">{activeItem.name}</p>
             <p className="text-sm text-muted-foreground">
-              Rp {activeItem.price.toLocaleString("id-ID")}
+              {formatRupiah(activeItem.price)}
             </p>
+            {activeItem.description && (
+              <p className="text-sm text-muted-foreground mt-2">
+                {activeItem.description}
+              </p>
+            )}
           </div>
         </div>
       )}
@@ -264,9 +312,6 @@ function ProductEditModal({
         )}
         <form action={formAction} className="space-y-3">
           <div>
-            <label className="text-xs text-muted-foreground block mb-1">
-              Foto produk
-            </label>
             {product.imageUrl && (
               <img
                 src={product.imageUrl}
@@ -274,15 +319,7 @@ function ProductEditModal({
                 className="w-16 h-16 object-cover rounded-md mb-2"
               />
             )}
-            <input
-              type="file"
-              name="photo"
-              accept="image/*"
-              className="text-sm"
-            />
-            <p className="text-xs text-muted-foreground mt-1">
-              Kosongkan kalau tidak mau ganti foto
-            </p>
+            <ProductPhotoField hint="Kosongkan kalau tidak mau ganti foto" />
           </div>
           <div>
             <label className="text-xs text-muted-foreground block mb-1">
@@ -296,6 +333,23 @@ function ProductEditModal({
             {state.fieldErrors?.name && (
               <p className="text-xs text-red-500 mt-1">
                 {state.fieldErrors.name}
+              </p>
+            )}
+          </div>
+          <div>
+            <label className="text-xs text-muted-foreground block mb-1">
+              Deskripsi produk
+            </label>
+            <textarea
+              name="description"
+              rows={3}
+              defaultValue={product.description ?? ""}
+              className="w-full border rounded-md px-3 py-2 text-sm"
+              placeholder="Ceritakan sedikit tentang produk ini"
+            />
+            {state.fieldErrors?.description && (
+              <p className="text-xs text-red-500 mt-1">
+                {state.fieldErrors.description}
               </p>
             )}
           </div>

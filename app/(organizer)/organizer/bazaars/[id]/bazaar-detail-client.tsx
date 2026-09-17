@@ -19,6 +19,7 @@ import { AreaEditModal } from "@/components/area-edit-modal";
 import { AreaDeleteModal } from "@/components/area-delete-modal";
 import { publishBazaarAction } from "@/lib/areas";
 import { formatDateDisplay } from "@/lib/date";
+import { formatRupiah } from "@/lib/currency";
 
 type AreaImage = { id: string; url: string };
 type Area = {
@@ -57,9 +58,9 @@ const STATUS_STYLE: Record<string, string> = {
 
 const STATUS_LABEL: Record<string, string> = {
   DRAFT: "Draft",
-  ACTIVE: "Active",
-  FULL: "Full",
-  COMPLETED: "Completed",
+  ACTIVE: "Aktif",
+  FULL: "Penuh",
+  COMPLETED: "Selesai",
 };
 
 export function BazaarDetailClient({ bazaar }: { bazaar: Bazaar }) {
@@ -93,7 +94,6 @@ export function BazaarDetailClient({ bazaar }: { bazaar: Bazaar }) {
       <div className="bg-card rounded-2xl overflow-hidden">
         <div className="relative h-44 bg-secondary/10 flex items-center justify-center">
           {bazaar.images[0] ? (
-            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={bazaar.images[0].url}
               alt={bazaar.title}
@@ -124,7 +124,7 @@ export function BazaarDetailClient({ bazaar }: { bazaar: Bazaar }) {
                 onClick={() => setShowPublishConfirm(true)}
                 className="bg-accent text-accent-foreground px-4 py-2 rounded-lg text-sm shrink-0"
               >
-                Publish bazaar
+                Publikasikan Bazaar
               </button>
             )}
           </div>
@@ -158,11 +158,11 @@ export function BazaarDetailClient({ bazaar }: { bazaar: Bazaar }) {
       <div>
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-base font-medium">Areas</h2>
+            <h2 className="text-base font-medium">Area</h2>
             <p className="text-xs text-muted-foreground mt-0.5">
               {bazaar.areas.length}{" "}
-              {bazaar.areas.length === 1 ? "area" : "areas"} added
-              {!isDraft && " · locked after publishing"}
+              {bazaar.areas.length === 1 ? "area" : "area"} ditambahkan
+              {!isDraft && " · terkunci setelah dipublikasikan"}
             </p>
           </div>
           {isDraft && (
@@ -171,7 +171,7 @@ export function BazaarDetailClient({ bazaar }: { bazaar: Bazaar }) {
               className="flex items-center gap-1.5 bg-accent text-accent-foreground px-3.5 py-2 rounded-lg text-sm"
             >
               <Plus className="size-4" />
-              Add area
+              Tambah Area
             </button>
           )}
         </div>
@@ -180,7 +180,7 @@ export function BazaarDetailClient({ bazaar }: { bazaar: Bazaar }) {
           <div className="border border-dashed border-secondary/40 rounded-2xl py-14 flex flex-col items-center justify-center text-center bg-card">
             <Layers className="size-7 text-secondary mb-3" />
             <p className="text-sm text-muted-foreground max-w-xs">
-              No areas yet. Add at least one area before publishing this bazaar.
+              Belum ada area. Tambahkan minimal satu area sebelum mempublikasikan bazaar ini.
             </p>
           </div>
         ) : (
@@ -192,7 +192,6 @@ export function BazaarDetailClient({ bazaar }: { bazaar: Bazaar }) {
               >
                 <div className="h-28 bg-secondary/10 flex items-center justify-center">
                   {area.images[0] ? (
-                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={area.images[0].url}
                       alt={area.name}
@@ -205,9 +204,9 @@ export function BazaarDetailClient({ bazaar }: { bazaar: Bazaar }) {
                 <div className="p-4">
                   <p className="text-sm font-medium mb-2">{area.name}</p>
                   <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
-                    <span>{area.totalSlot} slots</span>
+                    <span>{area.totalSlot} slot</span>
                     <span className="font-medium text-foreground">
-                      Rp {area.pricePerSlot.toLocaleString("id-ID")} / slot
+                      {formatRupiah(area.pricePerSlot)} / slot
                     </span>
                   </div>
                   <div className="flex items-center gap-2 flex-wrap">
@@ -218,7 +217,7 @@ export function BazaarDetailClient({ bazaar }: { bazaar: Bazaar }) {
                     )}
                     {area.hasElectricity && (
                       <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <Zap className="size-3.5" /> Electricity
+                        <Zap className="size-3.5" /> Listrik
                       </span>
                     )}
                   </div>
@@ -228,7 +227,7 @@ export function BazaarDetailClient({ bazaar }: { bazaar: Bazaar }) {
                   <button
                     onClick={() => setOverviewArea(area)}
                     className="flex items-center justify-center bg-card text-accent size-9 rounded-full"
-                    aria-label="View details"
+                    aria-label="Lihat detail"
                   >
                     <Eye className="size-4" />
                   </button>
@@ -237,14 +236,14 @@ export function BazaarDetailClient({ bazaar }: { bazaar: Bazaar }) {
                       <button
                         onClick={() => setEditArea(area)}
                         className="flex items-center justify-center bg-card text-accent size-9 rounded-full"
-                        aria-label="Edit area"
+                        aria-label="Edit Area"
                       >
                         <Pencil className="size-4" />
                       </button>
                       <button
                         onClick={() => setDeleteArea(area)}
                         className="flex items-center justify-center bg-card text-destructive size-9 rounded-full"
-                        aria-label="Delete area"
+                        aria-label="Hapus Area"
                       >
                         <Trash2 className="size-4" />
                       </button>
@@ -291,25 +290,25 @@ export function BazaarDetailClient({ bazaar }: { bazaar: Bazaar }) {
       {showPublishConfirm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-card rounded-2xl p-6 w-full max-w-sm">
-            <h3 className="text-base font-medium mb-2">Publish this bazaar?</h3>
+            <h3 className="text-base font-medium mb-2">Publikasikan bazaar ini?</h3>
             <p className="text-sm text-muted-foreground mb-5 leading-relaxed">
-              Once published, areas can no longer be edited or deleted. You'll
-              only be able to view their details. Make sure everything is
-              correct before continuing.
+              Setelah dipublikasikan, area tidak dapat lagi diubah atau
+              dihapus. Kamu hanya bisa melihat detailnya. Pastikan semuanya
+              sudah benar sebelum melanjutkan.
             </p>
             <div className="flex gap-2 justify-end">
               <button
                 onClick={() => setShowPublishConfirm(false)}
                 className="bg-secondary/15 text-muted-foreground px-4 py-2 rounded-lg text-sm"
               >
-                Cancel
+                Batal
               </button>
               <button
                 onClick={handlePublish}
                 disabled={isPublishing}
                 className="bg-accent text-accent-foreground px-4 py-2 rounded-lg text-sm"
               >
-                {isPublishing ? "Publishing..." : "Yes, publish"}
+                {isPublishing ? "Mempublikasikan..." : "Ya, publikasikan"}
               </button>
             </div>
           </div>

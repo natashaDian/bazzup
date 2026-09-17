@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { requireOrganizer } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { createNotification } from "@/lib/notifications";
 
 export type ApplicationActionState = {
   error?: string;
@@ -17,8 +18,12 @@ async function assertApplicationOwnership(
     select: {
       status: true,
       areaId: true,
+      vendorId: true,
       area: {
-        select: { bazaarId: true, bazaar: { select: { organizerId: true } } },
+        select: {
+          bazaarId: true,
+          bazaar: { select: { organizerId: true, title: true } },
+        },
       },
     },
   });
@@ -75,6 +80,12 @@ export async function approveApplicationAction(
     },
   });
 
+  await createNotification({
+    userId: application.vendorId,
+    message: `Your application for ${application.area.bazaar.title} was approved! Please complete payment within 24 hours.`,
+    linkUrl: "/applications",
+  });
+
   revalidatePath("/organizer/applications");
   return {};
 }
@@ -93,6 +104,12 @@ export async function rejectApplicationAction(
   await prisma.application.update({
     where: { id: applicationId },
     data: { status: "REJECTED", rejectReason: reason || null },
+  });
+
+  await createNotification({
+    userId: application.vendorId,
+    message: `Your application for ${application.area.bazaar.title} was rejected.${reason ? ` Reason: ${reason}` : ""}`,
+    linkUrl: "/applications",
   });
 
   revalidatePath("/organizer/applications");

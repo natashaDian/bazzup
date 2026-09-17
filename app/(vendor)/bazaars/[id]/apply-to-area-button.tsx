@@ -39,26 +39,26 @@ export function ApplyToAreaButton({ bazaarId, areaId, alreadyApplied, soldOut }:
   }, [state.success]);
 
   return (
-    <form action={formAction} className="flex flex-col items-start gap-2">
-      <Button type="submit" disabled={disabled}>
-        {isPending ? "Submitting..." : "Apply for This Area"}
+    <form action={formAction} className="flex flex-col items-stretch gap-2">
+      <Button type="submit" disabled={disabled} className="w-full">
+        {isPending ? "Mengirim..." : "Ajukan Area Ini"}
       </Button>
       {errorMessage && <p className="text-xs text-destructive">{errorMessage}</p>}
         <Dialog open={showSuccess} onOpenChange={setShowSuccess}>
           <DialogContent className="sm:max-w-sm">
             <div className="flex flex-col items-center gap-4 py-4 text-center">
               <CircleCheckBig className="size-14 text-green-600" strokeWidth={1.5} />
-              <DialogTitle className="text-lg">Application Submitted!</DialogTitle>
+              <DialogTitle className="text-lg">Pengajuan Terkirim!</DialogTitle>
               <DialogDescription className="text-sm leading-6 text-muted-foreground">
-                Please wait for the organizer to review your application. 
+                Mohon tunggu penyelenggara meninjau pengajuan Anda.
                 <br />
-                Check your application status in the <span className="font-medium">{'"Status"'}</span> section
+                Cek status pengajuan Anda di bagian <span className="font-medium">{'"Status"'}</span>
               </DialogDescription>
               <Link
                 href="/applications"
                 className="mt-4 flex w-full items-center justify-center rounded-md bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
               >
-                Got It
+                Mengerti
               </Link>
             </div>
           </DialogContent>

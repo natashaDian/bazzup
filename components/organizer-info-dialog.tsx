@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { AtSignIcon, GlobeIcon, MessageCircleIcon, PhoneIcon } from "lucide-react";
+import { Star, AtSignIcon, ChevronRightIcon, GlobeIcon, MessageCircleIcon, PhoneIcon, StarIcon } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Dialog,
@@ -15,16 +15,21 @@ import type { BazaarOrganizerContact } from "@/lib/bazaars";
 type OrganizerInfoDialogProps = {
   name: string;
   contact: BazaarOrganizerContact;
+  rating: number | null;
 };
 
-export function OrganizerInfoDialog({ name, contact }: OrganizerInfoDialogProps) {
+export function OrganizerInfoDialog({ name, contact, rating }: OrganizerInfoDialogProps) {
   const initial = name.charAt(0).toUpperCase();
   const hasContact = contact.phone || contact.whatsapp || contact.instagram || contact.website;
+  const hasRating = rating != null && rating >=0 && rating <=5;
 
   return (
     <Dialog>
-      <DialogTrigger className="text-sm font-medium text-primary hover:underline">
-        View Organizer &rarr;
+      <DialogTrigger
+        aria-label="Lihat Organizer"
+        className="flex size-8 shrink-0 items-center justify-center rounded-full text-primary transition-colors hover:bg-primary/10"
+      >
+        <ChevronRightIcon className="size-5" />
       </DialogTrigger>
       <DialogContent className="sm:max-w-sm">
         <div className="flex flex-col items-center gap-3 py-2 text-center">
@@ -32,8 +37,15 @@ export function OrganizerInfoDialog({ name, contact }: OrganizerInfoDialogProps)
             <AvatarFallback className="text-lg font-semibold">{initial}</AvatarFallback>
           </Avatar>
           <DialogTitle className="text-lg">{name}</DialogTitle>
+          {hasRating && (
+            <div className="flex items-center gap-1.5">
+              <Star className="size-4 fill-amber-400 text-amber-400" />
+              <span className="text-sm font-semibold">{rating.toFixed(1)}</span>
+              <span className="text-xs text-muted-foreground">/ 5</span>
+            </div>
+          )}
           <DialogDescription className="text-sm leading-6 text-muted-foreground">
-            {contact.businessDesc || "This organizer hasn't added a description yet."}
+            {contact.businessDesc || "Organizer ini belum menambahkan deskripsi."}
           </DialogDescription>
 
           {hasContact && (
@@ -50,6 +62,7 @@ export function OrganizerInfoDialog({ name, contact }: OrganizerInfoDialogProps)
               {contact.website && (
                 <ContactRow icon={<GlobeIcon className="size-4" />} value={contact.website} />
               )}
+              {}
             </div>
           )}
         </div>

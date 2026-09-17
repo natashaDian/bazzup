@@ -43,9 +43,6 @@ export async function registerAction(
     return { error: "Registration failed, please try again." };
   }
 
-  // Supabase does not return an error for an email that's already
-  // registered (to prevent user enumeration) - an empty identities array
-  // means the account actually already exists.
   if (data.user.identities && data.user.identities.length === 0) {
     return {
       error: "This email is already registered. Please sign in or use a different email.",

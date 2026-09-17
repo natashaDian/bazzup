@@ -40,8 +40,6 @@ export function ExploreMap({
   const selectedLat = selectedBazaar?.latitude;
   const selectedLng = selectedBazaar?.longitude;
 
-  // Flies the map to whichever bazaar is selected so vendors don't have to
-  // manually drag/scroll to it after picking one from the list.
   useEffect(() => {
     if (!mapRef.current || selectedLat === undefined || selectedLng === undefined) return;
     mapRef.current.flyTo([selectedLat, selectedLng], Math.max(mapRef.current.getZoom(), 14));
@@ -94,7 +92,7 @@ export function ExploreMap({
           type="button"
           onClick={() => mapRef.current?.zoomIn()}
           className="flex size-9 items-center justify-center hover:bg-muted"
-          aria-label="Zoom in"
+          aria-label="Perbesar"
         >
           <PlusIcon className="size-4" />
         </button>
@@ -103,7 +101,7 @@ export function ExploreMap({
           type="button"
           onClick={() => mapRef.current?.zoomOut()}
           className="flex size-9 items-center justify-center hover:bg-muted"
-          aria-label="Zoom out"
+          aria-label="Perkecil"
         >
           <MinusIcon className="size-4" />
         </button>
@@ -113,7 +111,7 @@ export function ExploreMap({
         type="button"
         onClick={() => mapRef.current?.flyTo([userPosition.lat, userPosition.lng], 14)}
         className="absolute top-[104px] right-3 z-[1000] flex size-9 items-center justify-center rounded-lg border bg-background shadow hover:bg-muted"
-        aria-label="Recenter to my location"
+        aria-label="Kembali ke lokasi saya"
       >
         <LocateFixedIcon className="size-4" />
       </button>
@@ -121,11 +119,11 @@ export function ExploreMap({
       <div className="absolute bottom-3 left-3 z-[1000] flex items-center gap-3 rounded-lg border bg-background/95 px-3 py-1.5 text-xs shadow">
         <span className="flex items-center gap-1.5">
           <span className="inline-block size-2.5 rounded-full" style={{ background: SELECTED_COLOR }} />
-          Selected Bazaar
+          Bazaar Terpilih
         </span>
         <span className="flex items-center gap-1.5">
           <span className="inline-block size-2.5 rounded-full" style={{ background: OTHER_COLOR }} />
-          Other Bazaars
+          Bazaar Lainnya
         </span>
       </div>
     </div>

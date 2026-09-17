@@ -34,20 +34,7 @@ export function LoginForm() {
           required
           autoComplete="email"
           placeholder="you@example.com"
-          className="
-            h-12
-            rounded-lg
-            border-[#D9D1E3]
-            bg-white
-            px-4
-            text-sm
-            text-[#3B1F4A]
-            shadow-none
-            placeholder:text-[#9CA3AF]
-            focus-visible:border-[#7A5CA8]
-            focus-visible:ring-1
-            focus-visible:ring-[#7A5CA8]
-          "
+          className="transition-all duration-200 focus-visible:border-[#7A5CA8] focus-visible:ring-1 focus-visible:ring-[#7A5CA8] focus-visible:shadow-[0_0_0_3px_rgba(185,140,222,0.12)]"
         />
       </div>
 
@@ -56,7 +43,7 @@ export function LoginForm() {
           htmlFor="password"
           className="text-sm font-medium text-[#3B1F4A]"
         >
-          Password
+          Kata Sandi
         </Label>
 
         <Input
@@ -65,21 +52,9 @@ export function LoginForm() {
           type="password"
           required
           autoComplete="current-password"
-          placeholder="Enter your password"
-          className="
-            h-12
-            rounded-lg
-            border-[#D9D1E3]
-            bg-white
-            px-4
-            text-sm
-            text-[#3B1F4A]
-            shadow-none
-            placeholder:text-[#9CA3AF]
-            focus-visible:border-[#7A5CA8]
-            focus-visible:ring-1
-            focus-visible:ring-[#7A5CA8]
-          "
+          placeholder="Masukkan kata sandi"
+            className="transition-all duration-200 focus-visible:border-[#7A5CA8] focus-visible:ring-1 focus-visible:ring-[#7A5CA8] focus-visible:shadow-[0_0_0_3px_rgba(185,140,222,0.12)]"
+
         />
       </div>
 

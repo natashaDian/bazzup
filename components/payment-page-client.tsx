@@ -3,55 +3,58 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { Check, ArrowLeft } from "lucide-react";
 import { simulatePaymentAction, type PaymentPageData } from "@/lib/payment";
+import { formatRupiah } from "@/lib/currency";
+import gopayLogo from "@/components/assets/logo-ewallet-gopay.png";
+import ovoLogo from "@/components/assets/logo-ewallet-ovo.png";
+import danaLogo from "@/components/assets/logo-ewallet-dana.png";
 
 const EWALLET_PROVIDERS = ["GoPay", "OVO", "DANA"];
 
-function formatRupiah(amount: number) {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0,
-  }).format(amount);
-}
+const EWALLET_LOGOS: Record<string, typeof gopayLogo> = {
+  GoPay: gopayLogo,
+  OVO: ovoLogo,
+  DANA: danaLogo,
+};
 
 function validatePhone(value: string) {
-  if (!value.trim()) return "Phone number is required.";
+  if (!value.trim()) return "Nomor telepon wajib diisi.";
   if (!/^0\d{9,13}$/.test(value.trim()))
-    return "Enter a valid phone number (e.g. 0812xxxxxxx).";
+    return "Masukkan nomor telepon yang valid (contoh: 0812xxxxxxx).";
   return null;
 }
 
 function validateEmail(value: string) {
-  if (!value.trim()) return "Email is required.";
+  if (!value.trim()) return "Email wajib diisi.";
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim()))
-    return "Enter a valid email address.";
+    return "Masukkan alamat email yang valid.";
   return null;
 }
 
 function validateCardNumber(value: string) {
   const digits = value.replace(/\s/g, "");
-  if (!digits) return "Card number is required.";
-  if (!/^\d{16}$/.test(digits)) return "Card number must be 16 digits.";
+  if (!digits) return "Nomor kartu wajib diisi.";
+  if (!/^\d{16}$/.test(digits)) return "Nomor kartu harus 16 digit.";
   return null;
 }
 
 function validateCardName(value: string) {
-  if (!value.trim()) return "Cardholder name is required.";
+  if (!value.trim()) return "Nama pemegang kartu wajib diisi.";
   return null;
 }
 
 function validateExpiry(value: string) {
-  if (!value.trim()) return "Expiry date is required.";
+  if (!value.trim()) return "Tanggal kedaluwarsa wajib diisi.";
   if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(value.trim()))
-    return "Use MM/YY format.";
+    return "Gunakan format MM/YY.";
   return null;
 }
 
 function validateCvv(value: string) {
-  if (!value.trim()) return "CVV is required.";
-  if (!/^\d{3,4}$/.test(value.trim())) return "CVV must be 3-4 digits.";
+  if (!value.trim()) return "CVV wajib diisi.";
+  if (!/^\d{3,4}$/.test(value.trim())) return "CVV harus 3-4 digit.";
   return null;
 }
 
@@ -121,16 +124,16 @@ export function PaymentPageClient({
             <Check className="size-7 text-green-700" />
           </div>
           <p className="text-base font-medium mb-1.5">
-            Your payment was successful
+            Pembayaran Anda berhasil
           </p>
           <p className="text-sm text-muted-foreground mb-6">
-            The invoice has been sent to your email.
+            Invoice telah dikirim ke email Anda.
           </p>
           <button
             onClick={() => router.push("/applications")}
             className="w-full bg-accent text-accent-foreground py-2.5 rounded-lg text-sm"
           >
-            Back to my applications
+            Kembali ke pengajuan saya
           </button>
         </div>
       </div>
@@ -145,12 +148,12 @@ export function PaymentPageClient({
           className="flex items-center gap-1.5 text-muted-foreground text-xs mb-5 hover:text-foreground"
         >
           <ArrowLeft className="size-3.5" />
-          Back to applications
+          Kembali ke pengajuan
         </Link>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr] gap-8">
           <div>
-            <p className="text-base font-medium mb-5">Payment method</p>
+            <p className="text-base font-medium mb-5">Metode pembayaran</p>
 
             <div className="flex gap-5 border-b mb-5">
               <button
@@ -171,7 +174,7 @@ export function PaymentPageClient({
                     : "text-muted-foreground"
                 }`}
               >
-                Card
+                Kartu
               </button>
             </div>
 
@@ -188,13 +191,19 @@ export function PaymentPageClient({
                           : "border border-input text-muted-foreground"
                       }`}
                     >
-                      {p}
+                      <Image
+                        src={EWALLET_LOGOS[p]}
+                        alt={p}
+                        width={64}
+                        height={16}
+                        className="h-4 w-auto object-contain"
+                      />
                     </button>
                   ))}
                 </div>
 
                 <label className="text-xs text-muted-foreground block mb-1.5">
-                  Phone number
+                  Nomor telepon
                 </label>
                 <input
                   value={phone}
@@ -234,7 +243,7 @@ export function PaymentPageClient({
             ) : (
               <>
                 <label className="text-xs text-muted-foreground block mb-1.5">
-                  Card number
+                  Nomor kartu
                 </label>
                 <input
                   value={cardNumber}
@@ -253,7 +262,7 @@ export function PaymentPageClient({
                 {!fieldErrors.cardNumber && <div className="mb-4" />}
 
                 <label className="text-xs text-muted-foreground block mb-1.5">
-                  Cardholder name
+                  Nama pemegang kartu
                 </label>
                 <input
                   value={cardName}
@@ -261,7 +270,7 @@ export function PaymentPageClient({
                     setCardName(e.target.value);
                     setFieldErrors((prev) => ({ ...prev, cardName: "" }));
                   }}
-                  placeholder="As shown on card"
+                  placeholder="Sesuai yang tertera di kartu"
                   className={`${inputClass} ${fieldErrors.cardName ? "border-destructive" : "border-input"} mb-1`}
                 />
                 {fieldErrors.cardName && (
@@ -274,7 +283,7 @@ export function PaymentPageClient({
                 <div className="grid grid-cols-2 gap-3 mb-6">
                   <div>
                     <label className="text-xs text-muted-foreground block mb-1.5">
-                      Expiry date
+                      Tanggal kedaluwarsa
                     </label>
                     <input
                       value={expiry}
@@ -324,13 +333,13 @@ export function PaymentPageClient({
               className="w-full bg-foreground text-background py-3 rounded-lg text-sm font-medium"
             >
               {isPending
-                ? "Processing..."
-                : `Pay ${formatRupiah(data.grandTotal)}`}
+                ? "Memproses..."
+                : `Bayar ${formatRupiah(data.grandTotal)}`}
             </button>
           </div>
 
           <div className="bg-muted/40 rounded-xl p-5 self-start">
-            <p className="text-sm font-medium mb-4">Order summary</p>
+            <p className="text-sm font-medium mb-4">Ringkasan pesanan</p>
 
             <div className="flex flex-col gap-2 text-sm mb-3">
               <div className="flex justify-between">
@@ -342,11 +351,11 @@ export function PaymentPageClient({
                 <span>{data.areaName}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Slot price</span>
+                <span className="text-muted-foreground">Harga slot</span>
                 <span>{formatRupiah(data.pricePerSlot)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Platform fee</span>
+                <span className="text-muted-foreground">Biaya platform</span>
                 <span>{formatRupiah(data.platformFee)}</span>
               </div>
             </div>

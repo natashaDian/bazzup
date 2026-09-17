@@ -31,9 +31,9 @@ export function AreaDeleteModal({
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-card rounded-2xl p-6 w-full max-w-sm">
-        <h3 className="text-base font-medium mb-2">Delete this area?</h3>
+        <h3 className="text-base font-medium mb-2">Hapus area ini?</h3>
         <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-          "{areaName}" will be permanently deleted. This cannot be undone.
+          "{areaName}" akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.
         </p>
 
         {error && <p className="text-xs text-destructive mb-3">{error}</p>}
@@ -43,14 +43,14 @@ export function AreaDeleteModal({
             onClick={onClose}
             className="bg-secondary/15 text-muted-foreground px-4 py-2 rounded-lg text-sm"
           >
-            Cancel
+            Batal
           </button>
           <button
             onClick={handleDelete}
             disabled={isPending}
             className="bg-destructive text-destructive-foreground px-4 py-2 rounded-lg text-sm"
           >
-            {isPending ? "Deleting..." : "Delete"}
+            {isPending ? "Menghapus..." : "Hapus"}
           </button>
         </div>
       </div>

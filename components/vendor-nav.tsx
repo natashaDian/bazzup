@@ -1,19 +1,34 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+
 import {
-  BellIcon,
-  SparklesIcon,
   UserIcon,
   PackageIcon,
   ImageIcon,
   LogOutIcon,
 } from "lucide-react";
+
 import type { User } from "@prisma/client";
 import { signOutAction } from "@/lib/sign-out";
+import { NotificationBell } from "@/components/notification-bell";
 
-export function VendorNav({ user }: { user: User }) {
+import bazzupLogo from "./assets/bazzup logo.png";
+
+function isNavItemActive(pathname: string, href: string) {
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+type Indicator = { left: number; top: number; width: number; height: number };
+
+export function Nav({ user }: { user: User }) {
+  const pathname = usePathname();
+  const itemRefs = useRef<Map<string, HTMLAnchorElement>>(new Map());
+  const [indicator, setIndicator] = useState<Indicator | null>(null);
+
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -24,6 +39,51 @@ export function VendorNav({ user }: { user: User }) {
       .slice(0, 2)
       .join("")
       .toUpperCase() || "?";
+
+  const navItems = [
+    {
+      label: "Beranda",
+      href: "/vendor",
+    },
+    {
+      label: "Jelajahi",
+      href: "/explore",
+    },
+    {
+      label: "Status",
+      href: "/applications",
+    },
+    {
+      label: "Tentang",
+      href: "/about",
+    },
+  ];
+
+  const activeHref = pathname.startsWith("/allbazaar")
+    ? "/vendor"
+    : navItems.find((item) => isNavItemActive(pathname, item.href))?.href;
+
+  useLayoutEffect(() => {
+    const activeEl = activeHref ? itemRefs.current.get(activeHref) : undefined;
+
+    if (!activeEl) {
+      setIndicator(null);
+      return;
+    }
+
+    const measure = () =>
+      setIndicator({
+        left: activeEl.offsetLeft,
+        top: activeEl.offsetTop,
+        width: activeEl.offsetWidth,
+        height: activeEl.offsetHeight,
+      });
+
+    measure();
+
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [activeHref]);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -36,48 +96,97 @@ export function VendorNav({ user }: { user: User }) {
   }, []);
 
   return (
-    <header className="flex items-center justify-between gap-2 border-b bg-card px-4 py-3 sm:gap-6">
-      <div className="flex items-center gap-3 sm:gap-6">
+  <header className="border-b border-[#E5E0EB] bg-card">
+    <div className="mx-auto grid min-h-[72px] grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 px-3 sm:min-h-[88px] sm:px-6 md:px-10 lg:grid-cols-3 lg:px-16">
+
+      {/* Left: Logo + Tagline */}
+      <div className="min-w-0">
         <Link
           href="/vendor"
-          className="flex items-center gap-1.5 font-bold text-primary"
+          className="flex w-fit items-center gap-3 sm:gap-4"
         >
-          <SparklesIcon className="size-5" />
-          BazzUp
+          <Image
+            src={bazzupLogo}
+            alt="BazzUp"
+            width={70}
+            height={32}
+            className="h-auto w-[50px] shrink-0 sm:w-[70px]"
+          />
+
+          <span className="hidden text-[10px] font-medium tracking-[0.18em] text-[#7A5CA8] lg:block">
+            <span className="mr-2 text-[#B98CDE]">|</span>
+            TINGKATKAN BAZAAR ANDA
+          </span>
         </Link>
-        <nav className="hidden items-center gap-4 text-sm font-medium text-muted-foreground sm:flex">
-          <Link href="/vendor" className="hover:text-foreground">
-            Home
-          </Link>
-          <Link href="/explore" className="hover:text-foreground">
-            Explore
-          </Link>
-          <Link href="/applications" className="hover:text-foreground">
-            Status
-          </Link>
-          <Link href="/about" className="hover:text-foreground">
-            About
-          </Link>
+      </div>
+
+      {/* Center: Navigation */}
+      <div className="flex min-w-0 justify-center">
+        <nav className="relative flex max-w-full items-center overflow-x-auto rounded-full border border-[#E5E0EB] bg-white px-2 py-1 shadow-sm sm:px-3 sm:py-1.5">
+          {indicator && (
+            <span
+              aria-hidden
+              className="absolute rounded-full bg-[#7A5CA8] shadow-sm transition-all duration-300 ease-out"
+              style={{
+                left: indicator.left,
+                top: indicator.top,
+                width: indicator.width,
+                height: indicator.height,
+              }}
+            />
+          )}
+
+          {navItems.map((item) => {
+            const active = item.href === activeHref;
+            const responsiveClass = item.label === "Tentang" ? "hidden lg:inline-flex" : "";
+
+            return (
+              <Link
+                key={item.href}
+                ref={(el) => {
+                  if (el) itemRefs.current.set(item.href, el);
+                  else itemRefs.current.delete(item.href);
+                }}
+                href={item.href}
+                aria-current={active ? "page" : undefined}
+                className={
+                  active
+                    ? `relative z-10 whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium text-white transition-colors duration-300 sm:px-5 sm:py-2 ${responsiveClass}`
+                    : `relative z-10 whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium text-[#3B1F4A] transition-colors duration-300 hover:bg-[#F3EAFB] hover:text-[#7A5CA8] sm:px-5 sm:py-2 ${responsiveClass}`
+                }
+              >
+                {item.label}
+              </Link>
+            );
+          })}
         </nav>
       </div>
-      <div className="flex items-center gap-3">
-        <BellIcon className="size-5 text-muted-foreground" />
+
+      {/* Right: Notification + Profile */}
+      <div className="flex items-center justify-end gap-1 sm:gap-4">
+        <NotificationBell />
 
         <div className="relative" ref={menuRef}>
           <button
+            type="button"
             onClick={() => setOpen((prev) => !prev)}
-            className="flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-secondary text-xs font-medium text-secondary-foreground"
+            className="flex items-center gap-2 rounded-full px-1 py-1 transition-colors duration-200 hover:bg-[#F3EAFB] sm:px-2"
           >
-            {user.profileImageUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={user.profileImageUrl}
-                alt={user.name}
-                className="size-8 object-cover"
-              />
-            ) : (
-              initials
-            )}
+            <div className="flex size-7 shrink-0 items-center justify-center overflow-hidden rounded-full bg-secondary text-[10px] font-medium text-secondary-foreground sm:size-8 sm:text-xs">
+              {user.profileImageUrl ? (
+                <img
+                  src={user.profileImageUrl}
+                  alt={user.name}
+                  className="size-7 object-cover sm:size-8"
+                />
+              ) : (
+                initials
+              )}
+            </div>
+
+            <span className="hidden text-sm font-medium text-[#3B1F4A] md:block">
+              {user.name}
+            </span>
           </button>
 
           {open && (
@@ -85,7 +194,6 @@ export function VendorNav({ user }: { user: User }) {
               <div className="flex items-center gap-2.5 px-4 py-3 border-b">
                 <div className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-secondary text-xs font-medium text-secondary-foreground">
                   {user.profileImageUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={user.profileImageUrl}
                       alt={user.name}
@@ -110,7 +218,7 @@ export function VendorNav({ user }: { user: User }) {
                   className="flex items-center gap-2.5 px-4 py-2 text-sm hover:bg-secondary/10"
                 >
                   <UserIcon className="size-4 text-muted-foreground" />
-                  My Profile
+                  Profil Saya
                 </Link>
                 <Link
                   href="/profile#products"
@@ -118,7 +226,7 @@ export function VendorNav({ user }: { user: User }) {
                   className="flex items-center gap-2.5 px-4 py-2 text-sm hover:bg-secondary/10"
                 >
                   <PackageIcon className="size-4 text-muted-foreground" />
-                  My Products
+                  Produk Saya
                 </Link>
                 <Link
                   href="/profile#portfolio"
@@ -126,7 +234,7 @@ export function VendorNav({ user }: { user: User }) {
                   className="flex items-center gap-2.5 px-4 py-2 text-sm hover:bg-secondary/10"
                 >
                   <ImageIcon className="size-4 text-muted-foreground" />
-                  My Portfolio
+                  Portofolio Saya
                 </Link>
               </div>
 
@@ -137,7 +245,7 @@ export function VendorNav({ user }: { user: User }) {
                     className="flex w-full items-center gap-2.5 px-4 py-2 text-sm text-destructive hover:bg-destructive/10"
                   >
                     <LogOutIcon className="size-4" />
-                    Sign Out
+                    Keluar
                   </button>
                 </form>
               </div>
@@ -145,6 +253,11 @@ export function VendorNav({ user }: { user: User }) {
           )}
         </div>
       </div>
-    </header>
+    </div>
+  </header>
   );
+}
+
+export function VendorNav({ user }: { user: User }) {
+  return <Nav user={user} />;
 }

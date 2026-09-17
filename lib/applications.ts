@@ -1,6 +1,11 @@
 import "server-only";
 import type { ApplicationStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import {
+  expireOverdueApplications,
+  reopenBazaarsWithFutureEndDate,
+  syncBazaarFullStatuses,
+} from "@/lib/bazaars";
 
 export const APPLICATION_STATUSES: {
   value: ApplicationStatus;
@@ -16,6 +21,16 @@ export const APPLICATION_STATUSES: {
   { value: "NO_SHOW", label: "No Show" },
   { value: "COMPLETED", label: "Completed" },
 ];
+
+export async function syncCompletedApplications(): Promise<void> {
+  await prisma.application.updateMany({
+    where: {
+      status: "CONFIRMED",
+      area: { bazaar: { eventEndDate: { lt: new Date() } } },
+    },
+    data: { status: "COMPLETED" },
+  });
+}
 
 export type VendorApplicationRow = {
   id: string;
@@ -47,6 +62,8 @@ export type VendorApplicationRow = {
   cancelReason: string | null;
   cancelledAt: Date | null;
   organizerWhatsapp: string | null;
+  name: string;
+  businessName: string;
 };
 
 function toDisplayId(id: string): string {
@@ -57,6 +74,10 @@ export async function getVendorApplications(
   vendorId: string,
   filters: { status?: ApplicationStatus; sort?: "newest" | "oldest" },
 ): Promise<VendorApplicationRow[]> {
+  await expireOverdueApplications();
+  await reopenBazaarsWithFutureEndDate();
+  await syncBazaarFullStatuses();
+
   const applications = await prisma.application.findMany({
     where: {
       vendorId,
@@ -64,6 +85,12 @@ export async function getVendorApplications(
     },
     orderBy: { appliedAt: filters.sort === "oldest" ? "asc" : "desc" },
     include: {
+      vendor: {
+        select: {
+          name: true,
+          businessName: true,
+        },
+      },
       area: {
         select: {
           name: true,
@@ -100,6 +127,8 @@ export async function getVendorApplications(
     description: application.description,
     slotNumber: application.slotNumber,
     status: application.status,
+    name: application.vendor.name,
+    businessName: application.vendor.businessName ?? "",
     pricePerSlot: application.area.pricePerSlot,
     totalPrice: application.totalPrice,
     platformFee: application.platformFee,
@@ -150,6 +179,10 @@ export async function getApplicationsBoard(
   organizerId: string,
   filters: { bazaarId?: string; q?: string; sort?: string } = {},
 ) {
+  await expireOverdueApplications();
+  await reopenBazaarsWithFutureEndDate();
+  await syncBazaarFullStatuses();
+
   const where = {
     area: {
       bazaar: {
@@ -234,16 +267,24 @@ export async function getApplicationsBoard(
 
 export async function getOrganizerBazaarOptionsForFilter(organizerId: string) {
   return prisma.bazaar.findMany({
-    where: { organizerId },
+    where: { organizerId, status: { not: "DRAFT" } },
     select: { id: true, title: true },
     orderBy: { title: "asc" },
   });
 }
 
+export type MatchScoreBreakdownItem = {
+  label: string;
+  points: number;
+  achieved: boolean;
+  isBaseline: boolean;
+};
+
 export type ApplicationDetail = {
   id: string;
   status: ApplicationStatus;
   matchScore: number | null;
+  matchScoreBreakdown: MatchScoreBreakdownItem[];
   appliedAt: Date;
   approvedAt: Date | null;
   paymentConfirmedAt: Date | null;
@@ -270,7 +311,6 @@ export type ApplicationDetail = {
     title: string;
   };
   vendorStats: {
-    averageRating: number | null;
     bazaarsJoined: number;
     products: { id: string; name: string; price: number }[];
     portfolios: { id: string; bazaarName: string; eventDate: Date }[];
@@ -288,6 +328,10 @@ export async function getApplicationDetail(
   applicationId: string,
   organizerId: string,
 ): Promise<ApplicationDetail | null> {
+  await expireOverdueApplications();
+  await reopenBazaarsWithFutureEndDate();
+  await syncBazaarFullStatuses();
+
   const application = await prisma.application.findUnique({
     where: { id: applicationId },
     select: {
@@ -307,6 +351,7 @@ export async function getApplicationDetail(
           businessDesc: true,
           instagram: true,
           isVerifiedVendor: true,
+          targetMarket: true,
         },
       },
       area: {
@@ -316,6 +361,7 @@ export async function getApplicationDetail(
           totalSlot: true,
           pricePerSlot: true,
           categoryWanted: true,
+          visitorProfile: true,
           bazaarId: true,
           bazaar: { select: { id: true, title: true, organizerId: true } },
           _count: {
@@ -334,11 +380,7 @@ export async function getApplicationDetail(
     return null;
   }
 
-  const [ratings, bazaarsJoined, products, portfolios] = await Promise.all([
-    prisma.review.aggregate({
-      where: { revieweeId: application.vendor.id, type: "ORGANIZER_TO_VENDOR" },
-      _avg: { rating: true },
-    }),
+  const [bazaarsJoined, products, portfolios] = await Promise.all([
     prisma.application.count({
       where: { vendorId: application.vendor.id, status: "COMPLETED" },
     }),
@@ -356,15 +398,56 @@ export async function getApplicationDetail(
     }),
   ]);
 
+  const categoryMatch =
+    !!application.vendor.businessType &&
+    !!application.area.categoryWanted &&
+    application.vendor.businessType.trim().toLowerCase() ===
+      application.area.categoryWanted.trim().toLowerCase();
+  const marketMatch =
+    !!application.vendor.targetMarket &&
+    !!application.area.visitorProfile &&
+    application.vendor.targetMarket.trim().toLowerCase() ===
+      application.area.visitorProfile.trim().toLowerCase();
+
+  const matchScoreBreakdown: MatchScoreBreakdownItem[] = [
+    {
+      label: "Skor dasar (otomatis)",
+      points: 20,
+      achieved: true,
+      isBaseline: true,
+    },
+    {
+      label: "Kategori usaha sesuai area",
+      points: categoryMatch ? 50 : 0,
+      achieved: categoryMatch,
+      isBaseline: false,
+    },
+    {
+      label: "Target pasar sesuai area",
+      points: marketMatch ? 30 : 0,
+      achieved: marketMatch,
+      isBaseline: false,
+    },
+  ];
+
   return {
     id: application.id,
     status: application.status,
     matchScore: application.matchScore,
+    matchScoreBreakdown,
     appliedAt: application.appliedAt,
     approvedAt: application.approvedAt,
     paymentConfirmedAt: application.paymentConfirmedAt,
     rejectReason: application.rejectReason,
-    vendor: application.vendor,
+    vendor: {
+      id: application.vendor.id,
+      name: application.vendor.name,
+      businessName: application.vendor.businessName,
+      businessType: application.vendor.businessType,
+      businessDesc: application.vendor.businessDesc,
+      instagram: application.vendor.instagram,
+      isVerifiedVendor: application.vendor.isVerifiedVendor,
+    },
     area: {
       id: application.area.id,
       name: application.area.name,
@@ -378,7 +461,6 @@ export async function getApplicationDetail(
     },
     bazaar: application.area.bazaar,
     vendorStats: {
-      averageRating: ratings._avg.rating,
       bazaarsJoined,
       products,
       portfolios,
@@ -400,7 +482,6 @@ export type VendorPublicProfile = {
   website: string | null;
   profileImageUrl: string | null;
   isVerifiedVendor: boolean;
-  averageRating: number | null;
   bazaarsJoined: number;
   products: {
     id: string;
@@ -440,11 +521,7 @@ export async function getVendorPublicProfile(
 
   if (!vendor) return null;
 
-  const [ratings, bazaarsJoined, products, portfolios] = await Promise.all([
-    prisma.review.aggregate({
-      where: { revieweeId: vendorId, type: "ORGANIZER_TO_VENDOR" },
-      _avg: { rating: true },
-    }),
+  const [bazaarsJoined, products, portfolios] = await Promise.all([
     prisma.application.count({
       where: { vendorId, status: "COMPLETED" },
     }),
@@ -462,7 +539,6 @@ export async function getVendorPublicProfile(
 
   return {
     ...vendor,
-    averageRating: ratings._avg.rating,
     bazaarsJoined,
     products,
     portfolios,

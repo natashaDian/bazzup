@@ -31,7 +31,7 @@ export function BazaarDetailPanel({ bazaar }: { bazaar: ExploreBazaar }) {
               rel="noreferrer"
               className="text-xs font-medium text-primary underline underline-offset-2"
             >
-              View on Maps
+              Lihat di Peta
             </a>
           </p>
 
@@ -51,7 +51,7 @@ export function BazaarDetailPanel({ bazaar }: { bazaar: ExploreBazaar }) {
 
           <p className="text-xs text-muted-foreground">{bazaar.address}</p>
           <p className="text-xs text-muted-foreground">
-            Organized by <span className="font-medium text-foreground">{bazaar.organizerName}</span>
+            Diselenggarakan oleh <span className="font-medium text-foreground">{bazaar.organizerName}</span>
           </p>
         </div>
       </div>
@@ -60,7 +60,7 @@ export function BazaarDetailPanel({ bazaar }: { bazaar: ExploreBazaar }) {
         <h4 className="text-sm font-semibold">Area & Harga Sewa</h4>
 
         {bazaar.areas.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No areas have been set up yet.</p>
+          <p className="text-sm text-muted-foreground">Area belum tersedia.</p>
         ) : (
           <div className="flex flex-col divide-y">
             {bazaar.areas.map((area) => (
@@ -73,7 +73,7 @@ export function BazaarDetailPanel({ bazaar }: { bazaar: ExploreBazaar }) {
         )}
 
         <Link href={`/bazaars/${bazaar.id}`} className={buttonVariants({ className: "mt-1 w-full" })}>
-          Apply Now
+          Daftar Sekarang
         </Link>
       </div>
     </div>
