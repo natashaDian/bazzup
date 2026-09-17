@@ -33,6 +33,90 @@ export async function expireOverdueApplications(): Promise<void> {
   });
 }
 
+// Same "lazy" approach for bazaars whose event has already ended - they
+// should flip to COMPLETED so their cards/summary reflect reality, instead
+// of staying ACTIVE/FULL forever.
+export async function completeOverdueBazaars(): Promise<void> {
+  await prisma.bazaar.updateMany({
+    where: {
+      status: { in: ["ACTIVE", "FULL"] },
+      eventEndDate: { lt: new Date() },
+    },
+    data: { status: "COMPLETED" },
+  });
+}
+
+// Editing a bazaar's dates (e.g. directly in the database) can move its
+// eventEndDate back into the future after it was already auto-completed.
+// Reopen those as ACTIVE so completeOverdueBazaars/syncBazaarFullStatuses
+// can re-derive the correct status instead of leaving it stuck COMPLETED.
+export async function reopenBazaarsWithFutureEndDate(): Promise<void> {
+  await prisma.bazaar.updateMany({
+    where: {
+      status: "COMPLETED",
+      eventEndDate: { gte: new Date() },
+    },
+    data: { status: "ACTIVE" },
+  });
+}
+
+// A bazaar should flip to FULL once every one of its areas has no slots
+// left, and drop back to ACTIVE if a cancellation/rejection/expiry frees a
+// slot again. Synced lazily on read, same pattern as the two functions
+// above - there's no cron job in this hackathon build to react to
+// application status changes as they happen.
+export async function syncBazaarFullStatuses(): Promise<void> {
+  const bazaars = await prisma.bazaar.findMany({
+    where: { status: { in: ["ACTIVE", "FULL"] } },
+    select: {
+      id: true,
+      status: true,
+      areas: {
+        select: {
+          totalSlot: true,
+          _count: {
+            select: {
+              applications: {
+                where: { status: { in: OCCUPYING_APPLICATION_STATUSES } },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  const toFull: string[] = [];
+  const toActive: string[] = [];
+
+  for (const bazaar of bazaars) {
+    const areasWithSlots = bazaar.areas.filter((area) => area.totalSlot > 0);
+    if (areasWithSlots.length === 0) continue;
+
+    const isFull = areasWithSlots.every(
+      (area) => area._count.applications >= area.totalSlot,
+    );
+
+    if (isFull && bazaar.status !== "FULL") toFull.push(bazaar.id);
+    if (!isFull && bazaar.status === "FULL") toActive.push(bazaar.id);
+  }
+
+  await Promise.all([
+    toFull.length > 0
+      ? prisma.bazaar.updateMany({
+          where: { id: { in: toFull } },
+          data: { status: "FULL" },
+        })
+      : Promise.resolve(),
+    toActive.length > 0
+      ? prisma.bazaar.updateMany({
+          where: { id: { in: toActive } },
+          data: { status: "ACTIVE" },
+        })
+      : Promise.resolve(),
+  ]);
+}
+
 export async function getVendorAppliedAreaIds(
   vendorId: string,
   areaIds: string[],
@@ -425,6 +509,9 @@ function toBazaarDetail(bazaar: BazaarWithDetailData): BazaarDetail {
 }
 export async function getBazaarById(id: string): Promise<BazaarDetail | null> {
   await expireOverdueApplications();
+  await reopenBazaarsWithFutureEndDate();
+  await syncBazaarFullStatuses();
+  await completeOverdueBazaars();
 
   const bazaar = await prisma.bazaar.findUnique({
     where: { id },
@@ -459,6 +546,9 @@ export async function getOrganizerBazaars(
   filters: { status?: string; q?: string } = {},
 ): Promise<OrganizerBazaarCardData[]> {
   await expireOverdueApplications();
+  await reopenBazaarsWithFutureEndDate();
+  await syncBazaarFullStatuses();
+  await completeOverdueBazaars();
 
   const where: Prisma.BazaarWhereInput = { organizerId };
 
@@ -517,6 +607,16 @@ export async function getOrganizerBazaars(
   }));
 }
 
+export type BazaarReview = {
+  id: string;
+  vendorId: string;
+  vendorName: string;
+  vendorProfileImageUrl: string | null;
+  rating: number;
+  comment: string | null;
+  createdAt: Date;
+};
+
 export type BazaarCompletionSummary = {
   totalAreas: number;
   totalVendorsConfirmed: number;
@@ -524,12 +624,17 @@ export type BazaarCompletionSummary = {
   eventStartDate: Date;
   eventEndDate: Date;
   areaBreakdown: { areaName: string; filled: number; totalSlot: number }[];
+  averageRating: number | null;
+  reviews: BazaarReview[];
 };
 
 export async function getBazaarCompletionSummary(
   bazaarId: string,
 ): Promise<BazaarCompletionSummary | null> {
   await expireOverdueApplications();
+  await reopenBazaarsWithFutureEndDate();
+  await syncBazaarFullStatuses();
+  await completeOverdueBazaars();
 
   const bazaar = await prisma.bazaar.findUnique({
     where: { id: bazaarId },
@@ -560,13 +665,43 @@ export async function getBazaarCompletionSummary(
     0,
   );
 
-  const revenueResult = await prisma.application.aggregate({
-    where: {
-      status: { in: ["CONFIRMED", "COMPLETED"] },
-      area: { bazaarId },
-    },
-    _sum: { platformFee: true },
-  });
+  const [revenueResult, reviewRows] = await Promise.all([
+    prisma.application.aggregate({
+      where: {
+        status: { in: ["CONFIRMED", "COMPLETED"] },
+        area: { bazaarId },
+      },
+      _sum: { platformFee: true },
+    }),
+    prisma.review.findMany({
+      where: { type: "VENDOR_TO_BAZAAR", application: { area: { bazaarId } } },
+      select: {
+        id: true,
+        rating: true,
+        comment: true,
+        createdAt: true,
+        author: {
+          select: { id: true, name: true, businessName: true, profileImageUrl: true },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    }),
+  ]);
+
+  const reviews: BazaarReview[] = reviewRows.map((review) => ({
+    id: review.id,
+    vendorId: review.author.id,
+    vendorName: review.author.businessName || review.author.name,
+    vendorProfileImageUrl: review.author.profileImageUrl,
+    rating: review.rating,
+    comment: review.comment,
+    createdAt: review.createdAt,
+  }));
+
+  const averageRating =
+    reviews.length > 0
+      ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
+      : null;
 
   return {
     totalAreas,
@@ -579,6 +714,8 @@ export async function getBazaarCompletionSummary(
       filled: area._count.applications,
       totalSlot: area.totalSlot,
     })),
+    averageRating,
+    reviews,
   };
 }
 
@@ -594,6 +731,9 @@ export async function getBazaarConfirmedVendors(
   bazaarId: string,
 ): Promise<BazaarConfirmedVendor[]> {
   await expireOverdueApplications();
+  await reopenBazaarsWithFutureEndDate();
+  await syncBazaarFullStatuses();
+  await completeOverdueBazaars();
 
   const applications = await prisma.application.findMany({
     where: {
