@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { requireVendor } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { createNotification } from "@/lib/notifications";
 
 export type ReviewActionState = {
   error?: string;
@@ -24,7 +25,9 @@ export async function submitBazaarReviewAction(
       status: true,
       area: {
         select: {
-          bazaar: { select: { organizerId: true, eventEndDate: true } },
+          bazaar: {
+            select: { id: true, title: true, organizerId: true, eventEndDate: true },
+          },
         },
       },
     },
@@ -64,6 +67,13 @@ export async function submitBazaarReviewAction(
       rating,
       comment: comment || null,
     },
+  });
+
+  const vendorName = user.businessName || user.name;
+  await createNotification({
+    userId: application.area.bazaar.organizerId,
+    message: `${vendorName} melakukan review terhadap ${application.area.bazaar.title}, yuk lihat reviewnya!`,
+    linkUrl: `/organizer/bazaars?openSummary=${application.area.bazaar.id}`,
   });
 
   revalidatePath("/applications");

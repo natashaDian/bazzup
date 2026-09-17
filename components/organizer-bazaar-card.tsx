@@ -45,8 +45,10 @@ const STATUS_CONFIG: Record <
 
 export function OrganizerBazaarCard({
   bazaar,
+  autoOpenSummary = false,
 }: {
   bazaar: OrganizerBazaarCardData;
+  autoOpenSummary?: boolean;
 }) {
   const status = STATUS_CONFIG[bazaar.status] ?? STATUS_CONFIG.DRAFT;
   const filledSlot = bazaar.totalSlot - bazaar.slotsLeft;
@@ -127,14 +129,20 @@ export function OrganizerBazaarCard({
           />
         </div>
 
-        <ActionButtons bazaar={bazaar} />
+        <ActionButtons bazaar={bazaar} autoOpenSummary={autoOpenSummary} />
       </div>
     </div>
   );
 }
 
-function ActionButtons({ bazaar }: { bazaar: OrganizerBazaarCardData }) {
-  const [showSummary, setShowSummary] = useState(false);
+function ActionButtons({
+  bazaar,
+  autoOpenSummary,
+}: {
+  bazaar: OrganizerBazaarCardData;
+  autoOpenSummary: boolean;
+}) {
+  const [showSummary, setShowSummary] = useState(autoOpenSummary);
   const [showVendors, setShowVendors] = useState(false);
 
   const secondaryClass =
@@ -159,14 +167,27 @@ function ActionButtons({ bazaar }: { bazaar: OrganizerBazaarCardData }) {
 
   if (bazaar.status === "FULL") {
     return (
-      <div className="flex gap-2.5">
-        <Link href={detailHref} className={secondaryClass}>
-          <Users className="size-3.5" /> View vendors
-        </Link>
-        <Link href={detailHref} className={secondaryClass}>
-          <Settings className="size-3.5" /> Manage
-        </Link>
-      </div>
+      <>
+        <div className="flex gap-2.5">
+          <button onClick={() => setShowVendors(true)} className={secondaryClass}>
+            <Users className="size-3.5" /> Vendor list
+          </button>
+          <Link
+            href={`/organizer/applications?bazaarId=${bazaar.id}`}
+            className={primaryClass}
+          >
+            <Settings className="size-3.5" /> Manage vendor
+          </Link>
+        </div>
+
+        {showVendors && (
+          <BazaarVendorsModal
+            bazaarTitle={bazaar.title}
+            bazaarId={bazaar.id}
+            onClose={() => setShowVendors(false)}
+          />
+        )}
+      </>
     );
   }
 
@@ -194,6 +215,7 @@ function ActionButtons({ bazaar }: { bazaar: OrganizerBazaarCardData }) {
             bazaarTitle={bazaar.title}
             bazaarId={bazaar.id}
             onClose={() => setShowVendors(false)}
+            showPaymentStatus={false}
           />
         )}
       </>

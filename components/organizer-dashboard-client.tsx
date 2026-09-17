@@ -50,7 +50,7 @@ const ALL_BAZAAR_VALUE = "__all__";
 const ATTENTION_ICON = {
   draft: FilePenLine,
   pending: Inbox,
-  unrated: Star,
+  review: Star,
 };
 
 // One consistent icon style across every stat card.
@@ -466,7 +466,9 @@ export function OrganizerDashboardClient({
                 const href =
                   item.type === "pending"
                     ? `/organizer/applications?bazaarId=${item.bazaarId}`
-                    : `/organizer/bazaars/${item.bazaarId}`;
+                    : item.type === "review"
+                      ? `/organizer/bazaars?openSummary=${item.bazaarId}`
+                      : `/organizer/bazaars/${item.bazaarId}`;
                 return (
                   <Link
                     key={i}
