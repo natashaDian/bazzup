@@ -30,9 +30,6 @@ export async function getDashboardStats(
         }),
         prisma.application.aggregate({
           where: { status: { in: CONFIRMED_STATUSES }, area: { bazaarId } },
-          // `totalPrice` is the organizer's own price per slot (Area.pricePerSlot,
-          // captured on the application at payment time) - the organizer's
-          // profit. `platformFee` is BazzUp's cut, not the organizer's revenue.
           _sum: { totalPrice: true },
         }),
       ]);

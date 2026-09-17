@@ -54,9 +54,6 @@ export default async function BazaarDetailPage({ params }: PageParams) {
 
   const user = await getCurrentUser();
 
-  // Vendors are gated behind a complete profile so organizers always get
-  // usable info to review applications with - anyone getting here without
-  // one (direct link, back button, other cards) gets bounced back.
   if (user?.role === "VENDOR" && !isVendorProfileComplete(user)) {
     redirect("/explore?incompleteProfile=1");
   }

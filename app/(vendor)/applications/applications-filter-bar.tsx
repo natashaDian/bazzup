@@ -53,7 +53,6 @@ export function ApplicationsFilterBar({
       }
     }, 400);
     return () => clearTimeout(handle);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search]);
 
   const statusLabel = (value: string) =>

@@ -165,7 +165,6 @@ export function BazaarSummaryModal({
                       className="flex gap-2.5 bg-secondary/10 rounded-lg px-3 py-2.5"
                     >
                       {review.vendorProfileImageUrl ? (
-                        // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={review.vendorProfileImageUrl}
                           alt={review.vendorName}

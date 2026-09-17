@@ -40,8 +40,6 @@ export function ExploreMap({
   const selectedLat = selectedBazaar?.latitude;
   const selectedLng = selectedBazaar?.longitude;
 
-  // Flies the map to whichever bazaar is selected so vendors don't have to
-  // manually drag/scroll to it after picking one from the list.
   useEffect(() => {
     if (!mapRef.current || selectedLat === undefined || selectedLng === undefined) return;
     mapRef.current.flyTo([selectedLat, selectedLng], Math.max(mapRef.current.getZoom(), 14));

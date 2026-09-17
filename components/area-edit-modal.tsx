@@ -150,7 +150,6 @@ export function AreaEditModal({
             {area.images.length > 0 ? (
               <div className="flex gap-2 mb-2 overflow-x-auto">
                 {area.images.map((img) => (
-                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     key={img.id}
                     src={img.url}
@@ -172,7 +171,6 @@ export function AreaEditModal({
               {newPreviews.length > 0 ? (
                 <div className="flex gap-2">
                   {newPreviews.map((url, i) => (
-                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       key={i}
                       src={url}

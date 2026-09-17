@@ -30,9 +30,6 @@ export const metadata: Metadata = {
   title: "Tentang - BazzUp",
 };
 
-// Scopes the BazzUp accent purple (#7A5CA8) to this page only, so buttons and
-// icon chips built on the shared `bg-primary`/`text-primary` utilities pick
-// up the accent instead of the app-wide dark-purple `--primary` token.
 const ACCENT_THEME_VARS = { "--primary": "#7A5CA8" } as CSSProperties;
 
 type Step = { icon: LucideIcon; title: string; description: string };

@@ -56,7 +56,6 @@
 }
 
 :root {
-  /* BazzUp brand palette */
   --brand-primary: #3b1f4a;
   --brand-secondary: #b98cde;
   --brand-background: #f3eafb;
@@ -132,9 +131,6 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
-/* Opt out of the brand palette - used on the login/register pages, which
-   were rolled back to the original neutral look while the rest of the
-   app keeps the purple theme. */
 .theme-original {
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -166,8 +162,6 @@
     @apply font-sans;
   }
 }
-
-/* Login Page Animations */
 
 .login-container {
   animation: loginContainerIn 0.7s ease-out both;
@@ -201,9 +195,6 @@
   animation: loginTermsIn 0.6s ease-out 0.5s both;
 }
 
-
-/* Container */
-
 @keyframes loginContainerIn {
   from {
     opacity: 0;
@@ -215,9 +206,6 @@
     transform: translateY(0);
   }
 }
-
-
-/* Left Panel */
 
 @keyframes loginPanelLeftIn {
   from {
@@ -231,9 +219,6 @@
   }
 }
 
-
-/* Right Panel */
-
 @keyframes loginPanelRightIn {
   from {
     opacity: 0;
@@ -245,9 +230,6 @@
     transform: translateX(0);
   }
 }
-
-
-/* Main Heading */
 
 @keyframes loginHeadingIn {
   from {
@@ -261,9 +243,6 @@
   }
 }
 
-
-/* Description */
-
 @keyframes loginDescriptionIn {
   from {
     opacity: 0;
@@ -275,9 +254,6 @@
     transform: translateY(0);
   }
 }
-
-
-/* Form Heading */
 
 @keyframes loginFormHeadingIn {
   from {
@@ -291,9 +267,6 @@
   }
 }
 
-
-/* Form */
-
 @keyframes loginFormIn {
   from {
     opacity: 0;
@@ -306,9 +279,6 @@
   }
 }
 
-
-/* Terms */
-
 @keyframes loginTermsIn {
   from {
     opacity: 0;
@@ -318,9 +288,6 @@
     opacity: 1;
   }
 }
-
-
-/* Accessibility */
 
 @media (prefers-reduced-motion: reduce) {
   .login-container,
@@ -368,8 +335,6 @@
     animation: none;
   }
 }
-
-/* home animation */
 
 .home-section {
   animation: homeSectionIn 0.7s ease-out both;
@@ -542,9 +507,6 @@
   }
 }
 
-
-/* Search button moving gradient */
-
 .search-gradient-button {
   background: linear-gradient(
     110deg,
@@ -573,9 +535,6 @@
   }
 }
 
-
-/* Accessibility */
-
 @media (prefers-reduced-motion: reduce) {
   .home-section,
   .search-gradient-button {
@@ -597,17 +556,9 @@
   }
 }
 
-/* =========================================================
-   BazzUp Vendor Home
-   ========================================================= */
-
 .home-hero {
   isolation: isolate;
 }
-
-/* ---------------------------------------------------------
-   Animated purple atmosphere
-   --------------------------------------------------------- */
 
 .home-gradient {
   position: absolute;
@@ -629,11 +580,6 @@
   will-change: transform;
 }
 
-/*
-  First glow:
-  bergerak dari area kanan atas hero
-  menuju tengah lalu kembali.
-*/
 .home-gradient-one {
   top: -95px;
   left: 46%;
@@ -644,11 +590,6 @@
     infinite alternate;
 }
 
-/*
-  Second glow:
-  gerakannya lebih lambat dan berbeda arah,
-  supaya keseluruhan gradient tidak terasa "diam".
-*/
 .home-gradient-two {
   top: 25px;
   left: 67%;
@@ -695,11 +636,6 @@
   }
 }
 
-
-/* ---------------------------------------------------------
-   Hero typography
-   --------------------------------------------------------- */
-
 .home-hero-title {
   animation: home-content-in 0.7s ease-out both;
 }
@@ -716,8 +652,6 @@
   animation: home-content-in 0.7s ease-out 0.22s both;
 }
 
-
-/* Animated gradient text */
 .home-gradient-text {
   display: inline-block;
 
@@ -753,19 +687,9 @@
   }
 }
 
-
-/* ---------------------------------------------------------
-   Explore bridge
-   --------------------------------------------------------- */
-
 .home-explore-bridge {
   animation: home-content-in 0.7s ease-out both;
 }
-
-
-/* ---------------------------------------------------------
-   Generic entrance
-   --------------------------------------------------------- */
 
 @keyframes home-content-in {
   from {
@@ -778,11 +702,6 @@
     transform: translateY(0);
   }
 }
-
-
-/* ---------------------------------------------------------
-   Accessibility
-   --------------------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
   .home-gradient,

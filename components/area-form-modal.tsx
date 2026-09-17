@@ -78,7 +78,6 @@ export function AreaFormModal({
       clearDraft();
       onClose();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.success]);
 
   function updateField<K extends keyof AreaDraft>(
@@ -146,7 +145,6 @@ export function AreaFormModal({
               {previews.length > 0 ? (
                 <div className="flex gap-2">
                   {previews.map((url, i) => (
-                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       key={i}
                       src={url}

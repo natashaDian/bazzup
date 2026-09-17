@@ -59,9 +59,6 @@ export function Nav({ user }: { user: User }) {
     },
   ];
 
-  // /allbazaar/* ("See All" destinations reached from the Home page's
-  // Recommended/Upcoming sections) should keep "Home" highlighted rather
-  // than showing no active item.
   const activeHref = pathname.startsWith("/allbazaar")
     ? "/vendor"
     : navItems.find((item) => isNavItemActive(pathname, item.href))?.href;
@@ -141,10 +138,6 @@ export function Nav({ user }: { user: User }) {
 
           {navItems.map((item) => {
             const active = item.href === activeHref;
-            // "About" (now "Tentang") is the least essential item - below
-            // laptop widths the pill nav doesn't have room for all four
-            // items without overflowing/scrolling, so it's hidden until
-            // there's space.
             const responsiveClass = item.label === "Tentang" ? "hidden lg:inline-flex" : "";
 
             return (
@@ -181,7 +174,6 @@ export function Nav({ user }: { user: User }) {
           >
             <div className="flex size-7 shrink-0 items-center justify-center overflow-hidden rounded-full bg-secondary text-[10px] font-medium text-secondary-foreground sm:size-8 sm:text-xs">
               {user.profileImageUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={user.profileImageUrl}
                   alt={user.name}
@@ -202,7 +194,6 @@ export function Nav({ user }: { user: User }) {
               <div className="flex items-center gap-2.5 px-4 py-3 border-b">
                 <div className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-secondary text-xs font-medium text-secondary-foreground">
                   {user.profileImageUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={user.profileImageUrl}
                       alt={user.name}
@@ -267,9 +258,6 @@ export function Nav({ user }: { user: User }) {
   );
 }
 
-/**
- * Compatibility export
- */
 export function VendorNav({ user }: { user: User }) {
   return <Nav user={user} />;
 }

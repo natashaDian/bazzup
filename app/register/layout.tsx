@@ -7,9 +7,6 @@ export default async function RegisterLayout({
 }: {
   children: ReactNode;
 }) {
-  // Covers /register, /register/vendor and /register/organizer - a signed-in
-  // user has nothing to do on any of those, so send them to their role's
-  // home instead of letting them sign up again.
   const user = await getCurrentUser();
   if (user) {
     redirect(user.role === "VENDOR" ? "/vendor" : "/organizer");

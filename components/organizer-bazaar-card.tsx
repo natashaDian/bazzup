@@ -61,7 +61,6 @@ export function OrganizerBazaarCard({
     <div className="bg-card rounded-2xl overflow-hidden shadow-sm">
       <div className="relative h-32 bg-secondary/15 flex items-center justify-center">
         {bazaar.coverImageUrl && (
-          // eslint-disable-next-line @next/next/no-img-element
           <img
             src={bazaar.coverImageUrl}
             alt={bazaar.title}

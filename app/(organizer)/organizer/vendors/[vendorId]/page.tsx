@@ -42,7 +42,6 @@ export default async function VendorPublicProfilePage({
         <div className="flex items-center gap-4 mb-4">
           <div className="w-16 h-16 rounded-full bg-secondary/15 flex items-center justify-center overflow-hidden shrink-0">
             {vendor.profileImageUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={vendor.profileImageUrl}
                 alt={displayName}
@@ -120,7 +119,6 @@ export default async function VendorPublicProfilePage({
               >
                 <div className="h-24 bg-secondary/10 flex items-center justify-center">
                   {p.imageUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={p.imageUrl}
                       alt={p.name}

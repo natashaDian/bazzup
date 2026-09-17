@@ -10,9 +10,6 @@ export default async function OrganizerLayout({
 }: {
   children: ReactNode;
 }) {
-  // Enforces the organizer-only route guard; the user record itself is
-  // fetched again by OrganizerTopbar and by each page (cached per request
-  // via React's `cache()` in lib/auth.ts, so this costs nothing extra).
   const user = await requireOrganizer();
 
   return (

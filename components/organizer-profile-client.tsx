@@ -63,7 +63,6 @@ export function OrganizerProfileClient({
       <div className="rounded-2xl overflow-hidden border border-input mb-6">
         <div className="h-32 bg-secondary/10 flex items-center justify-center">
           {profile.coverImageUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={profile.coverImageUrl}
               alt=""
@@ -78,7 +77,6 @@ export function OrganizerProfileClient({
           <div className="flex items-end justify-between">
             <div className="size-16 rounded-full bg-secondary/20 border-4 border-card flex items-center justify-center -mt-8 mb-2.5 overflow-hidden">
               {profile.profileImageUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={profile.profileImageUrl}
                   alt={displayName}
@@ -163,7 +161,6 @@ export function OrganizerProfileClient({
             <div className="grid grid-cols-1 sm:grid-cols-[1fr_1.3fr] rounded-2xl overflow-hidden border border-input">
               <div className="h-36 sm:h-auto bg-secondary/10 flex items-center justify-center">
                 {latest.coverImageUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={latest.coverImageUrl}
                     alt={latest.title}
@@ -258,7 +255,6 @@ function PastBazaarsCarousel({ bazaars }: { bazaars: OrganizedBazaarCard[] }) {
           >
             <div className="h-24 bg-secondary/10 flex items-center justify-center">
               {bazaar.coverImageUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={bazaar.coverImageUrl}
                   alt={bazaar.title}
@@ -468,7 +464,6 @@ function EditProfileModal({
               <label className="block">
                 <div className="h-24 rounded-lg border border-dashed border-secondary flex items-center justify-center bg-secondary/10 cursor-pointer overflow-hidden">
                   {coverPreview ? (
-                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={coverPreview}
                       alt="Pratinjau sampul"
@@ -508,7 +503,6 @@ function EditProfileModal({
               <label className="block">
                 <div className="size-20 rounded-full border border-dashed border-secondary flex items-center justify-center bg-secondary/10 cursor-pointer overflow-hidden">
                   {photoPreview ? (
-                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={photoPreview}
                       alt="Pratinjau"

@@ -2,11 +2,6 @@ import { requireOrganizer } from "@/lib/auth";
 import { OrganizerHeaderActions } from "@/components/organizer-header-actions";
 import { SidebarCollapseToggle } from "@/components/sidebar-collapse-toggle";
 
-/**
- * Real top header bar for every organizer page - sits above the page's own
- * content (outside `<main>`), spanning the full width of the content
- * column next to the sidebar. Not part of any page's scrollable container.
- */
 export async function OrganizerTopbar() {
   const user = await requireOrganizer();
 

@@ -134,9 +134,6 @@ export function ProfileForm({
     }
     setPhotoError(null);
 
-    // WhatsApp is how organizers reach vendors about their applications, so
-    // it gets a confirmation step before saving instead of silently trusting
-    // whatever was typed.
     if (data.whatsapp) {
       setPendingSubmit(data);
       return;

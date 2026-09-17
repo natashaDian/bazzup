@@ -105,9 +105,6 @@ export function ApplicationStatusCard({ row }: { row: VendorApplicationRow }) {
       )}`
     : null;
 
-  // ---------------------------------------------------------------------
-  // Timeline: which rows to show depends on status
-  // ---------------------------------------------------------------------
   const timelineFields: { label: string; value: string }[] = [
     { label: "Diajukan Pada", value: formatDateTime(row.appliedAt) },
   ];
@@ -130,7 +127,6 @@ export function ApplicationStatusCard({ row }: { row: VendorApplicationRow }) {
   } else if (row.status === "APPROVED") {
     timelineFields.push({ label: "Disetujui Pada", value: formatDateTime(row.approvedAt) });
   }
-  // PENDING: only "Diajukan Pada", already added above
 
   return (
     <AccordionItem
@@ -142,7 +138,6 @@ export function ApplicationStatusCard({ row }: { row: VendorApplicationRow }) {
           <div className="flex min-w-0 items-center gap-3.5">
             <div className="size-14 shrink-0 overflow-hidden rounded-xl bg-[#F3EAFB]">
               {row.images[0] && (
-                // eslint-disable-next-line @next/next/no-img-element
                 <img src={row.images[0]} alt={row.bazaarTitle} className="size-full object-cover" />
               )}
             </div>

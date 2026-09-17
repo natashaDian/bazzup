@@ -10,8 +10,6 @@ export const OCCUPYING_APPLICATION_STATUSES: ApplicationStatus[] = [
   "COMPLETED",
 ];
 
-// Statuses that count as "still an active application" - a vendor with one
-// of these for an area should not be able to apply again for that area.
 export const NON_TERMINAL_APPLICATION_STATUSES: ApplicationStatus[] = [
   "PENDING",
   "APPROVED",
@@ -19,10 +17,6 @@ export const NON_TERMINAL_APPLICATION_STATUSES: ApplicationStatus[] = [
   "CONFIRMED",
 ];
 
-// Applications that were APPROVED but whose 24-hour payment window has
-// passed without payment should no longer occupy a slot - this "lazily"
-// expires them whenever bazaar/area data is read, since there's no cron
-// job in this hackathon build.
 export async function expireOverdueApplications(): Promise<void> {
   await prisma.application.updateMany({
     where: {
@@ -33,9 +27,6 @@ export async function expireOverdueApplications(): Promise<void> {
   });
 }
 
-// Same "lazy" approach for bazaars whose event has already ended - they
-// should flip to COMPLETED so their cards/summary reflect reality, instead
-// of staying ACTIVE/FULL forever.
 export async function completeOverdueBazaars(): Promise<void> {
   await prisma.bazaar.updateMany({
     where: {
@@ -46,10 +37,6 @@ export async function completeOverdueBazaars(): Promise<void> {
   });
 }
 
-// Editing a bazaar's dates (e.g. directly in the database) can move its
-// eventEndDate back into the future after it was already auto-completed.
-// Reopen those as ACTIVE so completeOverdueBazaars/syncBazaarFullStatuses
-// can re-derive the correct status instead of leaving it stuck COMPLETED.
 export async function reopenBazaarsWithFutureEndDate(): Promise<void> {
   await prisma.bazaar.updateMany({
     where: {
@@ -60,11 +47,6 @@ export async function reopenBazaarsWithFutureEndDate(): Promise<void> {
   });
 }
 
-// A bazaar should flip to FULL once every one of its areas has no slots
-// left, and drop back to ACTIVE if a cancellation/rejection/expiry frees a
-// slot again. Synced lazily on read, same pattern as the two functions
-// above - there's no cron job in this hackathon build to react to
-// application status changes as they happen.
 export async function syncBazaarFullStatuses(): Promise<void> {
   const bazaars = await prisma.bazaar.findMany({
     where: { status: { in: ["ACTIVE", "FULL"] } },
@@ -226,7 +208,6 @@ export async function getRecommendedBazaars(
       images: { take: 1 },
       areas: {
         select: {
-          // Needed by toBazaarCard():
           totalSlot: true,
           pricePerSlot: true,
           categoryWanted: true,
@@ -237,7 +218,6 @@ export async function getRecommendedBazaars(
               },
             },
           },
-          // Needed by calculateMatchScore():
           visitorProfile: true,
           estimatedTraffic: true,
           hasElectricity: true,
@@ -262,8 +242,6 @@ export async function getRecommendedBazaars(
   return limit === undefined ? sorted : sorted.slice(0, limit);
 }
 
-// Omit `limit` to get every upcoming bazaar (used by the "See all" pages) -
-// the home page passes an explicit limit for its teaser cards.
 export async function getUpcomingBazaars(
   limit?: number,
 ): Promise<BazaarCard[]> {
@@ -356,7 +334,6 @@ function toExploreBazaar(bazaar: BazaarWithExploreData): ExploreBazaar {
     description: bazaar.description,
     address: bazaar.address,
     city: bazaar.city,
-    // Safe: the query below only selects rows where both are non-null.
     latitude: bazaar.latitude as number,
     longitude: bazaar.longitude as number,
     eventStartDate: bazaar.eventStartDate,
@@ -376,8 +353,6 @@ function toExploreBazaar(bazaar: BazaarWithExploreData): ExploreBazaar {
   };
 }
 
-// Only bazaars with coordinates can be placed on the map, so those are
-// filtered out at the query level instead of showing pin-less rows.
 export async function getExploreBazaars(
   where: Prisma.BazaarWhereInput,
 ): Promise<ExploreBazaar[]> {
@@ -683,8 +658,6 @@ export async function getBazaarCompletionSummary(
         status: { in: ["CONFIRMED", "COMPLETED"] },
         area: { bazaarId },
       },
-      // Organizer's own profit (Area.pricePerSlot, captured as totalPrice at
-      // payment time), not BazzUp's platformFee cut.
       _sum: { totalPrice: true },
     }),
     prisma.review.findMany({

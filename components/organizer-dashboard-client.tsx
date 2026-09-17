@@ -54,7 +54,6 @@ const ATTENTION_ICON = {
   review: Star,
 };
 
-// One consistent icon style across every stat card.
 const CARD_ACCENT = { bg: "bg-accent/15", text: "text-accent" };
 
 function ChartTooltip({

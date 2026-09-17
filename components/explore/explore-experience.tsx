@@ -31,7 +31,6 @@ const ExploreMap = dynamic(
   },
 );
 
-// Jakarta - used only when the vendor's browser can't or won't share GPS.
 const FALLBACK_POSITION: LatLng = { lat: -6.2088, lng: 106.8456 };
 
 type SortOrder = "nearest" | "farthest" | "cheapest" | "expensive";
@@ -52,11 +51,6 @@ type ExploreExperienceProps = {
 };
 
 export function ExploreExperience({ bazaars, cities, initial }: ExploreExperienceProps) {
-  // Starts at null on both server and client render passes - deciding this
-  // from `typeof navigator` instead would make the server (Node has a bare
-  // `navigator` global with no `geolocation`) and the browser disagree on
-  // the very first paint, which triggers a React hydration-mismatch error
-  // that discards and rebuilds this whole subtree (map included).
   const [userPosition, setUserPosition] = useState<LatLng | null>(null);
   const [sortOrder, setSortOrder] = useState<SortOrder>("nearest");
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -187,7 +181,6 @@ function NearbyBazaarItem({
     >
       <div className="size-16 shrink-0 overflow-hidden rounded-lg bg-muted">
         {bazaar.images[0] && (
-          // eslint-disable-next-line @next/next/no-img-element
           <img src={bazaar.images[0]} alt={bazaar.title} className="size-full object-cover" />
         )}
       </div>

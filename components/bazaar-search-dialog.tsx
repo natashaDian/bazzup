@@ -26,9 +26,6 @@ import { formatDateDisplay, formatDateParam, parseDateParam } from "@/lib/date";
 
 const ALL_CITIES_VALUE = "__all__";
 
-// Scopes the accent purple + a pure-white surface to just this dialog, so the
-// Next/Search buttons and the calendar's range highlight pick up the BazzUp
-// accent color without touching the app-wide theme tokens used elsewhere.
 const DIALOG_THEME_VARS = {
   "--primary": "#7A5CA8",
   "--popover": "#FFFFFF",
@@ -43,9 +40,6 @@ type BazaarSearchDialogInitial = {
 type BazaarSearchDialogProps = {
   trigger: ReactNode;
   cities: string[];
-  // `initial` is only read once, on mount - if the caller's filters change
-  // (e.g. the URL search params on /explore), pass a `key` derived from
-  // them so React remounts this component instead of us reset-in-effect.
   initial?: BazaarSearchDialogInitial;
 };
 

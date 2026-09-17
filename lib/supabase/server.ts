@@ -19,8 +19,6 @@ export async function createClient() {
               cookieStore.set(name, value, options)
             );
           } catch {
-            // Dipanggil dari Server Component (read-only cookies) - aman
-            // diabaikan karena proxy.ts sudah menangani refresh session.
           }
         },
       },

@@ -24,7 +24,6 @@ export function DownloadReceiptButton({data}:{data:ReceiptData}) {
         const right = 133;
         let y = 22;
 
-        // Header
         doc.setFont("helvetica", "bold");
         doc.setFontSize(16);
         doc.text("BazzUp", left, y);
@@ -44,7 +43,6 @@ export function DownloadReceiptButton({data}:{data:ReceiptData}) {
         doc.setDrawColor(220);
         doc.line(left, y, right, y);
 
-        // Detail
         y += 10;
         doc.setTextColor(40);
         doc.setFontSize(10);
@@ -72,7 +70,6 @@ export function DownloadReceiptButton({data}:{data:ReceiptData}) {
         y += 7;
         }
 
-        // Rincian biaya
         y += 4;
         doc.setDrawColor(220);
         doc.line(left, y, right, y);
@@ -101,7 +98,6 @@ export function DownloadReceiptButton({data}:{data:ReceiptData}) {
         doc.text("Total", left, y);
         doc.text(formatRupiah(data.grandTotal), right, y, { align: "right" });
 
-        // Footer
         y += 16;
         doc.setFont("helvetica", "normal");
         doc.setFontSize(8);
@@ -113,7 +109,7 @@ export function DownloadReceiptButton({data}:{data:ReceiptData}) {
         );
 
         doc.save(`receipt-${data.vendorName.slice(-8).toUpperCase()}.pdf`);
-    
+
     }
 
         return (

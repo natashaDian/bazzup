@@ -9,7 +9,6 @@ export function BazaarCard({ bazaar }: { bazaar: BazaarCardData }) {
     <Card className="gap-3 overflow-hidden p-0 pb-4">
       <div className="aspect-video w-full bg-muted">
         {bazaar.coverImageUrl && (
-          // eslint-disable-next-line @next/next/no-img-element
           <img
             src={bazaar.coverImageUrl}
             alt={bazaar.title}

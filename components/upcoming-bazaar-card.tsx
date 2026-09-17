@@ -4,10 +4,6 @@ import { formatDateDisplay } from "@/lib/date";
 import { formatRupiah } from "@/lib/currency";
 import type { BazaarCard as BazaarCardData } from "@/lib/bazaars";
 
-// Same card as `BazaarCard`, except the cover image is letterboxed into a
-// consistent 16:9 frame (blurred same-image fill behind, uncropped image on
-// top) instead of being cropped with `object-cover`. Scoped to the vendor
-// home page's Upcoming Bazaars section only - other pages keep `BazaarCard`.
 export function UpcomingBazaarCard({ bazaar }: { bazaar: BazaarCardData }) {
   return (
     <Card className="gap-3 overflow-hidden p-0 pb-4">

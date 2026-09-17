@@ -2,15 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-/**
- * Persists form state to localStorage as it changes, and restores it once on
- * mount. `loaded` only flips to true after the restore attempt finishes, so
- * the save effect below never fires on the first render with blank initial
- * values and clobbers a draft that hasn't been read back yet.
- *
- * localStorage only stores strings, so `T` must be JSON-serializable — don't
- * put File/Blob values (e.g. image uploads) in the draft.
- */
 export function useFormDraft<T extends Record<string, unknown>>(
   key: string,
   initialValue: T,
@@ -26,8 +17,6 @@ export function useFormDraft<T extends Record<string, unknown>>(
         setData({ ...initialValueRef.current, ...JSON.parse(raw) });
       }
     } catch {
-      // Storage unreadable (private mode, disabled, corrupt JSON) — start
-      // from the initial value instead of crashing the form.
     } finally {
       setLoaded(true);
     }
@@ -38,7 +27,6 @@ export function useFormDraft<T extends Record<string, unknown>>(
     try {
       window.localStorage.setItem(key, JSON.stringify(data));
     } catch {
-      // Storage full/unavailable — the draft just won't persist this time.
     }
   }, [key, data, loaded]);
 
@@ -46,7 +34,6 @@ export function useFormDraft<T extends Record<string, unknown>>(
     try {
       window.localStorage.removeItem(key);
     } catch {
-      // ignore
     }
     setData(initialValueRef.current);
   }, [key]);

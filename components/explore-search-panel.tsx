@@ -29,9 +29,6 @@ type ExploreSearchPanelInitial = {
 
 type ExploreSearchPanelProps = {
   cities: string[];
-  // Only read once, on mount - the caller passes a `key` derived from these
-  // values so React remounts this component when the URL filters change
-  // externally (e.g. browser back/forward) instead of us reset-in-effect.
   initial?: ExploreSearchPanelInitial;
 };
 

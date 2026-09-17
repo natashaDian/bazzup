@@ -53,10 +53,6 @@ export default function CreateBazaarPage() {
     if (state.fieldErrors) setFieldErrors(state.fieldErrors);
   }, [state]);
 
-  // `createBazaarAction` redirects on success instead of returning a state we
-  // can observe here, so this page just unmounts once that happens. Tracking
-  // "was a submission in flight when we unmounted" via a ref is the only way
-  // left to clear the draft on success without touching the server action.
   const isPendingRef = useRef(isPending);
   useEffect(() => {
     isPendingRef.current = isPending;
@@ -65,7 +61,6 @@ export default function CreateBazaarPage() {
     return () => {
       if (isPendingRef.current) clearDraft();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function updateField<K extends keyof BazaarDraft>(
@@ -141,7 +136,6 @@ export default function CreateBazaarPage() {
             <label className="block">
               <div className="h-28 border border-dashed border-secondary rounded-lg flex flex-col items-center justify-center text-accent bg-secondary/10 cursor-pointer overflow-hidden">
                 {photoPreview ? (
-                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={photoPreview}
                     alt="Pratinjau sampul"

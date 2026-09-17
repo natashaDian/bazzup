@@ -45,10 +45,6 @@ export function ProfileView({ user }: { user: User }) {
     const file = input.files?.[0];
     if (!file) return;
 
-    // Validated here (before any preview/upload) so an oversized file never
-    // reaches the server action - Next's server actions silently reject
-    // request bodies over its own default limit with an uncaught error,
-    // which never reached our own "file too large" message.
     if (!ALLOWED_PHOTO_TYPES.includes(file.type)) {
       setUploadState({ error: "Format file harus PNG, JPG, atau WEBP." });
       input.value = "";

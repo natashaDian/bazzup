@@ -17,13 +17,9 @@ import { useSidebarCollapsed } from "@/components/organizer-sidebar-context";
 
 import bazzupLogo from "./assets/bazzup logo.png";
 
-// Matches Tailwind's `lg` breakpoint - the sidebar is static above it and an
-// off-canvas overlay below it.
 const DESKTOP_QUERY = "(min-width: 1024px)";
 
 function isNavItemActive(pathname: string, href: string) {
-  // Dashboard ("/organizer") should only be active on that exact route -
-  // nested routes like /organizer/bazaars must not also light up Dashboard.
   if (href === "/organizer") {
     return pathname === href;
   }
@@ -57,16 +53,12 @@ export function OrganizerNav() {
   const [indicator, setIndicator] = useState<Indicator | null>(null);
   const { collapsed } = useSidebarCollapsed();
 
-  // Open on desktop, closed (off-canvas) on smaller screens by default.
   const [open, setOpen] = useState(false);
 
   const activeHref = navItems.find((item) =>
     isNavItemActive(pathname, item.href),
   )?.href;
 
-  // Keep the sidebar open on desktop and auto-close it whenever the
-  // viewport shrinks below the desktop breakpoint (it no longer fits
-  // alongside the content).
   useEffect(() => {
     const mql = window.matchMedia(DESKTOP_QUERY);
     const sync = () => setOpen(mql.matches);
@@ -77,7 +69,6 @@ export function OrganizerNav() {
     return () => mql.removeEventListener("change", sync);
   }, []);
 
-  // Close the mobile overlay after navigating to a new section.
   useEffect(() => {
     if (!window.matchMedia(DESKTOP_QUERY).matches) {
       setOpen(false);
@@ -102,9 +93,6 @@ export function OrganizerNav() {
 
     measure();
 
-    // Re-measure once the collapse/expand width transition (duration-300)
-    // has settled, since `width` animates the actual box geometry over
-    // time rather than just compositing.
     const settleTimer = window.setTimeout(measure, 320);
 
     window.addEventListener("resize", measure);

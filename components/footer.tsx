@@ -19,9 +19,6 @@ const FOOTER_NAV_LINKS: Record<Role, [{ label: string; href: string }, { label: 
 export function Footer({ role = "VENDOR" }: { role?: Role }) {
   const [firstLink, secondLink] = FOOTER_NAV_LINKS[role];
 
-  // Vendor pages have no sidebar, so the content column is much wider than
-  // the organizer's - without centering, the row piles up on the left with
-  // a lot of dead space on the right at laptop widths.
   const rowAlignClass = role === "VENDOR" ? "xl:justify-center" : "";
 
   return (

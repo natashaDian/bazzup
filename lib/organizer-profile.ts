@@ -10,8 +10,6 @@ const REQUIRED_ORGANIZER_FIELDS = [
   "profileImageUrl",
 ] as const satisfies readonly (keyof User)[];
 
-// Mirrors isVendorProfileComplete in lib/vendor-profile.ts - same required-
-// field bar, just for the organizer side of the User model.
 export function isOrganizerProfileComplete(user: User): boolean {
   return REQUIRED_ORGANIZER_FIELDS.every((field) => {
     const value = user[field];

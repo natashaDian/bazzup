@@ -88,7 +88,6 @@ function BazaarResultCard({ bazaar }: { bazaar: ChatBazaarResult }) {
     <div className="bg-card border border-input rounded-xl overflow-hidden mt-2 shadow-sm">
       <div className="h-20 bg-secondary/15 flex items-center justify-center relative">
         {bazaar.coverImageUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
           <img
             src={bazaar.coverImageUrl}
             alt={bazaar.title}

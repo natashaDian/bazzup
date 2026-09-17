@@ -5,9 +5,6 @@ import type { Role, User } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase/server";
 
-// Memoized per request - layouts and pages can both call this (e.g. a
-// vendor layout for the nav plus a page for its own data) without
-// re-hitting Supabase/Prisma for the same request.
 export const getCurrentUser = cache(async (): Promise<User | null> => {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getClaims();
@@ -41,9 +38,6 @@ export function requireVendor(): Promise<User> {
   return requireRole("VENDOR");
 }
 
-// Any signed-in user, regardless of role - for things like notifications
-// that belong to a user, not to a role (vendor and organizer both read
-// their own via this).
 export async function requireUser(): Promise<User> {
   const user = await getCurrentUser();
   if (!user) {

@@ -545,24 +545,20 @@ async function main() {
 
   await prisma.product.createMany({
     data: [
-      // Siti Aminah - Dapur Siti (Kuliner)
       { vendorId: vendor1.id, name: "Es Teh Kekinian", price: 8000 },
       { vendorId: vendor1.id, name: "Risoles Mayo", price: 6000 },
       { vendorId: vendor1.id, name: "Kue Cubit", price: 10000 },
       { vendorId: vendor1.id, name: "Pisang Nugget", price: 12000 },
 
-      // Andi Pratama - Andi Denim Co. (Fashion)
       { vendorId: vendor2.id, name: "Jaket Denim Oversize", price: 250000 },
       { vendorId: vendor2.id, name: "Celana Denim Slim Fit", price: 180000 },
       { vendorId: vendor2.id, name: "Rok Denim A-Line", price: 150000 },
       { vendorId: vendor2.id, name: "Tas Denim Tote", price: 120000 },
 
-      // Dewi Lestari - Kriya Dewi (Kerajinan)
       { vendorId: vendor3.id, name: "Tas Rajut Handmade", price: 95000 },
       { vendorId: vendor3.id, name: "Gantungan Kunci Makrame", price: 15000 },
       { vendorId: vendor3.id, name: "Vas Bunga Anyaman Rotan", price: 75000 },
 
-      // Fajar Nugroho - Kopi Keliling Fajar (Kuliner)
       { vendorId: vendor4.id, name: "Kopi Susu Gula Aren", price: 15000 },
       { vendorId: vendor4.id, name: "Americano", price: 12000 },
       { vendorId: vendor4.id, name: "Cappuccino", price: 18000 },
@@ -573,7 +569,6 @@ async function main() {
 
   await prisma.portfolio.createMany({
     data: [
-      // Siti Aminah
       {
         vendorId: vendor1.id,
         bazaarName: "Bazaar Ramadan Kota Tua",
@@ -587,7 +582,6 @@ async function main() {
         photoUrl: "https://picsum.photos/seed/portfolio-siti-2/600/400",
       },
 
-      // Andi Pratama
       {
         vendorId: vendor2.id,
         bazaarName: "Jakarta Fashion Market",
@@ -601,7 +595,6 @@ async function main() {
         photoUrl: "https://picsum.photos/seed/portfolio-andi-2/600/400",
       },
 
-      // Dewi Lestari
       {
         vendorId: vendor3.id,
         bazaarName: "Pasar Kreatif Bandung",
@@ -621,7 +614,6 @@ async function main() {
         photoUrl: "https://picsum.photos/seed/portfolio-dewi-3/600/400",
       },
 
-      // Fajar Nugroho
       {
         vendorId: vendor4.id,
         bazaarName: "Car Free Day Sudirman Pop-up",

@@ -8,11 +8,6 @@ import type { User } from "@prisma/client";
 import { signOutAction } from "@/lib/sign-out";
 import { NotificationBell } from "@/components/notification-bell";
 
-/**
- * Notification bell + profile avatar, shown at the far right of every
- * organizer page header. Mirrors the same cluster on the vendor navbar
- * (components/vendor-nav.tsx) for a consistent look across roles.
- */
 export function OrganizerHeaderActions({ user }: { user: User }) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -47,7 +42,6 @@ export function OrganizerHeaderActions({ user }: { user: User }) {
         >
           <div className="flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-secondary text-xs font-medium text-secondary-foreground">
             {user.profileImageUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={user.profileImageUrl}
                 alt={user.name}
@@ -68,7 +62,6 @@ export function OrganizerHeaderActions({ user }: { user: User }) {
             <div className="flex items-center gap-2.5 px-4 py-3 border-b">
               <div className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-secondary text-xs font-medium text-secondary-foreground">
                 {user.profileImageUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={user.profileImageUrl}
                     alt={user.name}

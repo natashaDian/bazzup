@@ -94,7 +94,6 @@ export function BazaarDetailClient({ bazaar }: { bazaar: Bazaar }) {
       <div className="bg-card rounded-2xl overflow-hidden">
         <div className="relative h-44 bg-secondary/10 flex items-center justify-center">
           {bazaar.images[0] ? (
-            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={bazaar.images[0].url}
               alt={bazaar.title}
@@ -193,7 +192,6 @@ export function BazaarDetailClient({ bazaar }: { bazaar: Bazaar }) {
               >
                 <div className="h-28 bg-secondary/10 flex items-center justify-center">
                   {area.images[0] ? (
-                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={area.images[0].url}
                       alt={area.name}

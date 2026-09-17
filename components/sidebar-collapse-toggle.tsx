@@ -4,13 +4,6 @@ import { MenuIcon } from "lucide-react";
 
 import { useSidebarCollapsed } from "@/components/organizer-sidebar-context";
 
-/**
- * Desktop-only sidebar minimize/maximize toggle, shown in the topbar. Uses
- * the same Menu icon as the mobile hamburger (rendered by OrganizerNav) for
- * visual consistency, but stays the same icon in both states (unlike the
- * mobile toggle's Menu/X swap) since this always minimizes/maximizes a
- * persistent sidebar rather than opening/closing an overlay.
- */
 export function SidebarCollapseToggle() {
   const { collapsed, toggleCollapsed } = useSidebarCollapsed();
 

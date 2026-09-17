@@ -45,7 +45,6 @@ export function NotificationBell() {
       setNotifications(data.notifications);
       setUnreadCount(data.unreadCount);
     } catch {
-      // silently fail, will retry on next poll
     }
   }, []);
 
