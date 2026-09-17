@@ -380,9 +380,13 @@ export type BazaarDetail = {
   facilities: string[];
   organizerName: string;
   organizerContact: BazaarOrganizerContact;
+  organizerRating: number | null;
   areas: BazaarAreaDetail[];
 };
-function toBazaarDetail(bazaar: BazaarWithDetailData): BazaarDetail {
+function toBazaarDetail(
+  bazaar: BazaarWithDetailData,
+  organizerRating: number | null,
+): BazaarDetail {
   return {
     id: bazaar.id,
     title: bazaar.title,
@@ -409,6 +413,7 @@ function toBazaarDetail(bazaar: BazaarWithDetailData): BazaarDetail {
       instagram: bazaar.organizer.instagram,
       website: bazaar.organizer.website,
     },
+    organizerRating,
     areas: bazaar.areas.map((area) => ({
       id: area.id,
       name: area.name,
@@ -431,7 +436,14 @@ export async function getBazaarById(id: string): Promise<BazaarDetail | null> {
     include: bazaarDetailInclude,
   });
 
-  return bazaar ? toBazaarDetail(bazaar) : null;
+  if (!bazaar) return null;
+
+  const ratingResult = await prisma.review.aggregate({
+    where: { revieweeId: bazaar.organizerId, type: "VENDOR_TO_BAZAAR" },
+    _avg: { rating: true },
+  });
+
+  return toBazaarDetail(bazaar, ratingResult._avg.rating);
 }
 
 export type OrganizerBazaarCardData = BazaarCard & {
