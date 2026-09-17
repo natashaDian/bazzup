@@ -3,6 +3,7 @@
 import { useState, useActionState, useEffect } from "react";
 import { X, ImagePlus } from "lucide-react";
 import { BUSINESS_CATEGORIES } from "@/lib/constants";
+import { useFormDraft } from "@/hooks/use-form-draft";
 import { createAreaAction, type AreaActionState } from "@/lib/areas";
 
 const initialState: AreaActionState = {};
@@ -24,12 +25,26 @@ function parseThousands(value: string): string {
   return value.replace(/\D/g, "");
 }
 
-const emptyForm = {
+type AreaDraft = {
+  name: string;
+  description: string;
+  totalSlot: string;
+  pricePerSlot: string;
+  categoryWanted: string[];
+  categoryWantedOther: string;
+  estimatedTraffic: string;
+  visitorProfile: string;
+  peakHoursStart: string;
+  peakHoursEnd: string;
+  hasElectricity: boolean;
+};
+
+const emptyForm: AreaDraft = {
   name: "",
   description: "",
   totalSlot: "",
   pricePerSlot: "",
-  categoryWanted: [] as string[],
+  categoryWanted: [],
   categoryWantedOther: "",
   estimatedTraffic: "",
   visitorProfile: "",
@@ -51,15 +66,24 @@ export function AreaFormModal({
     initialState,
   );
   const [previews, setPreviews] = useState<string[]>([]);
-  const [form, setForm] = useState(emptyForm);
+  const {
+    data: form,
+    setData: setForm,
+    clearDraft,
+    loaded: draftLoaded,
+  } = useFormDraft<AreaDraft>("draft-area", emptyForm);
 
   useEffect(() => {
-    if (state.success) onClose();
+    if (state.success) {
+      clearDraft();
+      onClose();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.success]);
 
-  function updateField<K extends keyof typeof emptyForm>(
+  function updateField<K extends keyof AreaDraft>(
     key: K,
-    value: (typeof emptyForm)[K],
+    value: AreaDraft[K],
   ) {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
@@ -84,6 +108,18 @@ export function AreaFormModal({
     const urls = Array.from(files).map((file) => URL.createObjectURL(file));
     setPreviews(urls);
   }
+
+  const hasDraftContent =
+    draftLoaded &&
+    (form.name.trim() !== "" ||
+      form.description.trim() !== "" ||
+      form.totalSlot !== "" ||
+      form.pricePerSlot !== "" ||
+      form.categoryWanted.length > 0 ||
+      form.estimatedTraffic !== "" ||
+      form.visitorProfile !== "" ||
+      form.peakHoursStart !== "" ||
+      form.peakHoursEnd !== "");
 
   return (
     <div className="fixed inset-0 bg-black/45 flex items-center justify-center z-50 p-4">
@@ -383,6 +419,12 @@ export function AreaFormModal({
             </button>
           </div>
         </form>
+
+        {hasDraftContent && (
+          <p className="text-xs text-muted-foreground text-center mt-3">
+            Draft tersimpan otomatis di browser ini.
+          </p>
+        )}
       </div>
     </div>
   );

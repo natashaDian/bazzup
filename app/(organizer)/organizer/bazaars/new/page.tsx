@@ -1,14 +1,31 @@
 "use client";
 
-import { useActionState, useState, useEffect } from "react";
+import { useActionState, useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { ImagePlus } from "lucide-react";
 import { LocationPicker } from "@/components/location-picker";
+import { useFormDraft } from "@/hooks/use-form-draft";
 import { createBazaarAction, type CreateBazaarState } from "./actions";
 
 const initialState: CreateBazaarState = {};
 
 const FACILITY_OPTIONS = ["Meja", "Kursi", "Rak", "Karpet", "Tripod"];
+
+type BazaarDraft = {
+  title: string;
+  description: string;
+  eventStartDate: string;
+  eventEndDate: string;
+  facilities: string[];
+};
+
+const EMPTY_DRAFT: BazaarDraft = {
+  title: "",
+  description: "",
+  eventStartDate: "",
+  eventEndDate: "",
+  facilities: [],
+};
 
 export default function CreateBazaarPage() {
   const router = useRouter();
@@ -23,54 +40,80 @@ export default function CreateBazaarPage() {
     latitude: -6.2088,
     longitude: 106.8456,
   });
-  const [facilities, setFacilities] = useState<string[]>([]);
 
-  const [form, setForm] = useState({
-    title: "",
-    description: "",
-    eventStartDate: "",
-    eventEndDate: "",
-  });
+  const {
+    data: draft,
+    setData: setDraft,
+    clearDraft,
+    loaded: draftLoaded,
+  } = useFormDraft<BazaarDraft>("draft-bazaar", EMPTY_DRAFT);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (state.fieldErrors) setFieldErrors(state.fieldErrors);
   }, [state]);
 
-  function updateField<K extends keyof typeof form>(key: K, value: string) {
-    setForm((prev) => ({ ...prev, [key]: value }));
+  // `createBazaarAction` redirects on success instead of returning a state we
+  // can observe here, so this page just unmounts once that happens. Tracking
+  // "was a submission in flight when we unmounted" via a ref is the only way
+  // left to clear the draft on success without touching the server action.
+  const isPendingRef = useRef(isPending);
+  useEffect(() => {
+    isPendingRef.current = isPending;
+  }, [isPending]);
+  useEffect(() => {
+    return () => {
+      if (isPendingRef.current) clearDraft();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function updateField<K extends keyof BazaarDraft>(
+    key: K,
+    value: BazaarDraft[K],
+  ) {
+    setDraft((prev) => ({ ...prev, [key]: value }));
     setFieldErrors((prev) => ({ ...prev, [key]: "" }));
   }
 
   function toggleFacility(facility: string) {
-    setFacilities((prev) =>
-      prev.includes(facility)
-        ? prev.filter((f) => f !== facility)
-        : [...prev, facility],
-    );
+    setDraft((prev) => ({
+      ...prev,
+      facilities: prev.facilities.includes(facility)
+        ? prev.facilities.filter((f) => f !== facility)
+        : [...prev.facilities, facility],
+    }));
   }
 
   function validateClientSide() {
     const errors: Record<string, string> = {};
-    if (!form.title.trim() || form.title.trim().length < 3) {
+    if (!draft.title.trim() || draft.title.trim().length < 3) {
       errors.title = "Title must be at least 3 characters";
     }
-    if (!form.description.trim() || form.description.trim().length < 100) {
+    if (!draft.description.trim() || draft.description.trim().length < 100) {
       errors.description = "Description must be at least 100 characters";
     }
-    if (!form.eventStartDate) {
+    if (!draft.eventStartDate) {
       errors.eventStartDate = "Start date is required";
     }
-    if (!form.eventEndDate) {
+    if (!draft.eventEndDate) {
       errors.eventEndDate = "End date is required";
     } else if (
-      form.eventStartDate &&
-      new Date(form.eventEndDate) < new Date(form.eventStartDate)
+      draft.eventStartDate &&
+      new Date(draft.eventEndDate) < new Date(draft.eventStartDate)
     ) {
       errors.eventEndDate = "End date must be on or after the start date";
     }
     return errors;
   }
+
+  const hasDraftContent =
+    draftLoaded &&
+    (draft.title.trim() !== "" ||
+      draft.description.trim() !== "" ||
+      draft.eventStartDate !== "" ||
+      draft.eventEndDate !== "" ||
+      draft.facilities.length > 0);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     const errors = validateClientSide();
@@ -131,7 +174,7 @@ export default function CreateBazaarPage() {
             </label>
             <input
               name="title"
-              value={form.title}
+              value={draft.title}
               onChange={(e) => updateField("title", e.target.value)}
               placeholder="Enter bazaar title"
               className="w-full px-3 py-2 rounded-lg border border-input bg-card text-sm"
@@ -149,14 +192,14 @@ export default function CreateBazaarPage() {
             </label>
             <textarea
               name="description"
-              value={form.description}
+              value={draft.description}
               onChange={(e) => updateField("description", e.target.value)}
               rows={4}
               placeholder="Tell people about your bazaar (minimum 100 characters)"
               className="w-full px-3 py-2 rounded-lg border border-input bg-card text-sm resize-none"
             />
             <p className="text-[11px] text-muted-foreground mt-1">
-              {form.description.trim().length}/100 characters minimum
+              {draft.description.trim().length}/100 characters minimum
             </p>
             {fieldErrors.description && (
               <p className="text-xs text-destructive mt-1">
@@ -173,7 +216,7 @@ export default function CreateBazaarPage() {
               <input
                 type="date"
                 name="eventStartDate"
-                value={form.eventStartDate}
+                value={draft.eventStartDate}
                 onChange={(e) => updateField("eventStartDate", e.target.value)}
                 className="w-full px-3 py-2 rounded-lg border border-input bg-card text-sm"
               />
@@ -190,7 +233,7 @@ export default function CreateBazaarPage() {
               <input
                 type="date"
                 name="eventEndDate"
-                value={form.eventEndDate}
+                value={draft.eventEndDate}
                 onChange={(e) => updateField("eventEndDate", e.target.value)}
                 className="w-full px-3 py-2 rounded-lg border border-input bg-card text-sm"
               />
@@ -232,7 +275,7 @@ export default function CreateBazaarPage() {
               >
                 <input
                   type="checkbox"
-                  checked={facilities.includes(facility)}
+                  checked={draft.facilities.includes(facility)}
                   onChange={() => toggleFacility(facility)}
                   className="accent-accent"
                 />
@@ -240,7 +283,11 @@ export default function CreateBazaarPage() {
               </label>
             ))}
           </div>
-          <input type="hidden" name="facilities" value={facilities.join(",")} />
+          <input
+            type="hidden"
+            name="facilities"
+            value={draft.facilities.join(",")}
+          />
 
           {state.error && (
             <p className="text-sm text-destructive">{state.error}</p>
@@ -263,6 +310,12 @@ export default function CreateBazaarPage() {
             </button>
           </div>
         </form>
+
+        {hasDraftContent && (
+          <p className="text-xs text-muted-foreground text-center mt-3">
+            Draft tersimpan otomatis di browser ini.
+          </p>
+        )}
       </div>
     </main>
   );

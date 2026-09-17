@@ -24,6 +24,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { AboutTestimonialCarousel, type Testimonial } from "@/components/about-testimonial-carousel";
 import { AboutScrollLink } from "@/components/about-scroll-link";
 import aboutUsIllustration from "@/components/assets/about us illustration.png";
+import aboutUsBg from "@/components/assets/about us bg.jpg";
 
 export const metadata: Metadata = {
   title: "About - BazzUp",
@@ -253,17 +254,39 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <StepsSection
-        title="How It Works for Vendors"
-        subtitle="Join a bazaar in just a few simple steps."
-        steps={VENDOR_STEPS}
-      />
+      <section className="relative isolate mt-10 w-full overflow-hidden sm:mt-14">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-30">
+          <Image
+            src={aboutUsBg}
+            alt=""
+            fill
+            sizes="100vw"
+            className="object-cover"
+          />
+        </div>
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 -z-20 bg-gradient-to-r from-white via-white/75 to-white/25"
+        />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+          <div className="home-gradient home-gradient-one" />
+          <div className="home-gradient home-gradient-two" />
+        </div>
 
-      <StepsSection
-        title="How It Works for Organizers"
-        subtitle="Easily manage your bazaar from planning to execution."
-        steps={ORGANIZER_STEPS}
-      />
+        <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col gap-12 px-6 py-16 sm:px-8 sm:py-20">
+          <StepsSection
+            title="How It Works for Vendors"
+            subtitle="Join a bazaar in just a few simple steps."
+            steps={VENDOR_STEPS}
+          />
+
+          <StepsSection
+            title="How It Works for Organizers"
+            subtitle="Easily manage your bazaar from planning to execution."
+            steps={ORGANIZER_STEPS}
+          />
+        </div>
+      </section>
 
       <section className="mx-auto w-full max-w-6xl px-6 pb-12 sm:px-8 sm:pb-16">
         <h2 className="mb-8 text-center text-2xl font-bold text-[#3B1F4A] sm:mb-10 sm:text-3xl">
@@ -334,7 +357,7 @@ export default function AboutPage() {
 
 function StepsSection({ title, subtitle, steps }: { title: string; subtitle: string; steps: Step[] }) {
   return (
-    <section className="mx-auto w-full max-w-6xl px-6 pb-12 sm:px-8 sm:pb-16">
+    <div className="w-full">
       <div className="mb-8 flex flex-col gap-1.5 sm:mb-10">
         <h2 className="text-2xl font-bold text-[#3B1F4A] sm:text-3xl">{title}</h2>
         <p className="text-[#6B7280]">{subtitle}</p>
@@ -355,6 +378,6 @@ function StepsSection({ title, subtitle, steps }: { title: string; subtitle: str
           </div>
         ))}
       </div>
-    </section>
+    </div>
   );
 }
