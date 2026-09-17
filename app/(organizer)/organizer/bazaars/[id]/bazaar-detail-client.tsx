@@ -19,6 +19,7 @@ import { AreaEditModal } from "@/components/area-edit-modal";
 import { AreaDeleteModal } from "@/components/area-delete-modal";
 import { publishBazaarAction } from "@/lib/areas";
 import { formatDateDisplay } from "@/lib/date";
+import { formatRupiah } from "@/lib/currency";
 
 type AreaImage = { id: string; url: string };
 type Area = {
@@ -207,7 +208,7 @@ export function BazaarDetailClient({ bazaar }: { bazaar: Bazaar }) {
                   <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
                     <span>{area.totalSlot} slot</span>
                     <span className="font-medium text-foreground">
-                      Rp {area.pricePerSlot.toLocaleString("id-ID")} / slot
+                      {formatRupiah(area.pricePerSlot)} / slot
                     </span>
                   </div>
                   <div className="flex items-center gap-2 flex-wrap">

@@ -11,6 +11,7 @@ import {
   ChevronRight,
   ImageIcon,
 } from "lucide-react";
+import { formatRupiah } from "@/lib/currency";
 
 type AreaImage = { id: string; url: string };
 type Area = {
@@ -115,7 +116,7 @@ export function AreaOverviewModal({
                 Harga per Slot
               </p>
               <p className="text-base font-medium">
-                Rp {area.pricePerSlot.toLocaleString("id-ID")}
+                {formatRupiah(area.pricePerSlot)}
               </p>
             </div>
           </div>

@@ -9,6 +9,7 @@ import {
   deleteProductAction,
   type ProductActionState,
 } from "./actions";
+import { formatRupiah } from "@/lib/currency";
 
 type Product = {
   id: string;
@@ -111,7 +112,7 @@ export function ProductSection({ products }: { products: Product[] }) {
             <div className="p-3">
               <p className="text-sm font-medium truncate">{product.name}</p>
               <p className="text-sm text-muted-foreground">
-                Rp {product.price.toLocaleString("id-ID")}
+                {formatRupiah(product.price)}
               </p>
             </div>
 
@@ -257,7 +258,7 @@ export function ProductSection({ products }: { products: Product[] }) {
             </div>
             <p className="font-medium text-base">{activeItem.name}</p>
             <p className="text-sm text-muted-foreground">
-              Rp {activeItem.price.toLocaleString("id-ID")}
+              {formatRupiah(activeItem.price)}
             </p>
             {activeItem.description && (
               <p className="text-sm text-muted-foreground mt-2">

@@ -106,6 +106,12 @@ export async function rejectApplicationAction(
     data: { status: "REJECTED", rejectReason: reason || null },
   });
 
+  await createNotification({
+    userId: application.vendorId,
+    message: `Your application for ${application.area.bazaar.title} was rejected.${reason ? ` Reason: ${reason}` : ""}`,
+    linkUrl: "/applications",
+  });
+
   revalidatePath("/organizer/applications");
   return {};
 }

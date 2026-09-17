@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { requireOrganizer } from "@/lib/auth";
 import { getVendorPublicProfile } from "@/lib/applications";
+import { formatRupiah } from "@/lib/currency";
 
 export default async function VendorPublicProfilePage({
   params,
@@ -132,7 +133,7 @@ export default async function VendorPublicProfilePage({
                 <div className="p-2.5">
                   <p className="text-xs font-medium truncate">{p.name}</p>
                   <p className="text-xs text-muted-foreground">
-                    Rp {p.price.toLocaleString("id-ID")}
+                    {formatRupiah(p.price)}
                   </p>
                 </div>
               </div>

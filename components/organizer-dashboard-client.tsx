@@ -42,6 +42,7 @@ import type {
   ActivityItem,
   UpcomingBazaar,
 } from "@/lib/dashboard";
+import { formatRupiah } from "@/lib/currency";
 
 type BazaarOption = { id: string; title: string };
 
@@ -194,7 +195,7 @@ export function OrganizerDashboardClient({
     {
       icon: Wallet,
       label: "Pendapatan",
-      value: `Rp ${stats.revenue.toLocaleString("id-ID")}`,
+      value: formatRupiah(stats.revenue),
       isNumber: false,
     },
   ];

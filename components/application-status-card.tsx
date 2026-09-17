@@ -372,6 +372,11 @@ export function ApplicationStatusCard({ row }: { row: VendorApplicationRow }) {
                     </button>
                   )}
                 </div>
+                {row.status === "CONFIRMED" && !canCancel && (
+                  <p className="w-full text-[11px] text-gray-500">
+                    Tidak dapat dibatalkan H-7 sebelum acara dimulai.
+                  </p>
+                )}
               </div>
             )}
 

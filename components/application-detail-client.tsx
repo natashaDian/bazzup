@@ -9,6 +9,7 @@ import {
   approveApplicationAction,
   rejectApplicationAction,
 } from "@/app/(organizer)/organizer/applications/actions";
+import { formatRupiah } from "@/lib/currency";
 
 const STATUS_STYLE: Record <
   string,
@@ -234,9 +235,7 @@ export function ApplicationDetailClient({
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Harga per slot</span>
-                <span>
-                  Rp {application.area.pricePerSlot.toLocaleString("id-ID")}
-                </span>
+                <span>{formatRupiah(application.area.pricePerSlot)}</span>
               </div>
               {application.rejectReason && (
                 <div className="flex justify-between">
@@ -308,7 +307,7 @@ export function ApplicationDetailClient({
                     >
                       <span>{p.name}</span>
                       <span className="text-muted-foreground">
-                        Rp {p.price.toLocaleString("id-ID")}
+                        {formatRupiah(p.price)}
                       </span>
                     </div>
                   ))}

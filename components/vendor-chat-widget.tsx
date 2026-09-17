@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 
 import buzzyLogo from "./assets/buzzy logo.png";
+import { formatRupiah } from "@/lib/currency";
 
 type ChatBazaarResult = {
   id: string;
@@ -125,7 +126,7 @@ function BazaarResultCard({ bazaar }: { bazaar: ChatBazaarResult }) {
           </span>
           <span className="font-medium text-foreground">
             {bazaar.minPricePerSlot
-              ? `Mulai Rp ${bazaar.minPricePerSlot.toLocaleString("id-ID")}`
+              ? `Mulai ${formatRupiah(bazaar.minPricePerSlot)}`
               : "-"}
           </span>
         </div>

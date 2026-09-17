@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Check, ArrowLeft } from "lucide-react";
 import { simulatePaymentAction, type PaymentPageData } from "@/lib/payment";
+import { formatRupiah } from "@/lib/currency";
 import gopayLogo from "@/components/assets/logo-ewallet-gopay.png";
 import ovoLogo from "@/components/assets/logo-ewallet-ovo.png";
 import danaLogo from "@/components/assets/logo-ewallet-dana.png";
@@ -17,14 +18,6 @@ const EWALLET_LOGOS: Record<string, typeof gopayLogo> = {
   OVO: ovoLogo,
   DANA: danaLogo,
 };
-
-function formatRupiah(amount: number) {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0,
-  }).format(amount);
-}
 
 function validatePhone(value: string) {
   if (!value.trim()) return "Nomor telepon wajib diisi.";
