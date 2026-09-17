@@ -1,30 +1,31 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, Type } from "@google/genai";
 import { NextResponse } from "next/server";
 import { requireVendor } from "@/lib/auth";
 import { searchBazaarsForChat } from "@/lib/chat-assistant";
+import type { Content } from "@google/genai";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 const SEARCH_TOOL = {
   functionDeclarations: [
     {
-      name: "search_bazaars",
+      name: "search_bazaar",
       description:
         "Search for active bazaars that vendors can apply to, filtered by category, city, and max price per slot.",
       parameters: {
-        type: "object" as const,
+        type: Type.OBJECT,
         properties: {
           category: {
-            type: "string" as const,
+            type: Type.STRING,
             description:
               "Business category, e.g. F&B, Fashion, Lifestyle, Beauty, Services",
           },
           city: {
-            type: "string" as const,
+            type: Type.STRING,
             description: "City name to search in",
           },
           maxPrice: {
-            type: "number" as const,
+            type: Type.NUMBER,
             description: "Maximum price per slot in Indonesian Rupiah",
           },
         },
@@ -54,7 +55,7 @@ Do NOT use markdown formatting like asterisks or bullet points, just write in pl
 When you find matching bazaars, briefly explain why each one fits before the app shows the details.
 Keep your text responses short (1-3 sentences), the actual bazaar cards will be shown separately by the app.`;
 
-  const contents: GeminiContent[] = messages.map(
+  const contents: Content[] = messages.map(
     (m: { role: string; content: string }) => ({
       role: m.role === "assistant" ? "model" : "user",
       parts: [{ text: m.content }],
@@ -82,7 +83,7 @@ Keep your text responses short (1-3 sentences), the actual bazaar cards will be 
       };
       searchResults = await searchBazaarsForChat(args);
 
-      const followUpContents: GeminiContent[] = [
+      const followUpContents: Content[] = [
         ...contents,
         { role: "model", parts: [{ functionCall }] },
         {

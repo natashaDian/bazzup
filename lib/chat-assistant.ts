@@ -68,7 +68,7 @@ export async function searchBazaarsForChat(params: {
           categoryWanted: true,
           _count: {
             select: {
-              applications: { where: { status: { in: OCCUPYING_STATUSES } } },
+              applications: { where: { status: { in: [...OCCUPYING_STATUSES] } } },
             },
           },
         },
