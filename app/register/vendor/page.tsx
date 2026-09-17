@@ -8,7 +8,7 @@ import { LoginBackground } from "../../../components/login-background";
 import bazzupLogo from "../../../components/assets/bazzup logo.png";
 
 export const metadata: Metadata = {
-  title: "Create Vendor Account - BazzUp",
+  title: "Buat Akun Vendor - BazzUp",
 };
 
 const inter = Inter({
@@ -43,17 +43,17 @@ export default function VendorRegisterPage() {
 
             {/* Heading */}
             <h1 className="hidden text-4xl font-bold leading-tight tracking-tight text-[#3B1F4A] md:block">
-              Good Products
+              Produk Berkualitas
               <br />
-              Deserve
+              Pantas Mendapat
               <br />
-              Bigger Stages
+              Panggung Lebih Besar
             </h1>
 
             {/* Description */}
             <p className="mt-5 hidden max-w-sm text-base leading-7 text-[#6B7280] md:block">
-              Join as a vendor and get access to various bazaar events across
-              your city.
+              Bergabunglah sebagai vendor dan dapatkan akses ke berbagai acara
+              bazaar di kotamu.
             </p>
           </div>
         </section>
@@ -84,18 +84,18 @@ export default function VendorRegisterPage() {
             {/* Heading */}
             <div className="mb-7">
               <h2 className="text-3xl font-bold tracking-tight text-[#3B1F4A]">
-                Create Vendor Account
+                Buat Akun Vendor
               </h2>
 
               <p className="mt-2 text-base text-[#6B7280]">
-                Tell us about your business
+                Ceritakan tentang bisnismu
               </p>
             </div>
 
             {/* Form Section */}
             <div>
               <h3 className="mb-5 text-lg font-semibold text-[#3B1F4A]">
-                Basic Information
+                Informasi Dasar
               </h3>
 
               <RegisterForm role="VENDOR" />

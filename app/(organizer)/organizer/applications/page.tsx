@@ -7,7 +7,7 @@ import {
 import { ApplicationsBoardClient } from "@/components/applications-board-client";
 
 export const metadata: Metadata = {
-  title: "Incoming Applications - BazzUp",
+  title: "Pendaftaran Masuk - BazzUp",
 };
 
 export default async function IncomingApplicationsPage({

@@ -24,11 +24,11 @@ function formatRelativeTime(dateStr: string) {
   const diffHour = Math.floor(diffMin / 60);
   const diffDay = Math.floor(diffHour / 24);
 
-  if (diffMin < 1) return "Just now";
-  if (diffMin < 60) return `${diffMin} minute${diffMin > 1 ? "s" : ""} ago`;
-  if (diffHour < 24) return `${diffHour} hour${diffHour > 1 ? "s" : ""} ago`;
-  if (diffDay === 1) return "Yesterday";
-  return `${diffDay} days ago`;
+  if (diffMin < 1) return "Baru saja";
+  if (diffMin < 60) return `${diffMin} menit yang lalu`;
+  if (diffHour < 24) return `${diffHour} jam yang lalu`;
+  if (diffDay === 1) return "Kemarin";
+  return `${diffDay} hari yang lalu`;
 }
 
 export function NotificationBell() {
@@ -107,7 +107,7 @@ export function NotificationBell() {
       <button
         onClick={() => setOpen((prev) => !prev)}
         className="relative"
-        aria-label="Notifications"
+        aria-label="Notifikasi"
       >
         <Bell className="size-5 text-muted-foreground" />
         {unreadCount > 0 && (
@@ -120,13 +120,13 @@ export function NotificationBell() {
       {open && (
         <div className="absolute right-0 top-full mt-2 w-80 rounded-xl border bg-card shadow-lg overflow-hidden z-50">
           <div className="flex items-center justify-between px-4 py-3 border-b">
-            <p className="text-sm font-medium">Notifications</p>
+            <p className="text-sm font-medium">Notifikasi</p>
             {unreadCount > 0 && (
               <button
                 onClick={handleMarkAllRead}
                 className="text-xs text-accent"
               >
-                Mark all read
+                Tandai semua dibaca
               </button>
             )}
           </div>
@@ -158,7 +158,7 @@ export function NotificationBell() {
                   </div>
                   <button
                     onClick={(e) => handleDelete(e, notification)}
-                    aria-label="Delete notification"
+                    aria-label="Hapus notifikasi"
                     className="absolute top-3 right-3 text-muted-foreground opacity-0 group-hover:opacity-100 hover:text-destructive"
                   >
                     <X className="size-3.5" />
@@ -167,7 +167,7 @@ export function NotificationBell() {
               ))
             ) : (
               <div className="px-4 py-8 text-center text-sm text-muted-foreground">
-                No notifications yet.
+                Belum ada notifikasi.
               </div>
             )}
           </div>

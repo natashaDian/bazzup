@@ -42,11 +42,11 @@ export function Nav({ user }: { user: User }) {
 
   const navItems = [
     {
-      label: "Home",
+      label: "Beranda",
       href: "/vendor",
     },
     {
-      label: "Explore",
+      label: "Jelajahi",
       href: "/explore",
     },
     {
@@ -54,7 +54,7 @@ export function Nav({ user }: { user: User }) {
       href: "/applications",
     },
     {
-      label: "About",
+      label: "Tentang",
       href: "/about",
     },
   ];
@@ -118,7 +118,7 @@ export function Nav({ user }: { user: User }) {
 
           <span className="hidden text-[10px] font-medium tracking-[0.18em] text-[#7A5CA8] lg:block">
             <span className="mr-2 text-[#B98CDE]">|</span>
-            BOOST YOUR BAZAAR
+            TINGKATKAN BAZAAR ANDA
           </span>
         </Link>
       </div>
@@ -141,10 +141,11 @@ export function Nav({ user }: { user: User }) {
 
           {navItems.map((item) => {
             const active = item.href === activeHref;
-            // "About" is the least essential item - below laptop widths the
-            // pill nav doesn't have room for all four items without
-            // overflowing/scrolling, so it's hidden until there's space.
-            const responsiveClass = item.label === "About" ? "hidden lg:inline-flex" : "";
+            // "About" (now "Tentang") is the least essential item - below
+            // laptop widths the pill nav doesn't have room for all four
+            // items without overflowing/scrolling, so it's hidden until
+            // there's space.
+            const responsiveClass = item.label === "Tentang" ? "hidden lg:inline-flex" : "";
 
             return (
               <Link
@@ -157,8 +158,8 @@ export function Nav({ user }: { user: User }) {
                 aria-current={active ? "page" : undefined}
                 className={
                   active
-                    ? `relative z-10 whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium text-white transition-colors duration-300 sm:px-5 sm:py-2 sm:text-sm ${responsiveClass}`
-                    : `relative z-10 whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium text-[#3B1F4A] transition-colors duration-300 hover:bg-[#F3EAFB] hover:text-[#7A5CA8] sm:px-5 sm:py-2 sm:text-sm ${responsiveClass}`
+                    ? `relative z-10 whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium text-white transition-colors duration-300 sm:px-5 sm:py-2 ${responsiveClass}`
+                    : `relative z-10 whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium text-[#3B1F4A] transition-colors duration-300 hover:bg-[#F3EAFB] hover:text-[#7A5CA8] sm:px-5 sm:py-2 ${responsiveClass}`
                 }
               >
                 {item.label}
@@ -226,7 +227,7 @@ export function Nav({ user }: { user: User }) {
                   className="flex items-center gap-2.5 px-4 py-2 text-sm hover:bg-secondary/10"
                 >
                   <UserIcon className="size-4 text-muted-foreground" />
-                  My Profile
+                  Profil Saya
                 </Link>
                 <Link
                   href="/profile#products"
@@ -234,7 +235,7 @@ export function Nav({ user }: { user: User }) {
                   className="flex items-center gap-2.5 px-4 py-2 text-sm hover:bg-secondary/10"
                 >
                   <PackageIcon className="size-4 text-muted-foreground" />
-                  My Products
+                  Produk Saya
                 </Link>
                 <Link
                   href="/profile#portfolio"
@@ -242,7 +243,7 @@ export function Nav({ user }: { user: User }) {
                   className="flex items-center gap-2.5 px-4 py-2 text-sm hover:bg-secondary/10"
                 >
                   <ImageIcon className="size-4 text-muted-foreground" />
-                  My Portfolio
+                  Portofolio Saya
                 </Link>
               </div>
 
@@ -253,7 +254,7 @@ export function Nav({ user }: { user: User }) {
                     className="flex w-full items-center gap-2.5 px-4 py-2 text-sm text-destructive hover:bg-destructive/10"
                   >
                     <LogOutIcon className="size-4" />
-                    Sign Out
+                    Keluar
                   </button>
                 </form>
               </div>

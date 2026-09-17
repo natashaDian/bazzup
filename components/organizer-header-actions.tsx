@@ -93,7 +93,7 @@ export function OrganizerHeaderActions({ user }: { user: User }) {
                 className="flex items-center gap-2.5 px-4 py-2 text-sm hover:bg-secondary/10"
               >
                 <UserIcon className="size-4 text-muted-foreground" />
-                Profile
+                Profil
               </Link>
               <Link
                 href="/organizer/profile#past-bazaars"
@@ -101,7 +101,7 @@ export function OrganizerHeaderActions({ user }: { user: User }) {
                 className="flex items-center gap-2.5 px-4 py-2 text-sm hover:bg-secondary/10"
               >
                 <ImageIcon className="size-4 text-muted-foreground" />
-                Past bazaars
+                Bazaar Sebelumnya
               </Link>
             </div>
 
@@ -112,7 +112,7 @@ export function OrganizerHeaderActions({ user }: { user: User }) {
                   className="flex w-full items-center gap-2.5 px-4 py-2 text-sm text-destructive hover:bg-destructive/10"
                 >
                   <LogOutIcon className="size-4" />
-                  Sign Out
+                  Keluar
                 </button>
               </form>
             </div>

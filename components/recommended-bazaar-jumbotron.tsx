@@ -128,7 +128,7 @@ export function RecommendedBazaarJumbotron({ bazaars }: { bazaars: BazaarCard[] 
                       )}
 
                       <p className="shrink-0 text-xs font-medium text-[#3B1F4A] sm:text-sm">
-                        {bazaar.slotsLeft} of {bazaar.totalSlot} slots left
+                        Tersisa {bazaar.slotsLeft} dari {bazaar.totalSlot} slot
                         {bazaar.minPricePerSlot !== null && (
                           <> · {formatRupiah(bazaar.minPricePerSlot)} / slot</>
                         )}
@@ -146,7 +146,7 @@ export function RecommendedBazaarJumbotron({ bazaars }: { bazaars: BazaarCard[] 
             <button
               type="button"
               onClick={() => goTo(activeIndex - 1)}
-              aria-label="Previous bazaar"
+              aria-label="Bazaar sebelumnya"
               className="absolute top-1/2 left-3 z-10 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/60 bg-white/80 text-[#3B1F4A] opacity-100 shadow-[0_4px_14px_rgba(122,92,168,0.18)] backdrop-blur-md transition-all duration-200 hover:bg-white focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7A5CA8] sm:opacity-0 sm:group-hover/jumbotron:opacity-100"
             >
               <ChevronLeftIcon className="size-4" />
@@ -154,7 +154,7 @@ export function RecommendedBazaarJumbotron({ bazaars }: { bazaars: BazaarCard[] 
             <button
               type="button"
               onClick={() => goTo(activeIndex + 1)}
-              aria-label="Next bazaar"
+              aria-label="Bazaar selanjutnya"
               className="absolute top-1/2 right-3 z-10 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/60 bg-white/80 text-[#3B1F4A] opacity-100 shadow-[0_4px_14px_rgba(122,92,168,0.18)] backdrop-blur-md transition-all duration-200 hover:bg-white focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7A5CA8] sm:opacity-0 sm:group-hover/jumbotron:opacity-100"
             >
               <ChevronRightIcon className="size-4" />
@@ -170,7 +170,7 @@ export function RecommendedBazaarJumbotron({ bazaars }: { bazaars: BazaarCard[] 
               key={bazaar.id}
               type="button"
               onClick={() => goTo(index)}
-              aria-label={`Go to ${bazaar.title}`}
+              aria-label={`Ke ${bazaar.title}`}
               className={cn(
                 "h-1.5 rounded-full transition-all duration-300",
                 index === activeIndex ? "w-5 bg-[#7A5CA8]" : "w-1.5 bg-[#F3EAFB] border border-[#E8E1EF]",

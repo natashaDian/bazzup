@@ -22,22 +22,22 @@ const STATUS_CONFIG: Record <
   { label: string; textClass: string; barClass: string }
 > = {
   DRAFT: {
-    label: "Draft",
+    label: "Draf",
     textClass: "text-gray-600",
     barClass: "bg-gray-300",
   },
   ACTIVE: {
-    label: "Active",
+    label: "Aktif",
     textClass: "text-[#3B6D11]",
     barClass: "bg-accent",
   },
   FULL: {
-    label: "Full",
+    label: "Penuh",
     textClass: "text-[#27500A]",
     barClass: "bg-[#639922]",
   },
   COMPLETED: {
-    label: "Completed",
+    label: "Selesai",
     textClass: "text-gray-500",
     barClass: "bg-gray-300",
   },
@@ -74,7 +74,7 @@ export function OrganizerBazaarCard({
 
         <div className="absolute top-3 left-3 right-3 flex justify-between">
           <span className="text-xs px-2.5 py-1 rounded-full bg-card/90 text-muted-foreground">
-            {bazaar.categories[0] ?? "General"} · {bazaar.areaCount} areas
+            {bazaar.categories[0] ?? "Umum"} · {bazaar.areaCount} area
           </span>
           <span
             className={`text-xs px-2.5 py-1 rounded-full bg-card/90 ${status.textClass}`}
@@ -107,16 +107,16 @@ export function OrganizerBazaarCard({
 
         {bazaar.status === "DRAFT" ? (
           <p className="text-xs text-muted-foreground mb-2">
-            Not published yet
+            Belum dipublikasikan
           </p>
         ) : (
           <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
             <span>
-              {filledSlot} of {bazaar.totalSlot} slots filled
+              {filledSlot} dari {bazaar.totalSlot} slot terisi
             </span>
             {bazaar.pendingApplicationsCount > 0 && (
               <span className="text-[#7A5CA8] font-medium">
-                {bazaar.pendingApplicationsCount} pending
+                {bazaar.pendingApplicationsCount} menunggu
               </span>
             )}
           </div>
@@ -156,10 +156,10 @@ function ActionButtons({
     return (
       <div className="flex gap-2.5">
         <Link href={detailHref} className={secondaryClass}>
-          <Eye className="size-3.5" /> Preview
+          <Eye className="size-3.5" /> Pratinjau
         </Link>
         <Link href={detailHref} className={primaryClass}>
-          <Send className="size-3.5" /> Publish
+          <Send className="size-3.5" /> Publikasikan
         </Link>
       </div>
     );
@@ -170,13 +170,13 @@ function ActionButtons({
       <>
         <div className="flex gap-2.5">
           <button onClick={() => setShowVendors(true)} className={secondaryClass}>
-            <Users className="size-3.5" /> Vendor list
+            <Users className="size-3.5" /> Daftar vendor
           </button>
           <Link
             href={`/organizer/applications?bazaarId=${bazaar.id}`}
             className={primaryClass}
           >
-            <Settings className="size-3.5" /> Manage vendor
+            <Settings className="size-3.5" /> Kelola vendor
           </Link>
         </div>
 
@@ -196,10 +196,10 @@ function ActionButtons({
       <>
         <div className="flex gap-2.5">
           <button onClick={() => setShowSummary(true)} className={secondaryClass}>
-            <ChartBar className="size-3.5" /> View summary
+            <ChartBar className="size-3.5" /> Lihat ringkasan
           </button>
           <button onClick={() => setShowVendors(true)} className={primaryClass}>
-            <Users className="size-3.5" /> View vendors
+            <Users className="size-3.5" /> Lihat vendor
           </button>
         </div>
 
@@ -228,10 +228,10 @@ function ActionButtons({
         href={`/organizer/applications?bazaarId=${bazaar.id}`}
         className={secondaryClass}
       >
-        <Inbox className="size-3.5" /> Applications
+        <Inbox className="size-3.5" /> Aplikasi
       </Link>
       <Link href={detailHref} className={secondaryClass}>
-        <Settings className="size-3.5" /> Manage
+        <Settings className="size-3.5" /> Kelola
       </Link>
     </div>
   );

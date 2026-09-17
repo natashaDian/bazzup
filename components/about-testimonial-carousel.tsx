@@ -64,7 +64,7 @@ export function AboutTestimonialCarousel({ testimonials }: { testimonials: Testi
           <button
             type="button"
             onClick={goPrev}
-            aria-label="Previous testimonial"
+            aria-label="Testimoni sebelumnya"
             className="flex size-9 items-center justify-center rounded-full border border-[#E8E1EF] text-[#3B1F4A] transition-all duration-200 hover:border-[#7A5CA8] hover:text-[#7A5CA8] active:scale-90"
           >
             <ChevronLeftIcon className="size-4" />
@@ -72,7 +72,7 @@ export function AboutTestimonialCarousel({ testimonials }: { testimonials: Testi
           <button
             type="button"
             onClick={goNext}
-            aria-label="Next testimonial"
+            aria-label="Testimoni berikutnya"
             className="flex size-9 items-center justify-center rounded-full border border-[#E8E1EF] text-[#3B1F4A] transition-all duration-200 hover:border-[#7A5CA8] hover:text-[#7A5CA8] active:scale-90"
           >
             <ChevronRightIcon className="size-4" />

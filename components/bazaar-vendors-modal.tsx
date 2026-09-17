@@ -6,15 +6,15 @@ import type { BazaarConfirmedVendor } from "@/lib/bazaars";
 
 const STATUS_BADGE: Record<string, { label: string; className: string }> = {
   APPROVED: {
-    label: "Awaiting payment",
+    label: "Menunggu pembayaran",
     className: "bg-amber-100 text-amber-800",
   },
   AWAITING_CONFIRMATION: {
-    label: "Awaiting payment",
+    label: "Menunggu pembayaran",
     className: "bg-amber-100 text-amber-800",
   },
-  CONFIRMED: { label: "Paid", className: "bg-green-100 text-green-800" },
-  COMPLETED: { label: "Paid", className: "bg-green-100 text-green-800" },
+  CONFIRMED: { label: "Sudah dibayar", className: "bg-green-100 text-green-800" },
+  COMPLETED: { label: "Sudah dibayar", className: "bg-green-100 text-green-800" },
 };
 
 export function BazaarVendorsModal({
@@ -46,13 +46,13 @@ export function BazaarVendorsModal({
             <p className="text-base font-medium">{bazaarTitle}</p>
             <p className="text-xs text-muted-foreground">
               {vendors
-                ? `${vendors.length} vendors occupying slots`
-                : "Loading..."}
+                ? `${vendors.length} vendor mengisi slot`
+                : "Memuat..."}
             </p>
           </div>
           <button
             onClick={onClose}
-            aria-label="Close"
+            aria-label="Tutup"
             className="text-muted-foreground"
           >
             <X className="size-4" />
@@ -61,13 +61,13 @@ export function BazaarVendorsModal({
 
         {loading && (
           <p className="text-sm text-muted-foreground text-center py-8">
-            Loading...
+            Memuat...
           </p>
         )}
 
         {!loading && vendors && vendors.length === 0 && (
           <p className="text-sm text-muted-foreground text-center py-8">
-            No vendors yet.
+            Belum ada vendor.
           </p>
         )}
 

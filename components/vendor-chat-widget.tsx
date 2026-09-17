@@ -62,13 +62,13 @@ function formatDate(dateStr: string) {
 function BuzzyAvatar({ className }: { className?: string }) {
   return (
     <div
-      className={`flex items-center justify-center overflow-hidden rounded-full bg-white/20 ${className ?? "size-9"}`}
+      className={`flex items-center justify-center overflow-hidden rounded-full bg-white/20 ${className ?? "size-11"}`}
     >
       <Image
         src={buzzyLogo}
         alt="Buzzy"
-        width={28}
-        height={28}
+        width={34}
+        height={34}
         className="size-[75%] object-contain"
       />
     </div>
@@ -105,7 +105,7 @@ function BazaarResultCard({ bazaar }: { bazaar: ChatBazaarResult }) {
       <div className="p-2.5">
         <p className="text-xs font-medium">{bazaar.title}</p>
         <p className="text-[10px] text-muted-foreground mb-1.5">
-          by {bazaar.organizerName}
+          oleh {bazaar.organizerName}
         </p>
 
         <div className="flex flex-col gap-1 mb-2">
@@ -121,7 +121,7 @@ function BazaarResultCard({ bazaar }: { bazaar: ChatBazaarResult }) {
 
         <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-1">
           <span>
-            {bazaar.slotsLeft} of {bazaar.totalSlot} slots left
+            Sisa {bazaar.slotsLeft} dari {bazaar.totalSlot} slot
           </span>
           <span className="font-medium text-foreground">
             {bazaar.minPricePerSlot
@@ -150,7 +150,7 @@ function BazaarResultCard({ bazaar }: { bazaar: ChatBazaarResult }) {
 function TypingIndicator() {
   return (
     <div className="flex items-center gap-2">
-      <BuzzyAvatar className="size-6 mt-0.5" />
+      <BuzzyAvatar className="size-8 mt-0.5" />
       <div className="flex items-center gap-1 bg-secondary/15 rounded-xl rounded-tl-sm px-3 py-2.5 w-fit">
         <span className="size-1.5 rounded-full bg-secondary animate-bounce [animation-delay:-0.3s]" />
         <span className="size-1.5 rounded-full bg-secondary animate-bounce [animation-delay:-0.15s]" />
@@ -252,7 +252,7 @@ export function VendorChatWidget() {
         className={
           expanded
             ? "fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
-            : "fixed bottom-5 right-5 z-50"
+            : "fixed bottom-8 right-5 z-50"
         }
       >
         {open ? (
@@ -266,7 +266,7 @@ export function VendorChatWidget() {
             <div className="bg-gradient-to-br from-accent to-primary px-4 py-3.5 flex items-center gap-2.5 shrink-0">
               <BuzzyAvatar />
               <div className="min-w-0">
-                <p className="text-sm font-medium text-white">Bazaar Assistant</p>
+                <p className="text-sm font-medium text-white">Asisten Bazaar</p>
                 <p className="text-[10px] text-white/75">
                   Biasanya balas dalam beberapa detik
                 </p>
@@ -310,7 +310,7 @@ export function VendorChatWidget() {
                   </div>
                 ) : (
                   <div key={i} className="flex w-full items-start gap-2 animate-in fade-in-0 slide-in-from-bottom-1 duration-200">
-                    <BuzzyAvatar className="size-6 mt-0.5" />
+                    <BuzzyAvatar className="size-8 mt-0.5" />
                     <div className="flex max-w-[85%] min-w-0 flex-col gap-1">
                       <div className="w-fit max-w-full rounded-2xl px-3 py-2 text-xs leading-relaxed whitespace-pre-line bg-secondary/15 text-foreground rounded-tl-sm">
                         {msg.content}
@@ -370,9 +370,9 @@ export function VendorChatWidget() {
             <Image
               src={buzzyLogo}
               alt="Buzzy"
-              width={40}
-              height={40}
-              className="size-9 object-contain"
+              width={48}
+              height={48}
+              className="size-11 object-contain"
             />
           </button>
         )}

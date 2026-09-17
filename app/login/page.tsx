@@ -7,7 +7,7 @@ import { LoginBackground } from "../../components/login-background";
 import bazzupLogo from "../../components/assets/bazzup logo.png";
 
 export const metadata: Metadata = {
-  title: "Sign in - BazzUp",
+  title: "Masuk - BazzUp",
 };
 
 const inter = Inter({
@@ -42,15 +42,15 @@ export default function LoginPage() {
 
             {/* Heading */}
             <h1 className="login-heading hidden text-4xl font-bold leading-tight tracking-tight text-[#3B1F4A] md:block">
-              From Local Events
+              Dari Acara Lokal
               <br />
-              to Bigger Opportunities
+              Menuju Peluang Lebih Besar
             </h1>
 
             {/* Description */}
             <p className="login-description mt-5 hidden max-w-sm text-base leading-7 text-[#6B7280] md:block">
-              BazzUp connects organizers and vendors in one platform —
-              making every bazaar easier, faster, and more impactful.
+              BazzUp menghubungkan organizer dan vendor dalam satu platform,
+              membuat setiap bazaar jadi lebih mudah, cepat, dan berdampak.
             </p>
           </div>
         </section>
@@ -62,11 +62,11 @@ export default function LoginPage() {
             {/* Heading */}
             <div className="login-form-heading mb-8">
               <h2 className="text-3xl font-bold tracking-tight text-[#3B1F4A]">
-                Welcome Back
+                Selamat Datang Kembali
               </h2>
 
               <p className="mt-2 text-base text-[#6B7280]">
-                Log in to continue to BazzUp
+                Masuk untuk melanjutkan ke BazzUp
               </p>
             </div>
 
@@ -77,8 +77,8 @@ export default function LoginPage() {
 
             {/* Terms */}
             <p className="login-terms mt-8 text-center text-xs leading-5 text-[#6B7280]">
-              By logging in, you agree to our Terms of Service and Privacy
-              Policy.
+              Dengan masuk, kamu menyetujui Ketentuan Layanan dan Kebijakan
+              Privasi kami.
             </p>
           </div>
         </section>

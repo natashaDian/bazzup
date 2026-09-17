@@ -34,7 +34,7 @@ export default async function VendorPublicProfilePage({
         className="flex items-center gap-1.5 text-accent text-xs mb-4"
       >
         <ArrowLeft className="size-3.5" />
-        Back to applications
+        Kembali ke pendaftaran
       </Link>
 
       <div className="bg-card rounded-2xl p-6 mb-4">
@@ -58,7 +58,7 @@ export default async function VendorPublicProfilePage({
               <h1 className="text-lg font-medium">{displayName}</h1>
               {vendor.isVerifiedVendor && (
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#EAF3DE] text-[#27500A]">
-                  Verified
+                  Terverifikasi
                 </span>
               )}
             </div>
@@ -79,7 +79,7 @@ export default async function VendorPublicProfilePage({
         <div className="flex flex-wrap gap-x-5 gap-y-2 text-xs text-muted-foreground border-t border-secondary/15 pt-4">
           <span className="flex items-center gap-1.5">
             <Package className="size-3.5 text-accent" />
-            {vendor.bazaarsJoined} bazaars joined
+            {vendor.bazaarsJoined} bazaar diikuti
           </span>
           {vendor.targetMarket && <span>Target: {vendor.targetMarket}</span>}
         </div>
@@ -110,7 +110,7 @@ export default async function VendorPublicProfilePage({
 
       {vendor.products.length > 0 && (
         <div className="mb-4">
-          <p className="text-sm font-medium mb-3">Products</p>
+          <p className="text-sm font-medium mb-3">Produk</p>
           <div className="flex gap-3 overflow-x-auto">
             {vendor.products.map((p) => (
               <div
@@ -143,7 +143,7 @@ export default async function VendorPublicProfilePage({
 
       {vendor.portfolios.length > 0 && (
         <div>
-          <p className="text-sm font-medium mb-3">Portfolio</p>
+          <p className="text-sm font-medium mb-3">Portofolio</p>
           <div className="flex gap-3 overflow-x-auto">
             {vendor.portfolios.map((p) => (
               <div
@@ -176,7 +176,7 @@ export default async function VendorPublicProfilePage({
 
       {vendor.products.length === 0 && vendor.portfolios.length === 0 && (
         <div className="bg-card rounded-2xl p-8 text-center text-sm text-muted-foreground">
-          This vendor hasn't added any products or portfolio yet.
+          Vendor ini belum menambahkan produk atau portofolio.
         </div>
       )}
     </main>

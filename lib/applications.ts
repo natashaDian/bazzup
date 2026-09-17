@@ -278,10 +278,18 @@ export async function getOrganizerBazaarOptionsForFilter(organizerId: string) {
   });
 }
 
+export type MatchScoreBreakdownItem = {
+  label: string;
+  points: number;
+  achieved: boolean;
+  isBaseline: boolean;
+};
+
 export type ApplicationDetail = {
   id: string;
   status: ApplicationStatus;
   matchScore: number | null;
+  matchScoreBreakdown: MatchScoreBreakdownItem[];
   appliedAt: Date;
   approvedAt: Date | null;
   paymentConfirmedAt: Date | null;
@@ -348,6 +356,7 @@ export async function getApplicationDetail(
           businessDesc: true,
           instagram: true,
           isVerifiedVendor: true,
+          targetMarket: true,
         },
       },
       area: {
@@ -357,6 +366,7 @@ export async function getApplicationDetail(
           totalSlot: true,
           pricePerSlot: true,
           categoryWanted: true,
+          visitorProfile: true,
           bazaarId: true,
           bazaar: { select: { id: true, title: true, organizerId: true } },
           _count: {
@@ -393,15 +403,56 @@ export async function getApplicationDetail(
     }),
   ]);
 
+  const categoryMatch =
+    !!application.vendor.businessType &&
+    !!application.area.categoryWanted &&
+    application.vendor.businessType.trim().toLowerCase() ===
+      application.area.categoryWanted.trim().toLowerCase();
+  const marketMatch =
+    !!application.vendor.targetMarket &&
+    !!application.area.visitorProfile &&
+    application.vendor.targetMarket.trim().toLowerCase() ===
+      application.area.visitorProfile.trim().toLowerCase();
+
+  const matchScoreBreakdown: MatchScoreBreakdownItem[] = [
+    {
+      label: "Skor dasar (otomatis)",
+      points: 20,
+      achieved: true,
+      isBaseline: true,
+    },
+    {
+      label: "Kategori usaha sesuai area",
+      points: categoryMatch ? 50 : 0,
+      achieved: categoryMatch,
+      isBaseline: false,
+    },
+    {
+      label: "Target pasar sesuai area",
+      points: marketMatch ? 30 : 0,
+      achieved: marketMatch,
+      isBaseline: false,
+    },
+  ];
+
   return {
     id: application.id,
     status: application.status,
     matchScore: application.matchScore,
+    matchScoreBreakdown,
     appliedAt: application.appliedAt,
     approvedAt: application.approvedAt,
     paymentConfirmedAt: application.paymentConfirmedAt,
     rejectReason: application.rejectReason,
-    vendor: application.vendor,
+    vendor: {
+      id: application.vendor.id,
+      name: application.vendor.name,
+      businessName: application.vendor.businessName,
+      businessType: application.vendor.businessType,
+      businessDesc: application.vendor.businessDesc,
+      instagram: application.vendor.instagram,
+      isVerifiedVendor: application.vendor.isVerifiedVendor,
+    },
     area: {
       id: application.area.id,
       name: application.area.name,

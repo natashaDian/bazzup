@@ -19,7 +19,7 @@ import { IncompleteProfileDialog } from "@/components/incomplete-profile-dialog"
 import { isVendorProfileComplete } from "@/lib/vendor-profile";
 
 export const metadata: Metadata = {
-  title: "Home - BazzUp",
+  title: "Beranda - BazzUp",
 };
 
 export default async function VendorHomePage() {
@@ -55,16 +55,16 @@ export default async function VendorHomePage() {
           <div className="relative z-10 max-w-4xl">
 
             <h1 className="home-hero-title max-w-4xl text-4xl font-bold leading-[1.08] tracking-[-0.035em] text-[#3B1F4A] sm:text-5xl lg:text-[52px]">
-              Discover Bazaars,
+              Temukan Bazaar,
               <br />
               <span className="home-gradient-text">
-                Grow Your Business
+                Kembangkan Bisnismu
               </span>
             </h1>
 
             <p className="home-hero-description mt-5 max-w-3xl text-base leading-7 text-[#6B7280] sm:text-lg">
-              Find the right events, connect with communities, and bring your
-              business to more people.
+              Temukan acara yang tepat, terhubung dengan komunitas, dan
+              kembangkan bisnismu ke lebih banyak orang.
             </p>
 
           </div>
@@ -105,7 +105,7 @@ export default async function VendorHomePage() {
                   />
 
                   <span className="flex-1">
-                    Search event and location...
+                    Cari acara dan lokasi...
                   </span>
 
                   <span
@@ -119,7 +119,7 @@ export default async function VendorHomePage() {
                       group-hover:shadow-[0_6px_18px_rgba(122,92,168,0.25)]
                     "
                   >
-                    Search
+                    Cari
                   </span>
                 </DialogTrigger>
               }
@@ -142,7 +142,7 @@ export default async function VendorHomePage() {
               focus-visible:ring-offset-4
             "
           >
-            Explore all bazaars
+            Jelajahi semua bazaar
             <ArrowRight
               className="
                 size-4
@@ -160,11 +160,11 @@ export default async function VendorHomePage() {
           <div className="flex items-end justify-between gap-4">
             <div>
               <h2 className="text-2xl font-bold tracking-tight text-[#3B1F4A] sm:text-[26px]">
-                Recommended for You
+                Rekomendasi untuk Anda
               </h2>
 
               <p className="mt-1.5 text-sm text-[#6B7280]">
-                Bazaars that may be a good fit for your business.
+                Bazaar yang mungkin cocok untuk bisnismu.
               </p>
             </div>
 
@@ -183,7 +183,7 @@ export default async function VendorHomePage() {
                 focus-visible:ring-offset-2
               "
             >
-              See All
+              Lihat Semua
               <ArrowRight
                 className="
                   size-4
@@ -198,7 +198,7 @@ export default async function VendorHomePage() {
             {recommended.length === 0 ? (
               <div className="rounded-2xl border border-dashed border-[#E8E1EF] px-6 py-10 text-center">
                 <p className="text-sm text-[#6B7280]">
-                  No bazaars available yet.
+                  Belum ada bazaar yang tersedia.
                 </p>
               </div>
             ) : (
@@ -247,11 +247,11 @@ export default async function VendorHomePage() {
 
             <div className="relative z-10">
               <p className="text-base font-semibold text-[#3B1F4A]">
-                Looking for more opportunities?
+                Mencari lebih banyak peluang?
               </p>
 
               <p className="mt-1 text-sm text-[#6B7280]">
-                Explore all available bazaars and find the right one for you.
+                Jelajahi semua bazaar yang tersedia dan temukan yang paling cocok untukmu.
               </p>
             </div>
 
@@ -270,7 +270,7 @@ export default async function VendorHomePage() {
                 group-hover:shadow-[0_7px_18px_rgba(122,92,168,0.20)]
               "
             >
-              Explore Bazaars
+              Jelajahi Bazaar
 
               <ArrowRight
                 className="
@@ -290,11 +290,11 @@ export default async function VendorHomePage() {
           <div className="flex items-end justify-between gap-4">
             <div>
               <h2 className="text-2xl font-bold tracking-tight text-[#3B1F4A] sm:text-[26px]">
-                Upcoming Bazaars
+                Bazaar Mendatang
               </h2>
 
               <p className="mt-1.5 text-sm text-[#6B7280]">
-                Events coming up soon.
+                Acara yang akan segera berlangsung.
               </p>
             </div>
 
@@ -313,7 +313,7 @@ export default async function VendorHomePage() {
                 focus-visible:ring-offset-2
               "
             >
-              See All
+              Lihat Semua
 
               <ArrowRight
                 className="
@@ -329,7 +329,7 @@ export default async function VendorHomePage() {
             {upcoming.length === 0 ? (
               <div className="rounded-2xl border border-dashed border-[#E8E1EF] px-6 py-10 text-center">
                 <p className="text-sm text-[#6B7280]">
-                  No upcoming bazaars yet.
+                  Belum ada bazaar mendatang.
                 </p>
               </div>
             ) : (

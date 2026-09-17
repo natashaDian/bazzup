@@ -7,7 +7,7 @@ import { LoginBackground } from "../../components/login-background";
 import bazzupLogo from "../../components/assets/bazzup logo.png";
 
 export const metadata: Metadata = {
-  title: "Sign up - BazzUp",
+  title: "Daftar - BazzUp",
 };
 
 const inter = Inter({
@@ -42,15 +42,15 @@ export default function RegisterPage() {
 
             {/* Heading */}
             <h1 className="hidden text-4xl font-bold leading-tight tracking-tight text-[#3B1F4A] md:block">
-              From Local Events
+              Dari Acara Lokal
               <br />
-              to Bigger Opportunities
+              Menuju Peluang Lebih Besar
             </h1>
 
             {/* Description */}
             <p className="mt-5 hidden max-w-sm text-base leading-7 text-[#6B7280] md:block">
-              BazzUp connects organizers and vendors in one platform —
-              making every bazaar easier, faster, and more impactful.
+              BazzUp menghubungkan organizer dan vendor dalam satu platform,
+              membuat setiap bazaar jadi lebih mudah, cepat, dan berdampak.
             </p>
           </div>
         </section>
@@ -62,11 +62,11 @@ export default function RegisterPage() {
             {/* Heading */}
             <div className="mb-7">
               <h2 className="text-3xl font-bold tracking-tight text-[#3B1F4A]">
-                Join BazzUp
+                Gabung dengan BazzUp
               </h2>
 
               <p className="mt-2 text-base text-[#6B7280]">
-                Create your account to start your journey
+                Buat akunmu untuk memulai perjalananmu
               </p>
             </div>
 
@@ -80,17 +80,17 @@ export default function RegisterPage() {
               >
                 <div>
                   <h3 className="text-xl font-semibold text-[#3B1F4A] transition-colors duration-200 group-hover:text-[#7A5CA8]">
-                    I&apos;m a Vendor
+                    Saya Vendor
                   </h3>
 
                   <p className="mt-3 text-sm leading-6 text-[#6B7280]">
-                    Find and join exciting bazaar events, grow your business,
-                    and reach more customers.
+                    Temukan dan ikuti acara bazaar seru, kembangkan bisnismu,
+                    dan jangkau lebih banyak pelanggan.
                   </p>
                 </div>
 
                 <div className="mt-6 flex h-10 w-full items-center justify-center rounded-lg bg-[#7A5CA8] text-sm font-medium text-white transition-all duration-200 ease-out group-hover:-translate-y-0.5 group-hover:bg-[#3B1F4A]">
-                  Get Started
+                  Mulai Sekarang
                 </div>
               </Link>
 
@@ -101,29 +101,29 @@ export default function RegisterPage() {
               >
                 <div>
                   <h3 className="text-xl font-semibold text-[#3B1F4A] transition-colors duration-200 group-hover:text-[#7A5CA8]">
-                    I&apos;m an Organizer
+                    Saya Organizer
                   </h3>
 
                   <p className="mt-3 text-sm leading-6 text-[#6B7280]">
-                    Create and manage your bazaar events, find the right
-                    vendors, and build amazing communities.
+                    Buat dan kelola acara bazaar-mu, temukan vendor yang
+                    tepat, dan bangun komunitas yang luar biasa.
                   </p>
                 </div>
 
                 <div className="mt-6 flex h-10 w-full items-center justify-center rounded-lg bg-[#7A5CA8] text-sm font-medium text-white transition-all duration-200 ease-out group-hover:-translate-y-0.5 group-hover:bg-[#3B1F4A]">
-                  Get Started
+                  Mulai Sekarang
                 </div>
               </Link>
             </div>
 
             {/* Login Link */}
             <p className="mt-7 text-center text-sm text-[#6B7280]">
-              Already have an account?{" "}
+              Sudah punya akun?{" "}
               <Link
                 href="/login"
                 className="font-medium text-[#7A5CA8] transition-colors duration-200 hover:text-[#3B1F4A] hover:underline"
               >
-                Log in
+                Masuk
               </Link>
             </p>
           </div>

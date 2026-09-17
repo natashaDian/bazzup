@@ -18,7 +18,7 @@ export function SidebarCollapseToggle() {
     <button
       type="button"
       onClick={toggleCollapsed}
-      aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+      aria-label={collapsed ? "Perluas sidebar" : "Ciutkan sidebar"}
       aria-expanded={!collapsed}
       className="hidden size-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors duration-200 hover:bg-[#F3EAFB] hover:text-[#3B1F4A] lg:flex"
     >

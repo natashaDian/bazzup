@@ -14,19 +14,19 @@ const STATUS_STYLE: Record <
   string,
   { bg: string; text: string; label: string }
 > = {
-  PENDING: { bg: "#FAEEDA", text: "#854F0B", label: "Pending" },
-  APPROVED: { bg: "#EAF3DE", text: "#27500A", label: "Approved" },
+  PENDING: { bg: "#FAEEDA", text: "#854F0B", label: "Menunggu" },
+  APPROVED: { bg: "#EAF3DE", text: "#27500A", label: "Disetujui" },
   AWAITING_CONFIRMATION: {
     bg: "#F3EAFB",
     text: "#7A5CA8",
-    label: "Awaiting payment",
+    label: "Menunggu Pembayaran",
   },
-  CONFIRMED: { bg: "#EAF3DE", text: "#27500A", label: "Confirmed" },
-  COMPLETED: { bg: "#F1EFE8", text: "#5F5E5A", label: "Completed" },
-  REJECTED: { bg: "#FCEBEB", text: "#791F1F", label: "Rejected" },
-  EXPIRED: { bg: "#F1EFE8", text: "#5F5E5A", label: "Expired" },
-  CANCELLED: { bg: "#F1EFE8", text: "#5F5E5A", label: "Cancelled" },
-  NO_SHOW: { bg: "#F1EFE8", text: "#5F5E5A", label: "No show" },
+  CONFIRMED: { bg: "#EAF3DE", text: "#27500A", label: "Dikonfirmasi" },
+  COMPLETED: { bg: "#F1EFE8", text: "#5F5E5A", label: "Selesai" },
+  REJECTED: { bg: "#FCEBEB", text: "#791F1F", label: "Ditolak" },
+  EXPIRED: { bg: "#F1EFE8", text: "#5F5E5A", label: "Kedaluwarsa" },
+  CANCELLED: { bg: "#F1EFE8", text: "#5F5E5A", label: "Dibatalkan" },
+  NO_SHOW: { bg: "#F1EFE8", text: "#5F5E5A", label: "Tidak Hadir" },
 };
 
 function getScoreColor(score: number | null) {
@@ -45,6 +45,39 @@ function formatDate(date: Date | null) {
   });
 }
 
+function MatchScoreBreakdownList({
+  breakdown,
+}: {
+  breakdown: ApplicationDetail["matchScoreBreakdown"];
+}) {
+  return (
+    <div className="flex-1 min-w-0 flex flex-col gap-2">
+      {breakdown.map((item) => (
+        <div
+          key={item.label}
+          className="flex items-center justify-between gap-3 text-xs"
+        >
+          <span className="text-muted-foreground text-left">
+            {item.label}
+          </span>
+          <span
+            className={`shrink-0 font-medium ${
+              item.isBaseline
+                ? "text-foreground"
+                : item.achieved
+                  ? "text-[#639922]"
+                  : "text-muted-foreground"
+            }`}
+          >
+            {!item.isBaseline && item.achieved ? "+" : ""}
+            {item.points} poin
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function MatchRingLarge({ score }: { score: number | null }) {
   const value = score ?? 0;
   const radius = 36;
@@ -53,7 +86,7 @@ function MatchRingLarge({ score }: { score: number | null }) {
   const color = getScoreColor(score);
 
   return (
-    <div className="relative w-[88px] h-[88px] mx-auto">
+    <div className="relative w-[88px] h-[88px] shrink-0">
       <svg width="88" height="88" viewBox="0 0 88 88">
         <circle
           cx="44"
@@ -135,7 +168,7 @@ export function ApplicationDetailClient({
         className="flex items-center gap-1.5 text-accent text-xs mb-4"
       >
         <ArrowLeft className="size-3.5" />
-        Back to applications
+        Kembali ke pendaftaran
       </Link>
 
       {error && (
@@ -161,7 +194,7 @@ export function ApplicationDetailClient({
                   )}
                 </div>
                 <p className="text-[11px] text-secondary mt-0.5">
-                  Applied on {formatDate(application.appliedAt)}
+                  Diajukan pada {formatDate(application.appliedAt)}
                 </p>
               </div>
               <span
@@ -180,34 +213,34 @@ export function ApplicationDetailClient({
 
           <div className="bg-card rounded-2xl p-5 mb-4">
             <p className="text-xs font-medium uppercase tracking-wide text-primary mb-3">
-              Application details
+              Detail Pendaftaran
             </p>
             <div className="flex flex-col gap-2.5 text-sm">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Applying to</span>
+                <span className="text-muted-foreground">Mendaftar ke</span>
                 <span>
                   {application.bazaar.title} &middot; {application.area.name}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Category wanted</span>
+                <span className="text-muted-foreground">Kategori yang diinginkan</span>
                 <span>{application.area.categoryWanted || "-"}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Slots available</span>
+                <span className="text-muted-foreground">Slot tersedia</span>
                 <span>
-                  {application.area.slotsLeft} of {application.area.totalSlot}
+                  {application.area.slotsLeft} dari {application.area.totalSlot}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Price per slot</span>
+                <span className="text-muted-foreground">Harga per slot</span>
                 <span>
                   Rp {application.area.pricePerSlot.toLocaleString("id-ID")}
                 </span>
               </div>
               {application.rejectReason && (
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Reject reason</span>
+                  <span className="text-muted-foreground">Alasan penolakan</span>
                   <span>{application.rejectReason}</span>
                 </div>
               )}
@@ -220,35 +253,40 @@ export function ApplicationDetailClient({
                 onClick={() => setShowRejectDialog(true)}
                 className="flex-1 bg-destructive/10 text-destructive py-3 rounded-xl text-sm"
               >
-                Reject
+                Tolak
               </button>
               <button
                 onClick={() => setShowApproveDialog(true)}
                 className="flex-1 bg-accent text-accent-foreground py-3 rounded-xl text-sm"
               >
-                Approve
+                Setujui
               </button>
             </div>
           )}
         </div>
 
         <div>
-          <div className="bg-card rounded-2xl p-5 mb-4 text-center">
-            <p className="text-[11px] text-muted-foreground mb-2.5">
-              Match score
+          <div className="bg-card rounded-2xl p-5 mb-4">
+            <p className="text-[11px] text-muted-foreground mb-3">
+              Skor kecocokan
             </p>
-            <MatchRingLarge score={application.matchScore} />
+            <div className="flex items-center gap-4">
+              <MatchRingLarge score={application.matchScore} />
+              <MatchScoreBreakdownList
+                breakdown={application.matchScoreBreakdown}
+              />
+            </div>
           </div>
 
           <div className="bg-card rounded-2xl p-5">
             <p className="text-xs font-medium uppercase tracking-wide text-primary mb-3">
-              Vendor profile
+              Profil vendor
             </p>
 
             <div className="flex flex-col gap-2 mb-3.5 text-xs">
               <span className="flex items-center gap-1.5 text-muted-foreground">
                 <Package className="size-3.5 text-accent" />
-                {application.vendorStats.bazaarsJoined} bazaars joined
+                {application.vendorStats.bazaarsJoined} bazaar diikuti
               </span>
               {application.vendor.instagram && (
                 <span className="flex items-center gap-1.5 text-muted-foreground">
@@ -260,7 +298,7 @@ export function ApplicationDetailClient({
             {application.vendorStats.products.length > 0 && (
               <>
                 <p className="text-[11px] text-muted-foreground mb-2">
-                  Products
+                  Produk
                 </p>
                 <div className="flex flex-col gap-1.5 mb-3.5">
                   {application.vendorStats.products.map((p) => (
@@ -281,7 +319,7 @@ export function ApplicationDetailClient({
             {application.vendorStats.portfolios.length > 0 && (
               <>
                 <p className="text-[11px] text-muted-foreground mb-2">
-                  Past bazaars
+                  Bazaar sebelumnya
                 </p>
                 <div className="flex flex-col gap-1.5 mb-3.5">
                   {application.vendorStats.portfolios.map((p) => (
@@ -303,7 +341,7 @@ export function ApplicationDetailClient({
               href={`/organizer/vendors/${application.vendor.id}`}
               className="flex items-center justify-center gap-1.5 text-xs text-accent"
             >
-              View full profile
+              Lihat profil lengkap
               <ExternalLink className="size-3" />
             </Link>
           </div>
@@ -314,25 +352,25 @@ export function ApplicationDetailClient({
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-card rounded-2xl p-6 w-full max-w-sm">
             <h3 className="text-base font-medium mb-2">
-              Approve this application?
+              Setujui pendaftaran ini?
             </h3>
             <p className="text-sm text-muted-foreground mb-5">
-              {vendorName} will be notified and given 24 hours to complete
-              payment.
+              {vendorName} akan diberi tahu dan memiliki waktu 24 jam untuk
+              menyelesaikan pembayaran.
             </p>
             <div className="flex gap-2 justify-end">
               <button
                 onClick={() => setShowApproveDialog(false)}
                 className="bg-secondary/15 text-muted-foreground px-4 py-2 rounded-lg text-sm"
               >
-                Cancel
+                Batal
               </button>
               <button
                 onClick={handleApprove}
                 disabled={isPending}
                 className="bg-accent text-accent-foreground px-4 py-2 rounded-lg text-sm"
               >
-                {isPending ? "Approving..." : "Yes, approve"}
+                {isPending ? "Menyetujui..." : "Ya, setujui"}
               </button>
             </div>
           </div>
@@ -343,12 +381,12 @@ export function ApplicationDetailClient({
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-card rounded-2xl p-6 w-full max-w-sm">
             <h3 className="text-base font-medium mb-2">
-              Reject this application?
+              Tolak pendaftaran ini?
             </h3>
             <textarea
               value={rejectReason}
               onChange={(e) => setRejectReason(e.target.value)}
-              placeholder="Reason (optional)"
+              placeholder="Alasan (opsional)"
               rows={3}
               className="w-full px-3 py-2 rounded-lg border border-input bg-background text-sm mb-4 resize-none"
             />
@@ -357,14 +395,14 @@ export function ApplicationDetailClient({
                 onClick={() => setShowRejectDialog(false)}
                 className="bg-secondary/15 text-muted-foreground px-4 py-2 rounded-lg text-sm"
               >
-                Cancel
+                Batal
               </button>
               <button
                 onClick={handleReject}
                 disabled={isPending}
                 className="bg-destructive text-destructive-foreground px-4 py-2 rounded-lg text-sm"
               >
-                {isPending ? "Rejecting..." : "Yes, reject"}
+                {isPending ? "Menolak..." : "Ya, tolak"}
               </button>
             </div>
           </div>

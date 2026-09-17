@@ -8,7 +8,7 @@ import {
 import { OrganizerProfileClient } from "@/components/organizer-profile-client";
 
 export const metadata: Metadata = {
-  title: "Organizer Profile - BazzUp",
+  title: "Profil Organizer - BazzUp",
 };
 
 export default async function OrganizerProfilePage() {

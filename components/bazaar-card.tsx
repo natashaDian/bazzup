@@ -36,7 +36,7 @@ export function BazaarCard({ bazaar }: { bazaar: BazaarCardData }) {
 
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted-foreground">
-            {bazaar.slotsLeft} of {bazaar.totalSlot} slots left
+            Tersisa {bazaar.slotsLeft} dari {bazaar.totalSlot} slot
           </span>
           {bazaar.minPricePerSlot !== null && (
             <span className="font-medium">{formatRupiah(bazaar.minPricePerSlot)} / slot</span>

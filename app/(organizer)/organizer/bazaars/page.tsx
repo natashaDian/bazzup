@@ -6,7 +6,7 @@ import { getGreeting } from "@/lib/greeting";
 import { OrganizerBazaarsToolbar } from "@/components/organizer-bazaars-toolbar";
 import { OrganizerBazaarCard } from "@/components/organizer-bazaar-card";
 export const metadata: Metadata = {
-  title: "My Bazaars - BazzUp",
+  title: "Bazaar Saya - BazzUp",
 };
 
 export default async function MyBazaarsPage({
@@ -31,7 +31,7 @@ export default async function MyBazaarsPage({
           {greeting}, {user.businessName || user.name}
         </h1>
         <p className="text-sm text-muted-foreground mt-1.5">
-          Manage and track all your created bazaars in one place.
+          Kelola dan pantau semua bazaar yang telah Anda buat di satu tempat.
         </p>
       </div>
 
@@ -44,13 +44,13 @@ export default async function MyBazaarsPage({
       {bazaars.length === 0 ? (
         <div className="border border-dashed rounded-xl py-20 flex flex-col items-center justify-center text-center">
           <p className="text-muted-foreground mb-5">
-            You haven't created any bazaars yet.
+            Anda belum membuat bazaar apa pun.
           </p>
           <Link
             href="/organizer/bazaars/new"
             className="inline-flex items-center gap-1.5 bg-accent text-white px-5 py-2.5 rounded-lg text-sm shadow-sm transition-colors hover:bg-[#a97bd1]"
           >
-            Create your first bazaar
+            Buat bazaar pertama Anda
           </Link>
         </div>
       ) : (

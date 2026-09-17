@@ -59,11 +59,11 @@ export function BazaarSummaryModal({
         <div className="flex items-center justify-between mb-4">
           <div>
             <p className="text-base font-medium">{bazaarTitle}</p>
-            <p className="text-xs text-muted-foreground">Event summary</p>
+            <p className="text-xs text-muted-foreground">Ringkasan acara</p>
           </div>
           <button
             onClick={onClose}
-            aria-label="Close"
+            aria-label="Tutup"
             className="text-muted-foreground"
           >
             <X className="size-4" />
@@ -72,7 +72,7 @@ export function BazaarSummaryModal({
 
         {loading && (
           <p className="text-sm text-muted-foreground text-center py-8">
-            Loading...
+            Memuat...
           </p>
         )}
 
@@ -80,25 +80,25 @@ export function BazaarSummaryModal({
           <>
             <div className="grid grid-cols-2 gap-2.5 mb-5">
               <div className="bg-secondary/10 rounded-lg p-3">
-                <p className="text-xs text-muted-foreground mb-1">Areas</p>
+                <p className="text-xs text-muted-foreground mb-1">Area</p>
                 <p className="text-xl font-medium">{summary.totalAreas}</p>
               </div>
               <div className="bg-secondary/10 rounded-lg p-3">
                 <p className="text-xs text-muted-foreground mb-1">
-                  Vendors confirmed
+                  Vendor terkonfirmasi
                 </p>
                 <p className="text-xl font-medium">
                   {summary.totalVendorsConfirmed}
                 </p>
               </div>
               <div className="bg-secondary/10 rounded-lg p-3">
-                <p className="text-xs text-muted-foreground mb-1">Revenue</p>
+                <p className="text-xs text-muted-foreground mb-1">Pendapatan</p>
                 <p className="text-xl font-medium">
                   {formatRupiahShort(summary.totalRevenue)}
                 </p>
               </div>
               <div className="bg-secondary/10 rounded-lg p-3">
-                <p className="text-xs text-muted-foreground mb-1">Event date</p>
+                <p className="text-xs text-muted-foreground mb-1">Tanggal acara</p>
                 <p className="text-sm font-medium pt-1">
                   {formatDateShort(summary.eventStartDate)} -{" "}
                   {formatDateShort(summary.eventEndDate)}
@@ -107,7 +107,7 @@ export function BazaarSummaryModal({
             </div>
 
             <p className="text-xs text-muted-foreground mb-2.5">
-              Slots filled per area
+              Slot terisi per area
             </p>
             <div className="flex flex-col gap-2 max-h-[240px] overflow-y-auto pr-1">
               {summary.areaBreakdown.map((area) => {
@@ -121,7 +121,7 @@ export function BazaarSummaryModal({
                     <div className="flex justify-between text-xs mb-1">
                       <span>{area.areaName}</span>
                       <span className="text-muted-foreground">
-                        {area.filled} of {area.totalSlot}
+                        {area.filled} dari {area.totalSlot}
                       </span>
                     </div>
                     <div className="h-1.5 rounded-full bg-secondary/10 overflow-hidden">
@@ -138,7 +138,7 @@ export function BazaarSummaryModal({
             <div className="mt-5 pt-5 border-t border-secondary/15">
               <div className="flex items-center justify-between mb-2.5">
                 <p className="text-xs text-muted-foreground">
-                  Vendor reviews
+                  Ulasan vendor
                 </p>
                 {summary.averageRating !== null && (
                   <div className="flex items-center gap-1.5">
@@ -155,7 +155,7 @@ export function BazaarSummaryModal({
 
               {summary.reviews.length === 0 ? (
                 <p className="text-sm text-muted-foreground text-center py-6 bg-secondary/10 rounded-lg">
-                  No reviews yet.
+                  Belum ada ulasan.
                 </p>
               ) : (
                 <div className="flex flex-col gap-2.5 max-h-[220px] overflow-y-auto pr-1">

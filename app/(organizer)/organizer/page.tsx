@@ -62,12 +62,12 @@ export default async function OrganizerDashboardPage({
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 sm:py-10 lg:px-10 lg:py-12">
       <IncompleteProfileDialog
         defaultOpen={!profileComplete}
-        title="Complete Your Organizer Profile First"
+        title="Lengkapi Profil Organizer Anda Terlebih Dahulu"
         description={
           <>
-            Vendors need your business details to decide whether to apply.
+            Vendor membutuhkan detail bisnis Anda untuk memutuskan apakah akan mengajukan aplikasi.
             <br />
-            Please fill in your profile before creating a bazaar.
+            Lengkapi profil Anda terlebih dahulu sebelum membuat bazaar.
           </>
         }
         profileHref="/organizer/profile"

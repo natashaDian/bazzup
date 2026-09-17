@@ -29,24 +29,24 @@ export function CreateFirstBazaarPopup({
       <div className="bg-card rounded-xl p-6 max-w-xs w-full relative">
         <button
           onClick={() => setOpen(false)}
-          aria-label="Close"
+          aria-label="Tutup"
           className="absolute top-3 right-3 text-muted-foreground"
         >
           <X className="size-4" />
         </button>
 
         <p className="text-base font-medium mb-1">
-          Let&apos;s get your first bazaar going!
+          Ayo mulai bazaar pertama Anda!
         </p>
         <p className="text-sm text-muted-foreground mb-5 leading-relaxed">
-          Set it up in a few minutes and vendors can start applying right away.
+          Siapkan dalam beberapa menit dan vendor bisa langsung mengajukan aplikasi.
         </p>
 
         <button
           onClick={() => router.push("/organizer/bazaars/new")}
           className="w-full bg-primary text-primary-foreground rounded-lg py-2.5 text-sm font-medium"
         >
-          Create bazaar
+          Buat Bazaar
         </button>
       </div>
     </div>

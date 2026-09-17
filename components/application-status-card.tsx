@@ -38,22 +38,22 @@ const STATUS_BADGE_CLASS: Record<ApplicationStatus, string> = {
 
 function statusLabel(status: ApplicationStatus): string {
   const labels: Record<ApplicationStatus, string> = {
-    PENDING: "Pending",
-    APPROVED: "Approved",
-    REJECTED: "Rejected",
-    EXPIRED: "Expired",
-    AWAITING_CONFIRMATION: "Awaiting Confirmation",
-    CONFIRMED: "Confirmed",
-    CANCELLED: "Cancelled",
-    NO_SHOW: "No Show",
-    COMPLETED: "Completed",
+    PENDING: "Menunggu",
+    APPROVED: "Disetujui",
+    REJECTED: "Ditolak",
+    EXPIRED: "Kedaluwarsa",
+    AWAITING_CONFIRMATION: "Menunggu Konfirmasi",
+    CONFIRMED: "Terkonfirmasi",
+    CANCELLED: "Dibatalkan",
+    NO_SHOW: "Tidak Hadir",
+    COMPLETED: "Selesai",
   };
   return labels[status];
 }
 
 function formatDateTime(date: Date | null): string {
   if (!date) return "-";
-  return new Date(date).toLocaleString("en-GB", {
+  return new Date(date).toLocaleString("id-ID", {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -109,28 +109,28 @@ export function ApplicationStatusCard({ row }: { row: VendorApplicationRow }) {
   // Timeline: which rows to show depends on status
   // ---------------------------------------------------------------------
   const timelineFields: { label: string; value: string }[] = [
-    { label: "Applied At", value: formatDateTime(row.appliedAt) },
+    { label: "Diajukan Pada", value: formatDateTime(row.appliedAt) },
   ];
 
   if (row.status === "REJECTED") {
-    timelineFields.push({ label: "Rejected At", value: formatDateTime(row.rejectedAt) });
+    timelineFields.push({ label: "Ditolak Pada", value: formatDateTime(row.rejectedAt) });
   } else if (row.status === "CANCELLED") {
-    timelineFields.push({ label: "Approved At", value: formatDateTime(row.approvedAt) });
-    timelineFields.push({ label: "Cancelled At", value: formatDateTime(row.cancelledAt) });
+    timelineFields.push({ label: "Disetujui Pada", value: formatDateTime(row.approvedAt) });
+    timelineFields.push({ label: "Dibatalkan Pada", value: formatDateTime(row.cancelledAt) });
   } else if (row.status === "EXPIRED") {
-    timelineFields.push({ label: "Approved At", value: formatDateTime(row.approvedAt) });
-    timelineFields.push({ label: "Expired At", value: formatDateTime(row.paymentDeadline) });
+    timelineFields.push({ label: "Disetujui Pada", value: formatDateTime(row.approvedAt) });
+    timelineFields.push({ label: "Kedaluwarsa Pada", value: formatDateTime(row.paymentDeadline) });
   } else if (row.status === "NO_SHOW") {
-    timelineFields.push({ label: "Approved At", value: formatDateTime(row.approvedAt) });
-    timelineFields.push({ label: "Payment Confirmation At", value: formatDateTime(row.paymentConfirmedAt) });
+    timelineFields.push({ label: "Disetujui Pada", value: formatDateTime(row.approvedAt) });
+    timelineFields.push({ label: "Konfirmasi Pembayaran Pada", value: formatDateTime(row.paymentConfirmedAt) });
   } else if (row.status === "CONFIRMED" || row.status === "COMPLETED") {
-    timelineFields.push({ label: "Approved At", value: formatDateTime(row.approvedAt) });
-    timelineFields.push({ label: "Payment Confirmation At", value: formatDateTime(row.paymentConfirmedAt) });
-    timelineFields.push({ label: "Invoice Sent At", value: formatDateTime(row.invoiceSentAt) });
+    timelineFields.push({ label: "Disetujui Pada", value: formatDateTime(row.approvedAt) });
+    timelineFields.push({ label: "Konfirmasi Pembayaran Pada", value: formatDateTime(row.paymentConfirmedAt) });
+    timelineFields.push({ label: "Invoice Dikirim Pada", value: formatDateTime(row.invoiceSentAt) });
   } else if (row.status === "APPROVED") {
-    timelineFields.push({ label: "Approved At", value: formatDateTime(row.approvedAt) });
+    timelineFields.push({ label: "Disetujui Pada", value: formatDateTime(row.approvedAt) });
   }
-  // PENDING: only "Applied At", already added above
+  // PENDING: only "Diajukan Pada", already added above
 
   return (
     <AccordionItem
@@ -172,22 +172,22 @@ export function ApplicationStatusCard({ row }: { row: VendorApplicationRow }) {
         <div className="flex flex-col gap-6">
           <div className="grid grid-cols-1 divide-y divide-[#EEE4FA] border-t border-[#EEE4FA] pt-5 sm:grid-cols-3 sm:divide-x sm:divide-y-0 sm:border-t-0 sm:pt-0">
             <div className="flex flex-col gap-3 pb-5 sm:pr-8 sm:pb-0">
-              <h3 className="text-sm font-semibold text-[#3B1F4A]">Application Information</h3>
-              <Field label="Application ID" value={row.displayId} />
-              <Field label="Business Category" value={row.businessCategory} />
+              <h3 className="text-sm font-semibold text-[#3B1F4A]">Informasi Pengajuan</h3>
+              <Field label="ID Pengajuan" value={row.displayId} />
+              <Field label="Kategori Usaha" value={row.businessCategory} />
               {/* <Field label="Slot Number" value={row.slotNumber?.toString() ?? "-"} />
               <Field label="Description" value={row.description ?? "-"} /> */}
             </div>
 
             <div className="flex flex-col gap-3 py-5 sm:px-8 sm:py-0">
-              <h3 className="text-sm font-semibold text-[#3B1F4A]">Event Information</h3>
+              <h3 className="text-sm font-semibold text-[#3B1F4A]">Informasi Acara</h3>
               <div className="overflow-hidden rounded-xl">
                 <ApplicationPhotoCarousel images={row.areaImages} />
               </div>
-              <Field label="Event Name" value={row.bazaarTitle} />
+              <Field label="Nama Acara" value={row.bazaarTitle} />
               <Field label="Area" value={row.areaName} />
               <Field
-                label="Event Date"
+                label="Tanggal Acara"
                 value={`${formatDateDisplay(row.eventStartDate)} - ${formatDateDisplay(row.eventEndDate)}`}
               />
               <div className="mt-0.5 flex flex-wrap gap-1.5">
@@ -199,14 +199,14 @@ export function ApplicationStatusCard({ row }: { row: VendorApplicationRow }) {
                 {row.hasElectricity && (
                   <span className="flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-[10px] text-green-800">
                     <ZapIcon className="size-2.5" />
-                    Electricity
+                    Listrik
                   </span>
                 )}
               </div>
             </div>
 
             <div className="flex flex-col gap-3 pt-5 sm:pt-0 sm:pl-8">
-              <h3 className="text-sm font-semibold text-[#3B1F4A]">Timeline</h3>
+              <h3 className="text-sm font-semibold text-[#3B1F4A]">Linimasa</h3>
               <div className="flex flex-col">
                 {timelineFields.map((field, index) => {
                   const isDone = field.value !== "-";
@@ -236,13 +236,13 @@ export function ApplicationStatusCard({ row }: { row: VendorApplicationRow }) {
           </div>
 
           <div className="flex flex-col gap-3 border-t border-[#EEE4FA] pt-6">
-            <h3 className="text-sm font-semibold text-[#3B1F4A]">Billing</h3>
+            <h3 className="text-sm font-semibold text-[#3B1F4A]">Tagihan</h3>
 
             {row.status === "REJECTED" && (
               <div className="flex items-start gap-2.5 rounded-2xl bg-red-50 px-5 py-4">
                 <XCircleIcon className="mt-0.5 size-4 shrink-0 text-red-600" />
                 <div>
-                  <p className="text-xs font-medium text-red-700">This application was rejected</p>
+                  <p className="text-xs font-medium text-red-700">Pengajuan ini ditolak</p>
                   {row.rejectReason && <p className="mt-0.5 text-xs text-red-600">{row.rejectReason}</p>}
                 </div>
               </div>
@@ -252,7 +252,7 @@ export function ApplicationStatusCard({ row }: { row: VendorApplicationRow }) {
               <div className="flex items-start gap-2.5 rounded-2xl bg-gray-100 px-5 py-4">
                 <BanIcon className="mt-0.5 size-4 shrink-0 text-gray-500" />
                 <div>
-                  <p className="text-xs font-medium text-gray-700">This application was cancelled</p>
+                  <p className="text-xs font-medium text-gray-700">Pengajuan ini dibatalkan</p>
                   {row.cancelReason && <p className="mt-0.5 text-xs text-gray-600">{row.cancelReason}</p>}
                 </div>
               </div>
@@ -262,7 +262,7 @@ export function ApplicationStatusCard({ row }: { row: VendorApplicationRow }) {
               <div className="flex items-start gap-2.5 rounded-2xl bg-gray-100 px-5 py-4">
                 <XCircleIcon className="mt-0.5 size-4 shrink-0 text-gray-500" />
                 <p className="text-xs text-gray-600">
-                  Payment deadline passed. This application has expired.
+                  Batas pembayaran telah lewat. Pengajuan ini sudah kedaluwarsa.
                 </p>
               </div>
             )}
@@ -270,25 +270,25 @@ export function ApplicationStatusCard({ row }: { row: VendorApplicationRow }) {
             {row.status === "NO_SHOW" && (
               <div className="flex items-start gap-2.5 rounded-2xl bg-gray-100 px-5 py-4">
                 <BanIcon className="mt-0.5 size-4 shrink-0 text-gray-500" />
-                <p className="text-xs text-gray-600">Vendor was marked as no-show for this event.</p>
+                <p className="text-xs text-gray-600">Vendor ditandai tidak hadir untuk acara ini.</p>
               </div>
             )}
 
             {(row.status === "PENDING" || row.status === "APPROVED") && (
               <div className="flex flex-col gap-5 rounded-2xl border border-[#E8E1EF] bg-white p-5 shadow-[0_1px_8px_rgba(122,92,168,0.05)] sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:p-6">
                 <div className="flex flex-wrap items-center gap-x-7 gap-y-4">
-                  <Field label="Price" value={formatRupiah(row.pricePerSlot)} />
-                  <Field label="Platform Fee" value={formatRupiah(estimatedPlatformFee)} />
+                  <Field label="Harga" value={formatRupiah(row.pricePerSlot)} />
+                  <Field label="Biaya Platform" value={formatRupiah(estimatedPlatformFee)} />
                   <div className="flex flex-col gap-1 rounded-lg bg-[#F3EAFB] px-3.5 py-2">
                     <p className="text-[11px] font-medium tracking-wide text-[#6B7280] uppercase">
-                      Grand Total
+                      Total Keseluruhan
                     </p>
                     <p className="text-lg font-bold text-[#7A5CA8] sm:text-xl">
                       {formatRupiah(estimatedGrandTotal)}
                     </p>
                   </div>
                   {row.status === "APPROVED" && (
-                    <Field label="Payment Deadline" value={formatDateTime(row.paymentDeadline)} />
+                    <Field label="Batas Pembayaran" value={formatDateTime(row.paymentDeadline)} />
                   )}
                 </div>
 
@@ -299,12 +299,12 @@ export function ApplicationStatusCard({ row }: { row: VendorApplicationRow }) {
                         onClick={() => router.push(`/payment/${row.id}`)}
                         className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#7A5CA8] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#6B4F98] sm:w-auto"
                       >
-                        Choose Payment Method
+                        Pilih Metode Pembayaran
                         <ArrowRightIcon className="size-4" />
                       </button>
                     ) : (
                       <p className="text-xs font-medium text-destructive">
-                        Payment deadline has passed. This application has expired.
+                        Batas pembayaran telah lewat. Pengajuan ini sudah kedaluwarsa.
                       </p>
                     )}
                   </div>
@@ -314,11 +314,11 @@ export function ApplicationStatusCard({ row }: { row: VendorApplicationRow }) {
 
             {(row.status === "CONFIRMED" || row.status === "COMPLETED") && (
               <div className="flex flex-wrap items-center gap-5 rounded-2xl bg-green-50 px-5 py-5 sm:px-6">
-                <Field label="Price" value={formatRupiah(row.pricePerSlot)} />
-                <Field label="Platform Fee" value={formatRupiah(estimatedPlatformFee)} />
+                <Field label="Harga" value={formatRupiah(row.pricePerSlot)} />
+                <Field label="Biaya Platform" value={formatRupiah(estimatedPlatformFee)} />
                 <div className="flex flex-col gap-1">
                   <p className="text-[11px] font-medium tracking-wide text-[#6B7280] uppercase">
-                    Grand Total
+                    Total Keseluruhan
                   </p>
                   <p className="text-lg font-bold text-green-700 sm:text-xl">
                     {formatRupiah(estimatedGrandTotal)}
@@ -327,7 +327,7 @@ export function ApplicationStatusCard({ row }: { row: VendorApplicationRow }) {
                 <div className="flex flex-wrap items-center gap-2 sm:ml-auto">
                   <span className="flex items-center gap-1.5 text-xs font-medium text-green-700">
                     <CheckCircleIcon className="size-4" />
-                    {row.status === "COMPLETED" ? "Completed" : "Paid & Confirmed"}
+                    {row.status === "COMPLETED" ? "Selesai" : "Dibayar & Terkonfirmasi"}
                   </span>
                   <DownloadReceiptButton
                      data = {{
@@ -354,7 +354,7 @@ export function ApplicationStatusCard({ row }: { row: VendorApplicationRow }) {
                       className="flex items-center gap-1.5 rounded-lg border border-[#EEE4FA] bg-white px-3 py-1.5 text-xs text-[#3B1F4A]"
                     >
                       <MessageCircleIcon className="size-3.5 text-green-700" />
-                      Chat organizer
+                      Chat Penyelenggara
                     </a>
                   )}
                   {row.status === "CONFIRMED" && (
@@ -368,7 +368,7 @@ export function ApplicationStatusCard({ row }: { row: VendorApplicationRow }) {
                           : "cursor-not-allowed border-transparent bg-gray-50 text-gray-400",
                       )}
                     >
-                      {isPending ? "Cancelling..." : "Cancel"}
+                      {isPending ? "Membatalkan..." : "Batalkan"}
                     </button>
                   )}
                 </div>

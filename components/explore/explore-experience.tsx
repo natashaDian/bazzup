@@ -25,7 +25,7 @@ const ExploreMap = dynamic(
     ssr: false,
     loading: () => (
       <div className="flex size-full items-center justify-center bg-muted text-sm text-muted-foreground">
-        Loading map...
+        Memuat peta...
       </div>
     ),
   },
@@ -37,10 +37,10 @@ const FALLBACK_POSITION: LatLng = { lat: -6.2088, lng: 106.8456 };
 type SortOrder = "nearest" | "farthest" | "cheapest" | "expensive";
 
 const SORT_OPTIONS: { value: SortOrder; label: string }[] = [
-  { value: "nearest", label: "Nearest" },
-  { value: "farthest", label: "Farthest" },
-  { value: "cheapest", label: "Lowest price" },
-  { value: "expensive", label: "Highest price" },
+  { value: "nearest", label: "Terdekat" },
+  { value: "farthest", label: "Terjauh" },
+  { value: "cheapest", label: "Harga Terendah" },
+  { value: "expensive", label: "Harga Tertinggi" },
 ];
 
 const EXPLORE_THEME_VARS = { "--primary": "#7A5CA8" } as CSSProperties;
@@ -109,11 +109,11 @@ export function ExploreExperience({ bazaars, cities, initial }: ExploreExperienc
 
         {bazaars.length === 0 ? (
           <div className="flex h-105 items-center justify-center rounded-2xl border border-[#EEE4FA] bg-white p-6 text-center text-sm text-[#6B7280] md:col-span-2 lg:col-span-2 lg:h-130">
-            No bazaars with a mapped location match these filters yet.
+            Belum ada bazaar dengan lokasi peta yang cocok dengan filter ini.
           </div>
         ) : !userPosition ? (
           <div className="flex h-105 items-center justify-center rounded-2xl border border-[#EEE4FA] bg-white text-sm text-[#6B7280] md:col-span-2 lg:col-span-2 lg:h-130">
-            Getting your location...
+            Mengambil lokasimu...
           </div>
         ) : (
           <>
@@ -128,14 +128,14 @@ export function ExploreExperience({ bazaars, cities, initial }: ExploreExperienc
 
             <div className="flex h-105 flex-col gap-3 rounded-2xl border border-[#EEE4FA] bg-white p-4 shadow-[0_4px_18px_rgba(122,92,168,0.06)] lg:h-130">
               <div>
-                <h2 className="text-lg font-semibold text-[#3B1F4A]">Nearby Bazaars</h2>
-                <p className="text-xs text-[#6B7280]">Bazaars near this location</p>
+                <h2 className="text-lg font-semibold text-[#3B1F4A]">Bazaar di Sekitar</h2>
+                <p className="text-xs text-[#6B7280]">Bazaar di sekitar lokasi ini</p>
               </div>
 
               <Select value={sortOrder} onValueChange={(value) => setSortOrder(value as SortOrder)}>
                 <SelectTrigger className="w-full rounded-xl border-[#E8E1EF] bg-white text-[#3B1F4A] focus-visible:border-[#7A5CA8] focus-visible:ring-[#7A5CA8]/25 data-[popup-open]:border-[#7A5CA8]">
                   <SelectValue>
-                    {() => `Sort: ${SORT_OPTIONS.find((option) => option.value === sortOrder)?.label}`}
+                    {() => `Urutkan: ${SORT_OPTIONS.find((option) => option.value === sortOrder)?.label}`}
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
@@ -211,8 +211,8 @@ function NearbyBazaarItem({
         <div className="mt-auto flex items-center justify-between gap-2 text-xs">
           <span className="truncate font-medium text-primary">
             {bazaar.minPricePerSlot !== null
-              ? `Start from ${formatRupiah(bazaar.minPricePerSlot)}`
-              : "Price unavailable"}
+              ? `Mulai dari ${formatRupiah(bazaar.minPricePerSlot)}`
+              : "Harga tidak tersedia"}
           </span>
           <span className="shrink-0 text-muted-foreground">{formatDistanceKm(bazaar.distanceKm)}</span>
         </div>

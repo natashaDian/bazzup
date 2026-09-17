@@ -26,7 +26,7 @@ export function OrganizerInfoDialog({ name, contact, rating }: OrganizerInfoDial
   return (
     <Dialog>
       <DialogTrigger
-        aria-label="View Organizer"
+        aria-label="Lihat Organizer"
         className="flex size-8 shrink-0 items-center justify-center rounded-full text-primary transition-colors hover:bg-primary/10"
       >
         <ChevronRightIcon className="size-5" />
@@ -45,7 +45,7 @@ export function OrganizerInfoDialog({ name, contact, rating }: OrganizerInfoDial
             </div>
           )}
           <DialogDescription className="text-sm leading-6 text-muted-foreground">
-            {contact.businessDesc || "This organizer hasn't added a description yet."}
+            {contact.businessDesc || "Organizer ini belum menambahkan deskripsi."}
           </DialogDescription>
 
           {hasContact && (

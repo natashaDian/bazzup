@@ -13,11 +13,11 @@ import {
 } from "lucide-react";
 
 const FILTERS = [
-  { key: "ALL", label: "All", icon: LayoutGrid },
-  { key: "DRAFT", label: "Draft", icon: FilePenLine },
-  { key: "ACTIVE", label: "Active", icon: CircleCheck },
-  { key: "FULL", label: "Full", icon: Lock },
-  { key: "COMPLETED", label: "Completed", icon: FlagTriangleRight },
+  { key: "ALL", label: "Semua", icon: LayoutGrid },
+  { key: "DRAFT", label: "Draf", icon: FilePenLine },
+  { key: "ACTIVE", label: "Aktif", icon: CircleCheck },
+  { key: "FULL", label: "Penuh", icon: Lock },
+  { key: "COMPLETED", label: "Selesai", icon: FlagTriangleRight },
 ];
 
 type Counts = { all: number; DRAFT: number; ACTIVE: number; FULL: number; COMPLETED: number };
@@ -65,7 +65,7 @@ export function OrganizerBazaarsToolbar({
           <input
             value={query}
             onChange={(e) => handleSearchChange(e.target.value)}
-            placeholder="Search by bazaar name or city"
+            placeholder="Cari berdasarkan nama bazaar atau kota"
             className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-input bg-card text-sm shadow-sm transition-shadow focus:outline-none focus:ring-2 focus:ring-[#7A5CA8]/30 focus:border-[#7A5CA8]"
           />
         </div>
@@ -74,7 +74,7 @@ export function OrganizerBazaarsToolbar({
           className="search-gradient-button flex items-center gap-1.5 text-white px-5 py-2.5 rounded-lg text-sm shadow-sm"
         >
           <Plus className="size-4" />
-          Create bazaar
+          Buat Bazaar
         </a>
       </div>
 

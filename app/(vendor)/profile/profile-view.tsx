@@ -109,7 +109,7 @@ export function ProfileView({ user }: { user: User }) {
                 </div>
                 {mode === "edit" && (
                   <p className="max-w-20 text-center text-[10px] leading-tight text-muted-foreground">
-                    Upload your business logo
+                    Unggah logo usaha Anda
                   </p>
                 )}
               </div>

@@ -29,10 +29,10 @@ import { OrganizerInfoDialog } from "@/components/organizer-info-dialog";
 import { ApplyToAreaButton } from "./apply-to-area-button";
 
 const STATUS_LABEL: Record<string, { label: string; variant: "default" | "secondary" }> = {
-  ACTIVE: { label: "Open", variant: "default" },
-  FULL: { label: "Full", variant: "secondary" },
-  COMPLETED: { label: "Completed", variant: "secondary" },
-  DRAFT: { label: "Draft", variant: "secondary" },
+  ACTIVE: { label: "Terbuka", variant: "default" },
+  FULL: { label: "Penuh", variant: "secondary" },
+  COMPLETED: { label: "Selesai", variant: "secondary" },
+  DRAFT: { label: "Draf", variant: "secondary" },
 };
 
 type PageParams = { params: Promise<{ id: string }> };
@@ -119,7 +119,7 @@ export default async function BazaarDetailPage({ params }: PageParams) {
                 rel="noreferrer"
                 className="shrink-0 text-sm font-medium text-[#7A5CA8] transition-colors duration-200 hover:text-[#3B1F4A]"
               >
-                View Maps &rarr;
+                Lihat Peta &rarr;
               </a>
             </div>
 
@@ -137,7 +137,7 @@ export default async function BazaarDetailPage({ params }: PageParams) {
                 </AvatarFallback>
               </Avatar>
               <div>
-                <p className="text-xs text-[#6B7280]">Organized by</p>
+                <p className="text-xs text-[#6B7280]">Diselenggarakan oleh</p>
                 <p className="text-sm font-semibold text-[#3B1F4A]">{bazaar.organizerName}</p>
               </div>
             </div>
@@ -151,13 +151,13 @@ export default async function BazaarDetailPage({ params }: PageParams) {
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-[1.4fr_1fr]">
             {bazaar.description && (
               <div className="flex flex-col gap-2 rounded-2xl border border-[#EEE4FA] bg-white p-5 shadow-[0_2px_10px_rgba(122,92,168,0.05)] sm:p-6">
-                <h2 className="text-lg font-semibold text-[#3B1F4A]">About This Bazaar</h2>
+                <h2 className="text-lg font-semibold text-[#3B1F4A]">Tentang Bazaar Ini</h2>
                 <p className="text-sm leading-6 text-[#6B7280]">{bazaar.description}</p>
               </div>
             )}
 
             <div className="flex flex-col gap-2 rounded-2xl border border-[#EEE4FA] bg-white p-5 shadow-[0_2px_10px_rgba(122,92,168,0.05)] sm:p-6">
-              <h2 className="text-lg font-semibold text-[#3B1F4A]">What to Expect</h2>
+              <h2 className="text-lg font-semibold text-[#3B1F4A]">Apa yang Bisa Diharapkan</h2>
               {bazaar.facilities.length > 0 ? (
                 <div className="flex flex-wrap gap-2">
                   {bazaar.facilities.map((facility) => (
@@ -171,29 +171,29 @@ export default async function BazaarDetailPage({ params }: PageParams) {
                 </div>
               ) : (
                 <p className="text-sm leading-6 text-[#6B7280]">
-                  Facility details for this bazaar haven&apos;t been added yet.
+                  Detail fasilitas untuk bazaar ini belum ditambahkan.
                 </p>
               )}
             </div>
           </div>
 
           <div className="flex flex-col gap-4">
-            <h2 className="text-lg font-semibold text-[#3B1F4A]">Event Highlights</h2>
+            <h2 className="text-lg font-semibold text-[#3B1F4A]">Sorotan Acara</h2>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               <HighlightStat
                 icon={<StoreIcon className="size-5" />}
                 value={`${confirmedVendorCount}+`}
-                label="Vendors"
+                label="Vendor"
               />
               <HighlightStat
                 icon={<UsersIcon className="size-5" />}
                 value={maxTraffic > 0 ? `~${maxTraffic}` : "-"}
-                label="Visitors / day"
+                label="Pengunjung / hari"
               />
               <HighlightStat
                 icon={<MapPinIcon className="size-5" />}
                 value={`${bazaar.areas.length}`}
-                label="Areas"
+                label="Area"
               />
             </div>
           </div>
@@ -201,26 +201,26 @@ export default async function BazaarDetailPage({ params }: PageParams) {
 
         <aside className="flex flex-col gap-6">
           <div className="flex flex-col gap-5 rounded-2xl border border-[#EEE4FA] bg-white p-5 shadow-[0_2px_10px_rgba(122,92,168,0.05)] sm:p-6">
-            <h2 className="text-lg font-semibold text-[#3B1F4A]">Event Information</h2>
+            <h2 className="text-lg font-semibold text-[#3B1F4A]">Informasi Acara</h2>
             <div className="flex flex-col gap-4">
-              <InfoRow icon={<MapPinIcon className="size-4" />} label="City" value={bazaar.city} />
+              <InfoRow icon={<MapPinIcon className="size-4" />} label="Kota" value={bazaar.city} />
               <InfoRow
                 icon={<CalendarIcon className="size-4" />}
-                label="Event Date"
+                label="Tanggal Acara"
                 value={`${formatDateDisplay(bazaar.eventStartDate)} - ${formatDateDisplay(bazaar.eventEndDate)}`}
               />
               {categories.length > 0 && (
                 <InfoRow
                   icon={<TagIcon className="size-4" />}
-                  label="Category"
+                  label="Kategori"
                   value={categories.join(", ")}
                 />
               )}
               {maxTraffic > 0 && (
                 <InfoRow
                   icon={<TrendingUpIcon className="size-4" />}
-                  label="Estimated Traffic"
-                  value={`~${maxTraffic} visitors/day`}
+                  label="Perkiraan Pengunjung"
+                  value={`~${maxTraffic} pengunjung/hari`}
                 />
               )}
             </div>
@@ -231,15 +231,15 @@ export default async function BazaarDetailPage({ params }: PageParams) {
             className="flex scroll-mt-20 flex-col gap-5 rounded-2xl border border-[#EEE4FA] bg-white p-5 shadow-[0_2px_10px_rgba(122,92,168,0.05)] sm:p-6"
           >
             <div className="flex flex-col gap-1">
-              <h2 className="text-lg font-semibold text-[#3B1F4A]">Available Areas</h2>
+              <h2 className="text-lg font-semibold text-[#3B1F4A]">Area yang Tersedia</h2>
               <p className="text-xs text-[#6B7280]">
-                Choose the perfect spot for your business
+                Pilih tempat yang pas untuk usahamu
               </p>
-              <p className="text-xs text-[#6B7280]">Total {bazaar.areas.length} areas</p>
+              <p className="text-xs text-[#6B7280]">Total {bazaar.areas.length} area</p>
             </div>
 
             {bazaar.areas.length === 0 ? (
-              <p className="text-sm text-[#6B7280]">No areas have been set up yet.</p>
+              <p className="text-sm text-[#6B7280]">Belum ada area yang disiapkan.</p>
             ) : (
               <Accordion defaultValue={[bazaar.areas[0].id]} className="gap-3">
                 {bazaar.areas.map((area) => (
@@ -284,25 +284,25 @@ export default async function BazaarDetailPage({ params }: PageParams) {
                         <div className="flex flex-col gap-3">
                           <Stat
                             icon={<LayersIcon className="size-4" />}
-                            label="Total Slots"
-                            value={`${area.slotsLeft} of ${area.totalSlot} left`}
+                            label="Total Slot"
+                            value={`${area.slotsLeft} dari ${area.totalSlot} tersisa`}
                           />
                           <Stat
                             icon={<ZapIcon className="size-4" />}
-                            label="Electricity"
-                            value={area.hasElectricity ? "Yes" : "No"}
+                            label="Listrik"
+                            value={area.hasElectricity ? "Ya" : "Tidak"}
                           />
                           {area.estimatedTraffic !== null && (
                             <Stat
                               icon={<TrendingUpIcon className="size-4" />}
-                              label="Estimated Traffic"
-                              value={`~${area.estimatedTraffic}/day`}
+                              label="Perkiraan Pengunjung"
+                              value={`~${area.estimatedTraffic}/hari`}
                             />
                           )}
                           {area.categoryWanted && (
                             <Stat
                               icon={<TagIcon className="size-4" />}
-                              label="Category"
+                              label="Kategori"
                               value={area.categoryWanted}
                             />
                           )}

@@ -43,7 +43,7 @@ export function LoginForm() {
           htmlFor="password"
           className="text-sm font-medium text-[#3B1F4A]"
         >
-          Password
+          Kata Sandi
         </Label>
 
         <Input
@@ -52,7 +52,7 @@ export function LoginForm() {
           type="password"
           required
           autoComplete="current-password"
-          placeholder="Enter your password"
+          placeholder="Masukkan kata sandi"
             className="transition-all duration-200 focus-visible:border-[#7A5CA8] focus-visible:ring-1 focus-visible:ring-[#7A5CA8] focus-visible:shadow-[0_0_0_3px_rgba(185,140,222,0.12)]"
 
         />

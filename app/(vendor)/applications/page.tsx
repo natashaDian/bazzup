@@ -12,7 +12,7 @@ import { ApplicationsFilterBar } from "./applications-filter-bar";
 import { ApplicationStatusCard } from "@/components/application-status-card";
 
 export const metadata: Metadata = {
-  title: "Application Status - BazzUp",
+  title: "Status Pengajuan - BazzUp",
 };
 
 function firstValue(value: string | string[] | undefined): string | undefined {
@@ -59,9 +59,9 @@ export default async function ApplicationStatusPage({
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-10 px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold text-[#3B1F4A] sm:text-4xl">Application Status</h1>
+        <h1 className="text-3xl font-bold text-[#3B1F4A] sm:text-4xl">Status Pengajuan</h1>
         <p className="text-[#6B7280]">
-          Track the status of the bazaars you&apos;ve applied to.
+          Pantau status pengajuan bazaar yang sudah kamu ikuti.
         </p>
       </div>
 
@@ -73,12 +73,12 @@ export default async function ApplicationStatusPage({
           initialSort={rawSort}
         />
 
-        <p className="text-sm text-[#6B7280]">{rows.length} applications</p>
+        <p className="text-sm text-[#6B7280]">{rows.length} pengajuan</p>
       </div>
 
       {rows.length === 0 ? (
         <p className="text-sm text-[#6B7280]">
-          No applications match these filters.
+          Tidak ada pengajuan yang sesuai dengan filter ini.
         </p>
       ) : (
         <Accordion

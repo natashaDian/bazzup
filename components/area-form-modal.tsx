@@ -131,7 +131,7 @@ export function AreaFormModal({
           <X className="size-4" />
         </button>
 
-        <p className="text-base font-medium mb-4">Add area</p>
+        <p className="text-base font-medium mb-4">Tambah Area</p>
 
         {state.error && (
           <p className="text-xs text-destructive mb-3">{state.error}</p>
@@ -140,7 +140,7 @@ export function AreaFormModal({
         <form action={formAction} className="space-y-3">
           <div>
             <label className="text-xs text-muted-foreground block mb-1">
-              Photos
+              Foto
             </label>
             <label className="block h-24 border border-dashed border-secondary rounded-lg flex items-center justify-center gap-2 bg-secondary/10 cursor-pointer text-accent text-xs overflow-x-auto px-2">
               {previews.length > 0 ? (
@@ -158,7 +158,7 @@ export function AreaFormModal({
               ) : (
                 <>
                   <ImagePlus className="size-4" />
-                  Upload photos
+                  Unggah Foto
                 </>
               )}
               <input
@@ -174,13 +174,13 @@ export function AreaFormModal({
 
           <div>
             <label className="text-xs text-muted-foreground block mb-1">
-              Area name *
+              Nama Area *
             </label>
             <input
               name="name"
               value={form.name}
               onChange={(e) => updateField("name", e.target.value)}
-              placeholder="e.g. Near main entrance"
+              placeholder="misalnya: dekat pintu masuk utama"
               className="w-full px-3 py-2 rounded-lg border border-input bg-card text-sm"
             />
             {state.fieldErrors?.name && (
@@ -192,7 +192,7 @@ export function AreaFormModal({
 
           <div>
             <label className="text-xs text-muted-foreground block mb-1">
-              Description
+              Deskripsi
             </label>
             <textarea
               name="description"
@@ -206,7 +206,7 @@ export function AreaFormModal({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-xs text-muted-foreground block mb-1">
-                Total slot *
+                Total Slot *
               </label>
               <input
                 name="totalSlot"
@@ -224,7 +224,7 @@ export function AreaFormModal({
             </div>
             <div>
               <label className="text-xs text-muted-foreground block mb-1">
-                Price per slot *
+                Harga per Slot *
               </label>
               <input
                 type="text"
@@ -250,7 +250,7 @@ export function AreaFormModal({
 
           <div>
             <label className="text-xs text-muted-foreground block mb-1">
-              Category wanted *{" "}
+              Kategori yang Diinginkan *{" "}
               <span className="text-muted-foreground">
                 ({form.categoryWanted.length}/5)
               </span>
@@ -288,7 +288,7 @@ export function AreaFormModal({
                 onChange={(e) =>
                   updateField("categoryWantedOther", e.target.value)
                 }
-                placeholder="Specify custom category"
+                placeholder="Sebutkan kategori lainnya"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-card text-sm"
               />
             )}
@@ -306,12 +306,12 @@ export function AreaFormModal({
           </div>
 
           <p className="text-xs font-medium text-primary uppercase tracking-wide pt-1">
-            Match score details
+            Detail Skor Kecocokan
           </p>
 
           <div>
             <label className="text-xs text-muted-foreground block mb-1">
-              Estimated visitors per day *
+              Perkiraan Pengunjung per Hari *
             </label>
             <input
               name="estimatedTraffic"
@@ -331,7 +331,7 @@ export function AreaFormModal({
 
           <div>
             <label className="text-xs text-muted-foreground block mb-1">
-              Visitor profile *
+              Profil Pengunjung *
             </label>
             <select
               name="visitorProfile"
@@ -339,7 +339,7 @@ export function AreaFormModal({
               onChange={(e) => updateField("visitorProfile", e.target.value)}
               className="w-full px-3 py-2 rounded-lg border border-input bg-card text-sm"
             >
-              <option value="">Select visitor profile</option>
+              <option value="">Pilih profil pengunjung</option>
               {VISITOR_PROFILES.map((profile) => (
                 <option key={profile} value={profile}>
                   {profile}
@@ -355,7 +355,7 @@ export function AreaFormModal({
 
           <div>
             <label className="text-xs text-muted-foreground block mb-1">
-              Peak hours *
+              Jam Ramai *
             </label>
             <div className="grid grid-cols-2 gap-3">
               <div>
@@ -399,7 +399,7 @@ export function AreaFormModal({
               onChange={(e) => updateField("hasElectricity", e.target.checked)}
               className="size-4"
             />
-            Electricity available
+            Tersedia Listrik
           </label>
 
           <div className="flex gap-2 justify-end pt-3">
@@ -408,14 +408,14 @@ export function AreaFormModal({
               onClick={onClose}
               className="bg-secondary/15 text-muted-foreground px-4 py-2 rounded-lg text-sm"
             >
-              Cancel
+              Batal
             </button>
             <button
               type="submit"
               disabled={isPending}
               className="bg-accent text-accent-foreground px-4 py-2 rounded-lg text-sm"
             >
-              {isPending ? "Saving..." : "Save area"}
+              {isPending ? "Menyimpan..." : "Simpan Area"}
             </button>
           </div>
         </form>

@@ -8,7 +8,7 @@ const LocationPickerMap = dynamic(() => import("./location-picker-map"), {
   ssr: false,
   loading: () => (
     <div className="h-[160px] w-full rounded-lg bg-secondary/10 flex items-center justify-center text-sm text-muted-foreground">
-      Loading map...
+      Memuat peta...
     </div>
   ),
 });
@@ -146,7 +146,7 @@ export function LocationPicker({
           }}
           onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
           onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
-          placeholder="e.g. Jl. Sudirman No. 1, Jakarta"
+          placeholder="Contoh: Jl. Sudirman No. 1, Jakarta"
           className="w-full pl-9 pr-3 py-2 rounded-lg border border-input bg-card text-sm"
         />
 
@@ -169,7 +169,7 @@ export function LocationPicker({
 
       {isSearching && (
         <p className="text-xs text-muted-foreground mb-2">
-          Looking up location...
+          Mencari lokasi...
         </p>
       )}
       {error && <p className="text-xs text-destructive mb-2">{error}</p>}
@@ -177,7 +177,7 @@ export function LocationPicker({
       <LocationPickerMap position={position} onPick={handlePick} />
 
       <p className="text-xs text-muted-foreground mt-1.5">
-        City and coordinates are set automatically from the address.
+        Kota dan koordinat akan diatur otomatis berdasarkan alamat.
       </p>
     </div>
   );

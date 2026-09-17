@@ -158,13 +158,13 @@ export function OrganizerDashboardClient({
 
   const subtitle =
     pendingCount > 0
-      ? `You have ${pendingCount} application${pendingCount > 1 ? "s" : ""} waiting for review.`
-      : "You're all caught up.";
+      ? `Anda memiliki ${pendingCount} aplikasi yang menunggu ditinjau.`
+      : "Semua aplikasi sudah ditinjau.";
 
   const statusData = [
-    { name: "Confirmed", value: statusBreakdown.confirmed, color: "#7A5CA8" },
-    { name: "Pending", value: statusBreakdown.pending, color: "#B98CDE" },
-    { name: "Rejected", value: statusBreakdown.rejected, color: "#D3D1C7" },
+    { name: "Dikonfirmasi", value: statusBreakdown.confirmed, color: "#7A5CA8" },
+    { name: "Menunggu", value: statusBreakdown.pending, color: "#B98CDE" },
+    { name: "Ditolak", value: statusBreakdown.rejected, color: "#D3D1C7" },
   ].filter((d) => d.value > 0);
 
   const totalApplications =
@@ -181,19 +181,19 @@ export function OrganizerDashboardClient({
     },
     {
       icon: Inbox,
-      label: "Pending",
+      label: "Menunggu",
       value: stats.pendingApplications,
       isNumber: true,
     },
     {
       icon: Users,
-      label: "Confirmed vendors",
+      label: "Vendor terkonfirmasi",
       value: stats.confirmedVendors,
       isNumber: true,
     },
     {
       icon: Wallet,
-      label: "Revenue",
+      label: "Pendapatan",
       value: `Rp ${stats.revenue.toLocaleString("id-ID")}`,
       isNumber: false,
     },
@@ -220,9 +220,9 @@ export function OrganizerDashboardClient({
               <SelectValue>
                 {(value: string) =>
                   value === ALL_BAZAAR_VALUE
-                    ? "All bazaars"
+                    ? "Semua bazaar"
                     : (bazaarOptions.find((b) => b.id === value)?.title ??
-                      "All bazaars")
+                      "Semua bazaar")
                 }
               </SelectValue>
             </SelectTrigger>
@@ -231,7 +231,7 @@ export function OrganizerDashboardClient({
                 value={ALL_BAZAAR_VALUE}
                 className="rounded-lg px-3 py-2.5 text-sm text-[#3B1F4A] data-[selected]:bg-[#F3EAFB] data-[selected]:font-medium data-[highlighted]:bg-[#F3EAFB]"
               >
-                All bazaars
+                Semua bazaar
               </SelectItem>
               {bazaarOptions.map((bazaar) => (
                 <SelectItem
@@ -272,7 +272,7 @@ export function OrganizerDashboardClient({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-8">
         <div className="bg-card rounded-xl p-5 shadow-sm transition-shadow hover:shadow-md animate-in fade-in duration-500">
           <p className="text-xs font-medium text-muted-foreground mb-4">
-            Applications trend
+            Tren aplikasi
           </p>
           <div style={{ width: "100%", height: 140 }}>
             <ResponsiveContainer>
@@ -298,7 +298,7 @@ export function OrganizerDashboardClient({
                 <Area
                   type="monotone"
                   dataKey="count"
-                  name="Applications"
+                  name="Aplikasi"
                   stroke="#7A5CA8"
                   strokeWidth={2}
                   fill="url(#trendGradient)"
@@ -314,7 +314,7 @@ export function OrganizerDashboardClient({
 
         <div className="bg-card rounded-xl p-5 shadow-sm transition-shadow hover:shadow-md animate-in fade-in duration-500 delay-100">
           <p className="text-xs font-medium text-muted-foreground mb-4">
-            Application status
+            Status aplikasi
           </p>
           {statusData.length > 0 ? (
             <div className="flex items-center gap-3">
@@ -391,14 +391,14 @@ export function OrganizerDashboardClient({
             </div>
           ) : (
             <div className="h-[140px] flex items-center justify-center text-xs text-muted-foreground">
-              No applications yet
+              Belum ada aplikasi
             </div>
           )}
         </div>
 
         <div className="bg-card rounded-xl p-5 shadow-sm transition-shadow hover:shadow-md animate-in fade-in duration-500 delay-200">
           <p className="text-xs font-medium text-muted-foreground mb-4">
-            Top categories
+            Kategori teratas
           </p>
           {categories.length > 0 ? (
             <div style={{ width: "100%", height: 140 }}>
@@ -430,7 +430,7 @@ export function OrganizerDashboardClient({
                   />
                   <Bar
                     dataKey="count"
-                    name="Count"
+                    name="Jumlah"
                     fill="url(#categoryGradient)"
                     radius={4}
                     barSize={14}
@@ -442,7 +442,7 @@ export function OrganizerDashboardClient({
             </div>
           ) : (
             <div className="h-[140px] flex items-center justify-center text-xs text-muted-foreground">
-              No data yet
+              Belum ada data
             </div>
           )}
         </div>
@@ -451,7 +451,7 @@ export function OrganizerDashboardClient({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-8">
         <div className="lg:col-span-2">
           <p className="text-sm font-medium mb-4 flex items-center gap-2">
-            Needs your attention
+            Perlu perhatian Anda
             {attentionItems.length > 0 && (
               <span className="relative flex size-2">
                 <span className="animate-ping absolute inline-flex size-full rounded-full bg-accent opacity-75" />
@@ -489,14 +489,14 @@ export function OrganizerDashboardClient({
               })
             ) : (
               <div className="px-4 py-8 text-center text-sm text-muted-foreground">
-                Nothing needs your attention right now.
+                Tidak ada yang perlu diperhatikan saat ini.
               </div>
             )}
           </div>
         </div>
 
         <div>
-          <p className="text-sm font-medium mb-4">Recent activity</p>
+          <p className="text-sm font-medium mb-4">Aktivitas terbaru</p>
           <div className="bg-card rounded-xl p-5 shadow-sm">
             {recentActivity.length > 0 ? (
               recentActivity.map((item, i) => (
@@ -510,7 +510,7 @@ export function OrganizerDashboardClient({
               ))
             ) : (
               <p className="text-xs text-muted-foreground text-center py-4">
-                No activity yet.
+                Belum ada aktivitas.
               </p>
             )}
           </div>
@@ -518,7 +518,7 @@ export function OrganizerDashboardClient({
       </div>
 
       <div>
-        <p className="text-sm font-medium mb-4">Upcoming bazaars</p>
+        <p className="text-sm font-medium mb-4">Bazaar mendatang</p>
         {upcomingBazaars.length > 0 ? (
           <div className="flex gap-4 overflow-x-auto">
             {upcomingBazaars.map((bazaar) => (
@@ -530,8 +530,8 @@ export function OrganizerDashboardClient({
                 <div>
                   <p className="text-xs text-accent mb-1">
                     {bazaar.daysUntil === 0
-                      ? "Today"
-                      : `In ${bazaar.daysUntil} days`}
+                      ? "Hari ini"
+                      : `${bazaar.daysUntil} hari lagi`}
                   </p>
                   <p className="text-sm font-medium">{bazaar.title}</p>
                 </div>
@@ -541,7 +541,7 @@ export function OrganizerDashboardClient({
           </div>
         ) : (
           <div className="bg-card rounded-xl px-4 py-6 text-center text-sm text-muted-foreground shadow-sm">
-            No upcoming bazaars scheduled.
+            Belum ada bazaar mendatang yang dijadwalkan.
           </div>
         )}
       </div>

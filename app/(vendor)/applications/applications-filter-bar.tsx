@@ -58,7 +58,7 @@ export function ApplicationsFilterBar({
 
   const statusLabel = (value: string) =>
     value === ALL_STATUS_VALUE
-      ? "All Status"
+      ? "Semua Status"
       : (statuses.find((s) => s.value === value)?.label ?? value);
 
   return (
@@ -76,7 +76,7 @@ export function ApplicationsFilterBar({
           <SelectValue>{(value: string) => statusLabel(value)}</SelectValue>
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value={ALL_STATUS_VALUE}>All Status</SelectItem>
+          <SelectItem value={ALL_STATUS_VALUE}>Semua Status</SelectItem>
           {statuses.map((status) => (
             <SelectItem key={status.value} value={status.value}>
               {status.label}
@@ -90,7 +90,7 @@ export function ApplicationsFilterBar({
         <Input
           value={search}
           onChange={(event) => setSearch(event.target.value)}
-          placeholder="Search by application ID, event, or area..."
+          placeholder="Cari berdasarkan ID pengajuan, acara, atau area..."
           className="h-11 rounded-xl border-[#E8E1EF] bg-white pl-10 text-[#3B1F4A] focus-visible:border-[#7A5CA8]"
         />
       </div>
@@ -102,13 +102,13 @@ export function ApplicationsFilterBar({
         <SelectTrigger className="!h-11 w-full rounded-xl border-[#E8E1EF] bg-white px-3.5 text-[#3B1F4A] focus-visible:border-[#7A5CA8] sm:w-44">
           <SelectValue>
             {(value: string) =>
-              value === "oldest" ? "Oldest First" : "Newest First"
+              value === "oldest" ? "Terlama" : "Terbaru"
             }
           </SelectValue>
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="newest">Newest First</SelectItem>
-          <SelectItem value="oldest">Oldest First</SelectItem>
+          <SelectItem value="newest">Terbaru</SelectItem>
+          <SelectItem value="oldest">Terlama</SelectItem>
         </SelectContent>
       </Select>
     </div>

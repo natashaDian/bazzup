@@ -95,13 +95,13 @@ export function OrganizerProfileClient({
               className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border border-input mt-2"
             >
               <Pencil className="size-3.5" />
-              Edit profile
+              Edit profil
             </button>
           </div>
 
           <p className="text-lg font-medium mb-0.5">{displayName}</p>
           <p className="text-sm text-muted-foreground mb-2.5">
-            Managed by {profile.name}
+            Dikelola oleh {profile.name}
           </p>
           {profile.businessDesc && (
             <p className="text-sm text-muted-foreground leading-relaxed mb-3.5">
@@ -112,17 +112,17 @@ export function OrganizerProfileClient({
           <div className="flex flex-wrap gap-2 mb-3.5">
             <span className="flex items-center gap-1.5 text-xs bg-secondary/10 px-3 py-1.5 rounded-full">
               <Building2 className="size-3.5 text-accent" />
-              {stats.totalBazaars} bazaars
+              {stats.totalBazaars} bazaar
             </span>
             <span className="flex items-center gap-1.5 text-xs bg-secondary/10 px-3 py-1.5 rounded-full">
               <Users className="size-3.5 text-accent" />
-              {stats.totalVendorsHosted} vendors hosted
+              {stats.totalVendorsHosted} vendor bergabung
             </span>
             <span className="flex items-center gap-1.5 text-xs bg-secondary/10 px-3 py-1.5 rounded-full">
               <Star className="size-3.5 text-amber-500" />
               {stats.averageRating
                 ? stats.averageRating.toFixed(1)
-                : "No ratings yet"}
+                : "Belum ada rating"}
             </span>
           </div>
 
@@ -159,7 +159,7 @@ export function OrganizerProfileClient({
       <div id="past-bazaars" className="scroll-mt-20">
         {latest && (
           <div className="mb-6">
-            <p className="text-sm font-medium mb-3">Latest bazaar</p>
+            <p className="text-sm font-medium mb-3">Bazaar terbaru</p>
             <div className="grid grid-cols-1 sm:grid-cols-[1fr_1.3fr] rounded-2xl overflow-hidden border border-input">
               <div className="h-36 sm:h-auto bg-secondary/10 flex items-center justify-center">
                 {latest.coverImageUrl ? (
@@ -206,7 +206,7 @@ export function OrganizerProfileClient({
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Users className="size-3.5" />
-                    {latest.vendorCount} vendors
+                    {latest.vendorCount} vendor
                   </span>
                 </div>
               </div>
@@ -219,7 +219,7 @@ export function OrganizerProfileClient({
 
       {bazaars.length === 0 && (
         <div className="border border-dashed rounded-2xl py-12 text-center text-sm text-muted-foreground">
-          No completed bazaars yet.
+          Belum ada bazaar yang selesai.
         </div>
       )}
 
@@ -245,7 +245,7 @@ function PastBazaarsCarousel({ bazaars }: { bazaars: OrganizedBazaarCard[] }) {
 
   return (
     <div>
-      <p className="text-sm font-medium mb-3">Past bazaars</p>
+      <p className="text-sm font-medium mb-3">Bazaar sebelumnya</p>
       <div
         ref={scrollRef}
         className="flex gap-3 overflow-x-auto scroll-smooth pb-1"
@@ -300,7 +300,7 @@ function PastBazaarsCarousel({ bazaars }: { bazaars: OrganizedBazaarCard[] }) {
                 </span>
                 <span className="flex items-center gap-1">
                   <Users className="size-3" />
-                  {bazaar.vendorCount} vendors
+                  {bazaar.vendorCount} vendor
                 </span>
               </div>
             </div>
@@ -311,14 +311,14 @@ function PastBazaarsCarousel({ bazaars }: { bazaars: OrganizedBazaarCard[] }) {
       <div className="flex justify-center gap-2.5 mt-3">
         <button
           onClick={() => scroll("left")}
-          aria-label="Previous"
+          aria-label="Sebelumnya"
           className="size-8 rounded-full border border-input bg-card flex items-center justify-center"
         >
           <ChevronLeft className="size-4" />
         </button>
         <button
           onClick={() => scroll("right")}
-          aria-label="Next"
+          aria-label="Berikutnya"
           className="size-8 rounded-full border border-input bg-card flex items-center justify-center"
         >
           <ChevronRight className="size-4" />
@@ -376,22 +376,22 @@ function EditProfileModal({
   function validateClientSide() {
     const errors: Record<string, string> = {};
     if (!form.businessName.trim() || form.businessName.trim().length < 2) {
-      errors.businessName = "Organization name must be at least 2 characters.";
+      errors.businessName = "Nama organisasi minimal 2 karakter.";
     }
     if (!form.whatsapp.trim()) {
-      errors.whatsapp = "WhatsApp number is required.";
+      errors.whatsapp = "Nomor WhatsApp wajib diisi.";
     } else if (!/^0\d{9,13}$/.test(form.whatsapp.trim())) {
       errors.whatsapp =
-        "Enter a valid number starting with 0 (e.g. 0812xxxxxxx).";
+        "Masukkan nomor yang valid, diawali dengan 0 (contoh: 0812xxxxxxx).";
     }
     if (form.phone.trim() && !/^0\d{9,13}$/.test(form.phone.trim())) {
-      errors.phone = "Enter a valid phone number starting with 0.";
+      errors.phone = "Masukkan nomor telepon yang valid, diawali dengan 0.";
     }
     if (
       form.website.trim() &&
       !/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\/.*)?$/.test(form.website.trim())
     ) {
-      errors.website = "Enter a valid website (e.g. example.com).";
+      errors.website = "Masukkan website yang valid (contoh: example.com).";
     }
     return errors;
   }
@@ -442,7 +442,7 @@ function EditProfileModal({
           <X className="size-4" />
         </button>
 
-        <p className="text-base font-medium mb-4">Edit profile</p>
+        <p className="text-base font-medium mb-4">Edit profil</p>
 
         {state.error && (
           <p className="text-xs text-destructive mb-3">{state.error}</p>
@@ -462,7 +462,7 @@ function EditProfileModal({
 
           <div>
             <label className="text-xs text-muted-foreground block mb-1.5">
-              Cover photo
+              Foto sampul
             </label>
             <div className="relative">
               <label className="block">
@@ -471,7 +471,7 @@ function EditProfileModal({
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={coverPreview}
-                      alt="Cover preview"
+                      alt="Pratinjau sampul"
                       className="size-full object-cover"
                     />
                   ) : (
@@ -491,7 +491,7 @@ function EditProfileModal({
                 <button
                   type="button"
                   onClick={clearCover}
-                  aria-label="Remove cover photo"
+                  aria-label="Hapus foto sampul"
                   className="absolute -top-1.5 -right-1.5 size-5 rounded-full bg-destructive text-white flex items-center justify-center"
                 >
                   <X className="size-3" />
@@ -502,7 +502,7 @@ function EditProfileModal({
 
           <div className="flex flex-col items-center mb-1">
             <label className="text-xs text-muted-foreground block mb-1.5 self-start">
-              Profile photo
+              Foto profil
             </label>
             <div className="relative">
               <label className="block">
@@ -511,7 +511,7 @@ function EditProfileModal({
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={photoPreview}
-                      alt="Preview"
+                      alt="Pratinjau"
                       className="size-full object-cover"
                     />
                   ) : (
@@ -531,7 +531,7 @@ function EditProfileModal({
                 <button
                   type="button"
                   onClick={clearPhoto}
-                  aria-label="Remove photo"
+                  aria-label="Hapus foto"
                   className="absolute -top-1 -right-1 size-5 rounded-full bg-destructive text-white flex items-center justify-center"
                 >
                   <X className="size-3" />
@@ -542,7 +542,7 @@ function EditProfileModal({
 
           <div>
             <label className="text-xs text-muted-foreground block mb-1">
-              Organization name *
+              Nama organisasi *
             </label>
             <input
               name="businessName"
@@ -559,7 +559,7 @@ function EditProfileModal({
 
           <div>
             <label className="text-xs text-muted-foreground block mb-1">
-              About
+              Tentang
             </label>
             <textarea
               name="businessDesc"
@@ -572,7 +572,7 @@ function EditProfileModal({
 
           <div>
             <label className="text-xs text-muted-foreground block mb-1">
-              Phone
+              Telepon
             </label>
             <input
               name="phone"
@@ -654,14 +654,14 @@ function EditProfileModal({
               onClick={onClose}
               className="bg-secondary/15 text-muted-foreground px-4 py-2 rounded-lg text-sm"
             >
-              Cancel
+              Batal
             </button>
             <button
               type="submit"
               disabled={isPending}
               className="bg-accent text-accent-foreground px-4 py-2 rounded-lg text-sm"
             >
-              {isPending ? "Saving..." : "Save changes"}
+              {isPending ? "Menyimpan..." : "Simpan perubahan"}
             </button>
           </div>
         </form>

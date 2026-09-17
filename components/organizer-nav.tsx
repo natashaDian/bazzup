@@ -38,12 +38,12 @@ const navItems = [
     icon: LayoutDashboardIcon,
   },
   {
-    label: "My Bazaars",
+    label: "Bazaar Saya",
     href: "/organizer/bazaars",
     icon: StoreIcon,
   },
   {
-    label: "Incoming Applications",
+    label: "Pengajuan Masuk",
     href: "/organizer/applications",
     icon: InboxIcon,
   },
@@ -120,7 +120,7 @@ export function OrganizerNav() {
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        aria-label={open ? "Close menu" : "Open menu"}
+        aria-label={open ? "Tutup menu" : "Buka menu"}
         aria-expanded={open}
         className="fixed left-4 top-4 z-50 flex size-10 items-center justify-center rounded-xl bg-white text-[#3B1F4A] shadow-md transition-colors duration-200 hover:bg-[#F3EAFB] lg:hidden"
       >

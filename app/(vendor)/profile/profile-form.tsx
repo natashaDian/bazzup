@@ -38,9 +38,9 @@ const CATEGORY_LABELS: Record<(typeof BUSINESS_CATEGORIES)[number], string> = {
   "F&B": "F&B (Makanan & Minuman)",
   Fashion: "Fashion",
   Lifestyle: "Lifestyle",
-  Beauty: "Beauty",
-  Services: "Services",
-  Other: "Other",
+  Beauty: "Kecantikan",
+  Services: "Jasa",
+  Other: "Lainnya",
 };
 
 const TARGET_MARKET_LABELS: Record<(typeof TARGET_MARKETS)[number]["value"], string> = {
@@ -149,7 +149,7 @@ export function ProfileForm({
     <>
     <form onSubmit={onSubmit} className="flex flex-col gap-5">
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="businessName">Business Name</Label>
+        <Label htmlFor="businessName">Nama Usaha</Label>
         <Input id="businessName" {...register("businessName")} />
         {errors.businessName && (
           <p className="text-xs text-destructive">
@@ -159,14 +159,14 @@ export function ProfileForm({
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label>Business Category</Label>
+        <Label>Kategori Usaha</Label>
         <Controller
           control={control}
           name="businessType"
           render={({ field }) => (
             <Select value={field.value ?? ""} onValueChange={field.onChange}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Choose business category" />
+                <SelectValue placeholder="Pilih kategori usaha" />
               </SelectTrigger>
               <SelectContent>
                 {BUSINESS_CATEGORIES.map((category) => (
@@ -187,7 +187,7 @@ export function ProfileForm({
 
       {businessType === BUSINESS_CATEGORY_OTHER && (
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="businessTypeOther">Tell us about your business</Label>
+          <Label htmlFor="businessTypeOther">Ceritakan tentang usaha Anda</Label>
           <Input id="businessTypeOther" {...register("businessTypeOther")} />
           {errors.businessTypeOther && (
             <p className="text-xs text-destructive">
@@ -198,7 +198,7 @@ export function ProfileForm({
       )}
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="businessDesc">Business Description</Label>
+        <Label htmlFor="businessDesc">Deskripsi Usaha</Label>
         <Textarea id="businessDesc" rows={3} {...register("businessDesc")} />
         {errors.businessDesc && (
           <p className="text-xs text-destructive">
@@ -208,14 +208,14 @@ export function ProfileForm({
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label>Target Market</Label>
+        <Label>Target Pasar</Label>
         <Controller
           control={control}
           name="targetMarket"
           render={({ field }) => (
             <Select value={field.value ?? ""} onValueChange={field.onChange}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Choose target market" />
+                <SelectValue placeholder="Pilih target pasar" />
               </SelectTrigger>
               <SelectContent>
                 {TARGET_MARKETS.map((market) => (
@@ -235,7 +235,7 @@ export function ProfileForm({
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="phone">Call Number</Label>
+        <Label htmlFor="phone">Nomor Telepon</Label>
         <Input id="phone" {...register("phone")} />
         {errors.phone && (
           <p className="text-xs text-destructive">{errors.phone.message}</p>
@@ -247,7 +247,7 @@ export function ProfileForm({
           <Label htmlFor="instagram">Instagram</Label>
           <Input
             id="instagram"
-            placeholder="@urusername"
+            placeholder="@usernamemu"
             {...register("instagram")}
           />
           {errors.instagram && (
@@ -267,7 +267,7 @@ export function ProfileForm({
               onChange={(e) => setWhatsappSameAsPhone(e.target.checked)}
               className="size-3.5 rounded border-input"
             />
-            Sama dengan Call Number
+            Sama dengan Nomor Telepon
           </label>
           {errors.whatsapp && (
             <p className="text-xs text-destructive">
@@ -278,7 +278,7 @@ export function ProfileForm({
 
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="tiktok">TikTok</Label>
-          <Input id="tiktok" placeholder="@urusername" {...register("tiktok")} />
+          <Input id="tiktok" placeholder="@usernamemu" {...register("tiktok")} />
           {errors.tiktok && (
             <p className="text-xs text-destructive">{errors.tiktok.message}</p>
           )}
@@ -321,13 +321,13 @@ export function ProfileForm({
       <DialogContent className="sm:max-w-sm">
         <div className="flex flex-col items-center gap-4 py-4 text-center">
           <MessageCircleIcon className="size-14 text-amber-500" strokeWidth={1.5} />
-          <DialogTitle className="text-lg">Confirm Your WhatsApp Number</DialogTitle>
+          <DialogTitle className="text-lg">Konfirmasi Nomor WhatsApp Anda</DialogTitle>
           <DialogDescription className="text-sm leading-6 text-muted-foreground">
-            Make sure this number is correct and active on WhatsApp:
+            Pastikan nomor ini benar dan aktif di WhatsApp:
             <br />
             <span className="font-semibold text-foreground">{pendingSubmit?.whatsapp}</span>
             <br />
-            Organizers will use it to reach you about your applications.
+            Organizer akan menghubungi Anda lewat nomor ini terkait pengajuan Anda.
           </DialogDescription>
           <div className="mt-4 flex w-full gap-2">
             <button
@@ -335,7 +335,7 @@ export function ProfileForm({
               onClick={() => setPendingSubmit(null)}
               className="flex-1 rounded-md border border-input px-4 py-2.5 text-sm font-medium hover:bg-muted"
             >
-              Edit Number
+              Ubah Nomor
             </button>
             <button
               type="button"
@@ -345,7 +345,7 @@ export function ProfileForm({
               }}
               className="flex-1 rounded-md bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
             >
-              Yes, It&apos;s Correct
+              Ya, Sudah Benar
             </button>
           </div>
         </div>

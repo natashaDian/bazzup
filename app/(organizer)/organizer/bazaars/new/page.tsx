@@ -88,21 +88,21 @@ export default function CreateBazaarPage() {
   function validateClientSide() {
     const errors: Record<string, string> = {};
     if (!draft.title.trim() || draft.title.trim().length < 3) {
-      errors.title = "Title must be at least 3 characters";
+      errors.title = "Judul minimal harus 3 karakter";
     }
     if (!draft.description.trim() || draft.description.trim().length < 100) {
-      errors.description = "Description must be at least 100 characters";
+      errors.description = "Deskripsi minimal harus 100 karakter";
     }
     if (!draft.eventStartDate) {
-      errors.eventStartDate = "Start date is required";
+      errors.eventStartDate = "Tanggal mulai wajib diisi";
     }
     if (!draft.eventEndDate) {
-      errors.eventEndDate = "End date is required";
+      errors.eventEndDate = "Tanggal selesai wajib diisi";
     } else if (
       draft.eventStartDate &&
       new Date(draft.eventEndDate) < new Date(draft.eventStartDate)
     ) {
-      errors.eventEndDate = "End date must be on or after the start date";
+      errors.eventEndDate = "Tanggal selesai harus sama dengan atau setelah tanggal mulai";
     }
     return errors;
   }
@@ -131,9 +131,9 @@ export default function CreateBazaarPage() {
   return (
     <main className="mx-auto w-full max-w-lg flex-1 px-4 py-10">
       <div className="bg-card rounded-2xl p-6">
-        <h1 className="text-lg font-medium">Create new bazaar</h1>
+        <h1 className="text-lg font-medium">Buat bazaar baru</h1>
         <p className="text-sm text-muted-foreground mb-5">
-          Fill in the event details to create a new bazaar.
+          Isi detail acara untuk membuat bazaar baru.
         </p>
 
         <form action={formAction} onSubmit={handleSubmit} className="space-y-4">
@@ -144,13 +144,13 @@ export default function CreateBazaarPage() {
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={photoPreview}
-                    alt="Cover preview"
+                    alt="Pratinjau sampul"
                     className="size-full object-cover"
                   />
                 ) : (
                   <>
                     <ImagePlus className="size-5 mb-1.5" />
-                    <span className="text-xs">Upload cover photo</span>
+                    <span className="text-xs">Unggah foto sampul</span>
                   </>
                 )}
               </div>
@@ -165,18 +165,18 @@ export default function CreateBazaarPage() {
           </div>
 
           <p className="text-xs font-medium text-primary uppercase tracking-wide">
-            Basic information
+            Informasi dasar
           </p>
 
           <div>
             <label className="text-xs text-muted-foreground block mb-1">
-              Title *
+              Judul *
             </label>
             <input
               name="title"
               value={draft.title}
               onChange={(e) => updateField("title", e.target.value)}
-              placeholder="Enter bazaar title"
+              placeholder="Masukkan judul bazaar"
               className="w-full px-3 py-2 rounded-lg border border-input bg-card text-sm"
             />
             {fieldErrors.title && (
@@ -188,18 +188,18 @@ export default function CreateBazaarPage() {
 
           <div>
             <label className="text-xs text-muted-foreground block mb-1">
-              Description *
+              Deskripsi *
             </label>
             <textarea
               name="description"
               value={draft.description}
               onChange={(e) => updateField("description", e.target.value)}
               rows={4}
-              placeholder="Tell people about your bazaar (minimum 100 characters)"
+              placeholder="Ceritakan tentang bazaar Anda (minimal 100 karakter)"
               className="w-full px-3 py-2 rounded-lg border border-input bg-card text-sm resize-none"
             />
             <p className="text-[11px] text-muted-foreground mt-1">
-              {draft.description.trim().length}/100 characters minimum
+              {draft.description.trim().length}/100 karakter minimum
             </p>
             {fieldErrors.description && (
               <p className="text-xs text-destructive mt-1">
@@ -211,7 +211,7 @@ export default function CreateBazaarPage() {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-xs text-muted-foreground block mb-1">
-                Start date *
+                Tanggal mulai *
               </label>
               <input
                 type="date"
@@ -228,7 +228,7 @@ export default function CreateBazaarPage() {
             </div>
             <div>
               <label className="text-xs text-muted-foreground block mb-1">
-                End date *
+                Tanggal selesai *
               </label>
               <input
                 type="date"
@@ -246,7 +246,7 @@ export default function CreateBazaarPage() {
           </div>
 
           <p className="text-xs font-medium text-primary uppercase tracking-wide">
-            Location
+            Lokasi
           </p>
 
           <LocationPicker onChange={setLocationData} />
@@ -265,7 +265,7 @@ export default function CreateBazaarPage() {
           )}
 
           <p className="text-xs font-medium text-primary uppercase tracking-wide">
-            Facilities
+            Fasilitas
           </p>
           <div className="grid grid-cols-2 gap-2">
             {FACILITY_OPTIONS.map((facility) => (
@@ -299,14 +299,14 @@ export default function CreateBazaarPage() {
               onClick={() => router.back()}
               className="bg-secondary/15 text-muted-foreground px-4 py-2 rounded-lg text-sm"
             >
-              Cancel
+              Batal
             </button>
             <button
               type="submit"
               disabled={isPending}
               className="bg-accent text-accent-foreground px-4 py-2 rounded-lg text-sm"
             >
-              {isPending ? "Saving..." : "Save as draft"}
+              {isPending ? "Menyimpan..." : "Simpan sebagai Draf"}
             </button>
           </div>
         </form>

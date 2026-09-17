@@ -34,7 +34,7 @@ function ProductPhotoField({ hint }: { hint?: string }) {
           size="sm"
           onClick={() => inputRef.current?.click()}
         >
-          Choose File
+          Pilih File
         </Button>
         <span className="text-xs text-muted-foreground truncate">
           {fileName ?? "Belum ada file dipilih"}

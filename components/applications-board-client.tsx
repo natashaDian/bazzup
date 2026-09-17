@@ -149,13 +149,13 @@ function PendingCard({ app }: { app: ApplicationCard }) {
         {app.bazaarTitle} &middot; {app.areaName}
       </p>
       <p className="text-[11px] text-secondary mb-3">
-        Applied on {formatDate(app.appliedAt)}
+        Diajukan pada {formatDate(app.appliedAt)}
       </p>
       <Link
         href={`/organizer/applications/${app.id}`}
         className="flex w-full items-center justify-center gap-1 bg-secondary/15 text-primary text-xs font-medium py-2 rounded-lg transition-colors hover:bg-secondary/25"
       >
-        See details
+        Lihat Detail
         <ChevronRight className="size-3.5" />
       </Link>
     </div>
@@ -268,10 +268,10 @@ export function ApplicationsBoardClient({
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-[#3B1F4A]">
-            Incoming applications
+            Pendaftaran Masuk
           </h1>
           <p className="text-sm text-muted-foreground mt-1.5">
-            Review vendors and manage decisions in one place.
+            Tinjau vendor dan kelola keputusan di satu tempat.
           </p>
         </div>
         <div className="flex items-center gap-3 sm:gap-4">
@@ -282,7 +282,7 @@ export function ApplicationsBoardClient({
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && updateParams({ q: query })}
-                placeholder="Search vendor"
+                placeholder="Cari vendor"
                 className="h-10 pl-10 pr-4 rounded-lg border border-[#E5E0EB] bg-white text-sm shadow-sm transition-all w-40 sm:w-48 hover:border-[#B98CDE] focus:outline-none focus:ring-2 focus:ring-[#7A5CA8]/30 focus:border-[#7A5CA8]"
               />
             </div>
@@ -298,9 +298,9 @@ export function ApplicationsBoardClient({
                 <SelectValue>
                   {(value: string) =>
                     value === ALL_BAZAAR_VALUE
-                      ? "All bazaars"
+                      ? "Semua bazaar"
                       : (bazaarOptions.find((b) => b.id === value)?.title ??
-                        "All bazaars")
+                        "Semua bazaar")
                   }
                 </SelectValue>
               </SelectTrigger>
@@ -309,7 +309,7 @@ export function ApplicationsBoardClient({
                   value={ALL_BAZAAR_VALUE}
                   className="rounded-lg px-3 py-2.5 text-sm text-[#3B1F4A] data-[selected]:bg-[#F3EAFB] data-[selected]:font-medium data-[highlighted]:bg-[#F3EAFB]"
                 >
-                  All bazaars
+                  Semua bazaar
                 </SelectItem>
                 {bazaarOptions.map((b) => (
                   <SelectItem
@@ -335,7 +335,7 @@ export function ApplicationsBoardClient({
                 style={{ backgroundColor: STATUS_DOT.pending }}
               />
               <span className="text-sm font-semibold text-[#3B1F4A]">
-                Pending review
+                Menunggu Peninjauan
               </span>
               <span className="text-xs px-2 py-0.5 rounded-full bg-[#FAEEDA] text-[#854F0B]">
                 {board.pending.length}
@@ -349,7 +349,7 @@ export function ApplicationsBoardClient({
                 <SelectTrigger className="h-auto w-fit rounded-full border-[#E5E0EB] bg-white px-2.5 py-1 text-xs text-[#7A5CA8] shadow-sm transition-colors hover:border-[#B98CDE] focus-visible:ring-[#7A5CA8]/30">
                   <SelectValue>
                     {(value: string) =>
-                      value === "highest" ? "Highest score" : "Newest first"
+                      value === "highest" ? "Skor tertinggi" : "Terbaru"
                     }
                   </SelectValue>
                 </SelectTrigger>
@@ -358,20 +358,20 @@ export function ApplicationsBoardClient({
                     value="newest"
                     className="rounded-lg px-3 py-2 text-sm text-[#3B1F4A] data-[selected]:bg-[#F3EAFB] data-[selected]:font-medium data-[highlighted]:bg-[#F3EAFB]"
                   >
-                    Newest first
+                    Terbaru
                   </SelectItem>
                   <SelectItem
                     value="highest"
                     className="rounded-lg px-3 py-2 text-sm text-[#3B1F4A] data-[selected]:bg-[#F3EAFB] data-[selected]:font-medium data-[highlighted]:bg-[#F3EAFB]"
                   >
-                    Highest score
+                    Skor tertinggi
                   </SelectItem>
                 </SelectContent>
               </Select>
               <button
                 type="button"
                 onClick={() => toggleSection("pending")}
-                aria-label={openSections.pending ? "Collapse" : "Expand"}
+                aria-label={openSections.pending ? "Ciutkan" : "Perluas"}
                 aria-expanded={openSections.pending}
                 className="flex size-7 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-white/70 lg:hidden"
               >
@@ -390,7 +390,7 @@ export function ApplicationsBoardClient({
               board.pending.map((app) => <PendingCard key={app.id} app={app} />)
             ) : (
               <div className="bg-card rounded-2xl p-6 text-center text-sm text-muted-foreground shadow-sm">
-                No pending applications.
+                Tidak ada pendaftaran yang menunggu.
               </div>
             )}
           </div>
@@ -404,7 +404,7 @@ export function ApplicationsBoardClient({
                 style={{ backgroundColor: STATUS_DOT.confirmed }}
               />
               <span className="text-sm font-semibold text-[#3B1F4A]">
-                Confirmed
+                Dikonfirmasi
               </span>
               <span className="text-xs px-2 py-0.5 rounded-full bg-[#EAF3DE] text-[#27500A]">
                 {board.confirmed.length}
@@ -413,7 +413,7 @@ export function ApplicationsBoardClient({
             <button
               type="button"
               onClick={() => toggleSection("confirmed")}
-              aria-label={openSections.confirmed ? "Collapse" : "Expand"}
+              aria-label={openSections.confirmed ? "Ciutkan" : "Perluas"}
               aria-expanded={openSections.confirmed}
               className="flex size-7 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-white/70 lg:hidden"
             >
@@ -433,13 +433,13 @@ export function ApplicationsBoardClient({
                   key={app.id}
                   app={app}
                   borderColor="#639922"
-                  dateLabel="Confirmed at"
+                  dateLabel="Dikonfirmasi pada"
                   dateValue={app.paymentConfirmedAt}
                 />
               ))
             ) : (
               <div className="bg-card rounded-2xl p-6 text-center text-sm text-muted-foreground shadow-sm">
-                No confirmed vendors yet.
+                Belum ada vendor yang dikonfirmasi.
               </div>
             )}
           </div>
@@ -453,7 +453,7 @@ export function ApplicationsBoardClient({
                 style={{ backgroundColor: STATUS_DOT.rejected }}
               />
               <span className="text-sm font-semibold text-[#3B1F4A]">
-                Rejected
+                Ditolak
               </span>
               <span className="text-xs px-2 py-0.5 rounded-full bg-[#F1EFE8] text-[#5F5E5A]">
                 {board.rejected.length}
@@ -462,7 +462,7 @@ export function ApplicationsBoardClient({
             <button
               type="button"
               onClick={() => toggleSection("rejected")}
-              aria-label={openSections.rejected ? "Collapse" : "Expand"}
+              aria-label={openSections.rejected ? "Ciutkan" : "Perluas"}
               aria-expanded={openSections.rejected}
               className="flex size-7 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-white/70 lg:hidden"
             >
@@ -482,13 +482,13 @@ export function ApplicationsBoardClient({
                   key={app.id}
                   app={app}
                   borderColor="#B4B2A9"
-                  dateLabel="Rejected at"
+                  dateLabel="Ditolak pada"
                   dateValue={app.appliedAt}
                 />
               ))
             ) : (
               <div className="bg-card rounded-2xl p-6 text-center text-sm text-muted-foreground shadow-sm">
-                No rejected applications.
+                Tidak ada pendaftaran yang ditolak.
               </div>
             )}
           </div>

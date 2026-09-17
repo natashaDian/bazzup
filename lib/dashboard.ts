@@ -30,7 +30,10 @@ export async function getDashboardStats(
         }),
         prisma.application.aggregate({
           where: { status: { in: CONFIRMED_STATUSES }, area: { bazaarId } },
-          _sum: { platformFee: true },
+          // `totalPrice` is the organizer's own price per slot (Area.pricePerSlot,
+          // captured on the application at payment time) - the organizer's
+          // profit. `platformFee` is BazzUp's cut, not the organizer's revenue.
+          _sum: { totalPrice: true },
         }),
       ]);
 
@@ -39,7 +42,7 @@ export async function getDashboardStats(
       primaryValue: totalAreas,
       pendingApplications,
       confirmedVendors,
-      revenue: revenueResult._sum?.platformFee ?? 0,
+      revenue: revenueResult._sum?.totalPrice ?? 0,
     };
   }
 
@@ -60,7 +63,7 @@ export async function getDashboardStats(
           status: { in: CONFIRMED_STATUSES },
           area: { bazaar: { organizerId } },
         },
-        _sum: { platformFee: true },
+        _sum: { totalPrice: true },
       }),
     ]);
 
@@ -69,7 +72,7 @@ export async function getDashboardStats(
     primaryValue: activeBazaars,
     pendingApplications,
     confirmedVendors,
-    revenue: revenueResult._sum.platformFee ?? 0,
+    revenue: revenueResult._sum.totalPrice ?? 0,
   };
 }
 

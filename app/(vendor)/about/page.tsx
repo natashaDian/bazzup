@@ -27,7 +27,7 @@ import aboutUsIllustration from "@/components/assets/about us illustration.png";
 import aboutUsBg from "@/components/assets/about us bg.jpg";
 
 export const metadata: Metadata = {
-  title: "About - BazzUp",
+  title: "Tentang - BazzUp",
 };
 
 // Scopes the BazzUp accent purple (#7A5CA8) to this page only, so buttons and
@@ -40,81 +40,81 @@ type Step = { icon: LucideIcon; title: string; description: string };
 const VENDOR_STEPS: Step[] = [
   {
     icon: SearchIcon,
-    title: "Find a Bazaar",
-    description: "Search for bazaars based on location, date, category, or interests.",
+    title: "Temukan Bazaar",
+    description: "Cari bazaar berdasarkan lokasi, tanggal, kategori, atau minat kamu.",
   },
   {
     icon: MousePointerClickIcon,
-    title: "Apply for a Slot",
-    description: "Choose your preferred area and submit your application.",
+    title: "Ajukan Slot",
+    description: "Pilih area yang kamu inginkan dan kirim pengajuanmu.",
   },
   {
     icon: CreditCardIcon,
-    title: "Make a Payment",
-    description: "Complete the payment through the available method.",
+    title: "Lakukan Pembayaran",
+    description: "Selesaikan pembayaran melalui metode yang tersedia.",
   },
   {
     icon: ClockIcon,
-    title: "Wait for Confirmation",
-    description: "The organizer will review your application and confirm your participation.",
+    title: "Tunggu Konfirmasi",
+    description: "Organizer akan meninjau pengajuanmu dan mengonfirmasi keikutsertaanmu.",
   },
   {
     icon: StoreIcon,
-    title: "Get Ready for the Event",
-    description: "Once confirmed, prepare your booth and bring your best products!",
+    title: "Bersiap untuk Acara",
+    description: "Setelah dikonfirmasi, siapkan booth kamu dan bawa produk terbaikmu!",
   },
 ];
 
 const ORGANIZER_STEPS: Step[] = [
   {
     icon: CalendarPlusIcon,
-    title: "Create an Event",
-    description: "Set up your bazaar details such as date, location, theme, and available areas.",
+    title: "Buat Acara",
+    description: "Atur detail bazaar seperti tanggal, lokasi, tema, dan area yang tersedia.",
   },
   {
     icon: UsersRoundIcon,
-    title: "Receive Applications",
-    description: "Review vendor applications and manage slot allocations.",
+    title: "Terima Pengajuan",
+    description: "Tinjau pengajuan vendor dan kelola alokasi slot.",
   },
   {
     icon: FileTextIcon,
-    title: "Confirm Vendors",
-    description: "Accept applications and monitor payment status.",
+    title: "Konfirmasi Vendor",
+    description: "Terima pengajuan dan pantau status pembayaran.",
   },
   {
     icon: BarChart3Icon,
-    title: "Run a Successful Event",
-    description: "Welcome vendors, engage visitors, and make an impact in your community.",
+    title: "Jalankan Acara yang Sukses",
+    description: "Sambut vendor, libatkan pengunjung, dan beri dampak bagi komunitasmu.",
   },
 ];
 
 const AUDIENCES: Step[] = [
-  { icon: StoreIcon, title: "For Vendors", description: "Find and join bazaars that fit your business." },
-  { icon: CalendarDaysIcon, title: "For Organizers", description: "Manage events and reach more vendors." },
+  { icon: StoreIcon, title: "Untuk Vendor", description: "Temukan dan ikuti bazaar yang sesuai dengan bisnis kamu." },
+  { icon: CalendarDaysIcon, title: "Untuk Organizer", description: "Kelola acara dan jangkau lebih banyak vendor." },
   {
     icon: UsersIcon,
-    title: "For Communities",
-    description: "Support local businesses and discover unique products.",
+    title: "Untuk Komunitas",
+    description: "Dukung bisnis lokal dan temukan produk-produk unik.",
   },
 ];
 
-const HIGHLIGHTS = ["Discover opportunities", "Support local businesses", "Build stronger communities"];
+const HIGHLIGHTS = ["Temukan peluang", "Dukung bisnis lokal", "Bangun komunitas yang lebih kuat"];
 
 const WHY_CHOOSE_ITEMS: Step[] = [
   {
     icon: SparklesIcon,
-    title: "More Opportunities",
-    description: "Discover relevant bazaars and businesses that match your goals.",
+    title: "Lebih Banyak Peluang",
+    description: "Temukan bazaar dan bisnis relevan yang sesuai dengan tujuan kamu.",
   },
   {
     icon: ClockIcon,
-    title: "Save Time",
-    description: "Handle applications, payments, and event management in one place.",
+    title: "Hemat Waktu",
+    description: "Kelola pendaftaran, pembayaran, dan acara dalam satu tempat.",
   },
   {
     icon: UsersIcon,
-    title: "Stronger Communities",
-    description: "Support local talents and be part of a growing creative ecosystem.",
+    title: "Komunitas yang Lebih Kuat",
+    description: "Dukung talenta lokal dan jadi bagian dari ekosistem kreatif yang terus berkembang.",
   },
 ];
 
@@ -201,16 +201,16 @@ export default function AboutPage() {
 
         <div className="mx-auto flex w-full max-w-4xl flex-col items-center gap-6 px-6 py-20 text-center sm:px-8 sm:py-28">
           <h1 className="text-3xl font-bold text-balance text-[#3B1F4A] sm:text-5xl">
-            Connecting Communities Through Meaningful Bazaars
+            Menghubungkan Komunitas Melalui Bazaar yang Bermakna
           </h1>
           <p className="max-w-2xl text-base text-[#6B7280] sm:text-lg">
-            BazzUp is a platform that helps vendors discover bazaar events and makes it easier for
-            organizers to manage their events. We believe in the power of local communities, creative
-            businesses, and real connections — all in one place.
+            BazzUp adalah platform yang membantu vendor menemukan acara bazaar dan memudahkan
+            organizer mengelola acaranya. Kami percaya pada kekuatan komunitas lokal, bisnis
+            kreatif, dan koneksi yang nyata, semua dalam satu tempat.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Link href="/explore" className={buttonVariants({ size: "lg", className: "gap-1.5" })}>
-              Explore Bazaars
+              Jelajahi Bazaar
               <ArrowRightIcon className="size-4" />
             </Link>
             <AboutScrollLink
@@ -221,7 +221,7 @@ export default function AboutPage() {
                 className: "border-[#7A5CA8] text-[#7A5CA8] transition-colors duration-200 hover:bg-[#F3EAFB]",
               })}
             >
-              Learn More
+              Pelajari Lebih Lanjut
             </AboutScrollLink>
           </div>
         </div>
@@ -230,11 +230,12 @@ export default function AboutPage() {
       <section id="purpose" className="mx-auto mt-10 w-full max-w-6xl scroll-mt-16 px-6 pb-12 sm:mt-14 sm:px-8 sm:pb-16">
         <div className="grid grid-cols-1 gap-8 rounded-2xl bg-[#F3EAFB] p-8 shadow-[0_10px_30px_rgba(122,92,168,0.10)] sm:p-12 lg:grid-cols-[1.1fr_auto_1fr]">
           <div className="flex flex-col justify-center gap-3">
-            <h2 className="text-2xl font-bold text-[#3B1F4A] sm:text-3xl">Our Purpose</h2>
+            <h2 className="text-2xl font-bold text-[#3B1F4A] sm:text-3xl">Tujuan Kami</h2>
             <p className="text-[#6B7280]">
-              We aim to simplify the bazaar experience for everyone — from vendors looking for
-              opportunities to organizers building vibrant events. BazzUp supports local business
-              growth, community engagement, and a more connected creative ecosystem.
+              Kami ingin menyederhanakan pengalaman bazaar untuk semua orang, mulai dari vendor
+              yang mencari peluang hingga organizer yang membangun acara yang meriah. BazzUp
+              mendukung pertumbuhan bisnis lokal, keterlibatan komunitas, dan ekosistem kreatif
+              yang lebih terhubung.
             </p>
           </div>
           <div className="hidden w-px bg-[#E8E1EF] lg:block" />
@@ -254,7 +255,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="relative isolate mt-10 w-full overflow-hidden sm:mt-14">
+      <section className="relative isolate my-16 w-full overflow-hidden sm:my-24">
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-30">
           <Image
             src={aboutUsBg}
@@ -275,14 +276,14 @@ export default function AboutPage() {
 
         <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col gap-12 px-6 py-16 sm:px-8 sm:py-20">
           <StepsSection
-            title="How It Works for Vendors"
-            subtitle="Join a bazaar in just a few simple steps."
+            title="Cara Kerja untuk Vendor"
+            subtitle="Ikuti bazaar hanya dengan beberapa langkah mudah."
             steps={VENDOR_STEPS}
           />
 
           <StepsSection
-            title="How It Works for Organizers"
-            subtitle="Easily manage your bazaar from planning to execution."
+            title="Cara Kerja untuk Organizer"
+            subtitle="Kelola bazaar kamu dengan mudah, dari perencanaan hingga pelaksanaan."
             steps={ORGANIZER_STEPS}
           />
         </div>
@@ -290,7 +291,7 @@ export default function AboutPage() {
 
       <section className="mx-auto w-full max-w-6xl px-6 pb-12 sm:px-8 sm:pb-16">
         <h2 className="mb-8 text-center text-2xl font-bold text-[#3B1F4A] sm:mb-10 sm:text-3xl">
-          Why Choose BazzUp?
+          Kenapa Memilih BazzUp?
         </h2>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-3 sm:gap-8">
           {WHY_CHOOSE_ITEMS.map(({ icon: Icon, title, description }) => (
@@ -313,7 +314,7 @@ export default function AboutPage() {
           <div className="relative min-h-[280px] overflow-hidden rounded-2xl shadow-[0_10px_30px_rgba(122,92,168,0.10)]">
             <Image
               src={aboutUsIllustration}
-              alt="Illustration of a BazzUp bazaar"
+              alt="Ilustrasi bazaar BazzUp"
               fill
               sizes="(min-width: 1024px) 40vw, 100vw"
               className="object-cover"
@@ -326,11 +327,11 @@ export default function AboutPage() {
       <section className="mx-auto w-full max-w-6xl px-6 pb-12 sm:px-8 sm:pb-16">
         <div className="flex flex-col items-center gap-6 rounded-2xl bg-[#F3EAFB] px-6 py-12 text-center shadow-[0_10px_30px_rgba(122,92,168,0.10)] sm:px-10 sm:py-16">
           <h2 className="text-2xl font-bold text-[#3B1F4A] sm:text-3xl">
-            A Better Bazaar Experience for Everyone
+            Pengalaman Bazaar yang Lebih Baik untuk Semua
           </h2>
           <p className="max-w-2xl text-[#6B7280]">
-            Whether you&apos;re a vendor, organizer, or visitor, BazzUp is here to make bazaars more
-            accessible, organized, and enjoyable.
+            Baik kamu vendor, organizer, atau pengunjung, BazzUp hadir untuk membuat bazaar lebih
+            mudah diakses, terorganisir, dan menyenangkan.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
             {HIGHLIGHTS.map((label) => (
@@ -346,7 +347,7 @@ export default function AboutPage() {
             href="mailto:support@bazzup.id"
             className={buttonVariants({ className: "gap-1.5" })}
           >
-            Contact Us
+            Hubungi Kami
             <ArrowRightIcon className="size-4" />
           </a>
         </div>

@@ -28,7 +28,7 @@ export function PaymentCountdown({ deadline }: { deadline: Date }) {
 
   if (!timeLeft) {
     return (
-      <span className="text-xs text-destructive font-medium">Expired</span>
+      <span className="text-xs text-destructive font-medium">Kedaluwarsa</span>
     );
   }
 

@@ -12,12 +12,12 @@ import {
 
 export function IncompleteProfileDialog({
   defaultOpen,
-  title = "Complete Your Profile First",
+  title = "Lengkapi Profil Anda Terlebih Dahulu",
   description = (
     <>
-      Organizers need your business details to review applications.
+      Organizer memerlukan detail bisnis Anda untuk meninjau pendaftaran.
       <br />
-      Please fill in your profile before applying to a bazaar.
+      Lengkapi profil Anda terlebih dahulu sebelum mendaftar ke bazaar.
     </>
   ),
   profileHref = "/profile",
@@ -42,7 +42,7 @@ export function IncompleteProfileDialog({
             href={profileHref}
             className="mt-4 flex w-full items-center justify-center rounded-md bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
           >
-            Go to Profile
+            Ke Profil
           </Link>
         </div>
       </DialogContent>

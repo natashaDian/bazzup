@@ -122,7 +122,7 @@ export function DownloadReceiptButton({data}:{data:ReceiptData}) {
         className="flex items-center gap-1.5 rounded-lg border border-[#EEE4FA] bg-white px-3 py-1.5 text-xs text-[#3B1F4A]"
         >
         <ReceiptIcon className="size-3.5 text-green-700" />
-        Download Receipt
+        Unduh Bukti Pembayaran
         </button>
     );
 }

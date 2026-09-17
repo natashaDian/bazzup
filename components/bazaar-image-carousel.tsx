@@ -28,7 +28,7 @@ export function BazaarImageCarousel({ images, title }: { images: string[]; title
           <button
             type="button"
             onClick={showPrevious}
-            aria-label="Previous image"
+            aria-label="Gambar sebelumnya"
             className="absolute top-1/2 left-2 flex size-8 -translate-y-1/2 items-center justify-center rounded-full bg-background/80 text-foreground shadow hover:bg-background"
           >
             <ChevronLeftIcon className="size-4" />
@@ -36,7 +36,7 @@ export function BazaarImageCarousel({ images, title }: { images: string[]; title
           <button
             type="button"
             onClick={showNext}
-            aria-label="Next image"
+            aria-label="Gambar selanjutnya"
             className="absolute top-1/2 right-2 flex size-8 -translate-y-1/2 items-center justify-center rounded-full bg-background/80 text-foreground shadow hover:bg-background"
           >
             <ChevronRightIcon className="size-4" />

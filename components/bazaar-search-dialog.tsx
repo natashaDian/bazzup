@@ -99,7 +99,7 @@ export function BazaarSearchDialog({ trigger, cities, initial }: BazaarSearchDia
     router.push(qs ? `/explore?${qs}` : "/explore");
   }
 
-  const cityLabel = city === ALL_CITIES_VALUE ? "All cities" : city;
+  const cityLabel = city === ALL_CITIES_VALUE ? "Semua kota" : city;
 
   return (
     <Dialog
@@ -118,26 +118,26 @@ export function BazaarSearchDialog({ trigger, cities, initial }: BazaarSearchDia
           <div className="flex flex-col gap-6 duration-[240ms] animate-in fade-in-0 slide-in-from-left-3">
             <DialogHeader>
               <DialogTitle className="text-xl font-bold text-[#3B1F4A]">
-                Search bazaars
+                Cari Bazaar
               </DialogTitle>
               <DialogDescription className="text-[#6B7280]">
-                Choose your preferred location.
+                Pilih lokasi yang kamu inginkan.
               </DialogDescription>
             </DialogHeader>
 
             <div className="flex flex-col gap-2">
               <Label className="flex items-center gap-1.5 text-sm font-medium text-[#3B1F4A]">
                 <MapPin className="size-3.5 text-[#7A5CA8]" />
-                Location
+                Lokasi
               </Label>
               <Select value={city} onValueChange={(value) => setCity(value ?? ALL_CITIES_VALUE)}>
                 <SelectTrigger className="h-11 w-full rounded-xl border-[#E8E1EF] bg-white px-3.5 text-sm text-[#3B1F4A] focus-visible:border-[#7A5CA8] focus-visible:ring-[#7A5CA8]/25 data-[popup-open]:border-[#7A5CA8]">
                   <SelectValue>
-                    {(value: string) => (value === ALL_CITIES_VALUE ? "All cities" : value)}
+                    {(value: string) => (value === ALL_CITIES_VALUE ? "Semua kota" : value)}
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value={ALL_CITIES_VALUE}>All cities</SelectItem>
+                  <SelectItem value={ALL_CITIES_VALUE}>Semua kota</SelectItem>
                   {cities.map((c) => (
                     <SelectItem key={c} value={c}>
                       {c}
@@ -153,14 +153,14 @@ export function BazaarSearchDialog({ trigger, cities, initial }: BazaarSearchDia
                 onClick={handleReset}
                 className="text-xs font-medium text-[#6B7280] transition-colors hover:text-[#7A5CA8]"
               >
-                Reset
+                Atur Ulang
               </button>
               <Button
                 type="button"
                 onClick={() => setStep("date")}
                 className="h-11 gap-1.5 rounded-xl bg-[#7A5CA8] px-6 text-sm font-semibold text-white hover:bg-[#6B4F98]"
               >
-                Next
+                Selanjutnya
                 <ArrowRight className="size-4" />
               </Button>
             </div>
@@ -169,25 +169,25 @@ export function BazaarSearchDialog({ trigger, cities, initial }: BazaarSearchDia
           <div className="flex flex-col gap-6 duration-[240ms] animate-in fade-in-0 slide-in-from-right-3">
             <DialogHeader>
               <DialogTitle className="text-xl font-bold text-[#3B1F4A]">
-                Select your dates
+                Pilih Tanggal
               </DialogTitle>
               <DialogDescription className="text-[#6B7280]">
-                {cityLabel} · choose a start and end date.
+                {cityLabel} · pilih tanggal mulai dan selesai.
               </DialogDescription>
             </DialogHeader>
 
             <div className="flex flex-col gap-3">
               <Label className="flex items-center gap-1.5 text-sm font-medium text-[#3B1F4A]">
                 <CalendarDays className="size-3.5 text-[#7A5CA8]" />
-                Date
+                Tanggal
               </Label>
               <div className="grid grid-cols-2 gap-3">
                 <div className="flex flex-col gap-1">
-                  <span className="text-xs text-[#6B7280]">Start date</span>
+                  <span className="text-xs text-[#6B7280]">Tanggal mulai</span>
                   <Input
                     readOnly
                     value={range?.from ? formatDateDisplay(range.from) : ""}
-                    placeholder="Select date"
+                    placeholder="Pilih tanggal"
                     className={
                       range?.from
                         ? "rounded-xl border-[#7A5CA8]/50 bg-[#F3EAFB] text-sm font-medium text-[#3B1F4A]"
@@ -196,11 +196,11 @@ export function BazaarSearchDialog({ trigger, cities, initial }: BazaarSearchDia
                   />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <span className="text-xs text-[#6B7280]">End date</span>
+                  <span className="text-xs text-[#6B7280]">Tanggal selesai</span>
                   <Input
                     readOnly
                     value={range?.to ? formatDateDisplay(range.to) : ""}
-                    placeholder="Select date"
+                    placeholder="Pilih tanggal"
                     className={
                       range?.to
                         ? "rounded-xl border-[#7A5CA8]/50 bg-[#F3EAFB] text-sm font-medium text-[#3B1F4A]"
@@ -219,7 +219,7 @@ export function BazaarSearchDialog({ trigger, cities, initial }: BazaarSearchDia
 
             <div className="flex items-center justify-between gap-2 border-t border-[#F0E6FA] pt-4">
               <p className="text-xs text-[#6B7280]">
-                {count === null ? "Counting..." : `${count} bazaars found`}
+                {count === null ? "Menghitung..." : `${count} bazaar ditemukan`}
               </p>
               <div className="flex gap-2">
                 <Button
@@ -229,14 +229,14 @@ export function BazaarSearchDialog({ trigger, cities, initial }: BazaarSearchDia
                   className="h-10 gap-1.5 rounded-xl border-[#E8E1EF] bg-white px-4 text-sm font-medium text-[#3B1F4A] hover:bg-[#F9F5FF]"
                 >
                   <ArrowLeft className="size-4" />
-                  Back
+                  Kembali
                 </Button>
                 <Button
                   type="button"
                   onClick={handleSearch}
                   className="h-10 rounded-xl bg-[#7A5CA8] px-6 text-sm font-semibold text-white hover:bg-[#6B4F98]"
                 >
-                  Search
+                  Cari
                 </Button>
               </div>
             </div>

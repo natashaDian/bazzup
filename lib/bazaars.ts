@@ -683,7 +683,9 @@ export async function getBazaarCompletionSummary(
         status: { in: ["CONFIRMED", "COMPLETED"] },
         area: { bazaarId },
       },
-      _sum: { platformFee: true },
+      // Organizer's own profit (Area.pricePerSlot, captured as totalPrice at
+      // payment time), not BazzUp's platformFee cut.
+      _sum: { totalPrice: true },
     }),
     prisma.review.findMany({
       where: { type: "VENDOR_TO_BAZAAR", application: { area: { bazaarId } } },
@@ -718,7 +720,7 @@ export async function getBazaarCompletionSummary(
   return {
     totalAreas,
     totalVendorsConfirmed,
-    totalRevenue: revenueResult._sum.platformFee ?? 0,
+    totalRevenue: revenueResult._sum.totalPrice ?? 0,
     eventStartDate: bazaar.eventStartDate,
     eventEndDate: bazaar.eventEndDate,
     areaBreakdown: bazaar.areas.map((area) => ({
