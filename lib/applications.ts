@@ -1,7 +1,11 @@
 import "server-only";
 import type { ApplicationStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { expireOverdueApplications } from "@/lib/bazaars";
+import {
+  expireOverdueApplications,
+  reopenBazaarsWithFutureEndDate,
+  syncBazaarFullStatuses,
+} from "@/lib/bazaars";
 
 export const APPLICATION_STATUSES: {
   value: ApplicationStatus;
@@ -76,6 +80,8 @@ export async function getVendorApplications(
   filters: { status?: ApplicationStatus; sort?: "newest" | "oldest" },
 ): Promise<VendorApplicationRow[]> {
   await expireOverdueApplications();
+  await reopenBazaarsWithFutureEndDate();
+  await syncBazaarFullStatuses();
 
   const applications = await prisma.application.findMany({
     where: {
@@ -179,6 +185,8 @@ export async function getApplicationsBoard(
   filters: { bazaarId?: string; q?: string; sort?: string } = {},
 ) {
   await expireOverdueApplications();
+  await reopenBazaarsWithFutureEndDate();
+  await syncBazaarFullStatuses();
 
   const where = {
     area: {
@@ -318,6 +326,8 @@ export async function getApplicationDetail(
   organizerId: string,
 ): Promise<ApplicationDetail | null> {
   await expireOverdueApplications();
+  await reopenBazaarsWithFutureEndDate();
+  await syncBazaarFullStatuses();
 
   const application = await prisma.application.findUnique({
     where: { id: applicationId },

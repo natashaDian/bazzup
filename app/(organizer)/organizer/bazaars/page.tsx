@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default async function MyBazaarsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string; q?: string }>;
+  searchParams: Promise<{ status?: string; q?: string; openSummary?: string }>;
 }) {
   const params = await searchParams;
   const user = await requireOrganizer();
@@ -56,7 +56,11 @@ export default async function MyBazaarsPage({
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           {bazaars.map((bazaar) => (
-            <OrganizerBazaarCard key={bazaar.id} bazaar={bazaar} />
+            <OrganizerBazaarCard
+              key={bazaar.id}
+              bazaar={bazaar}
+              autoOpenSummary={bazaar.id === params.openSummary}
+            />
           ))}
         </div>
       )}

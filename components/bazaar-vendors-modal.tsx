@@ -21,10 +21,12 @@ export function BazaarVendorsModal({
   bazaarTitle,
   bazaarId,
   onClose,
+  showPaymentStatus = true,
 }: {
   bazaarTitle: string;
   bazaarId: string;
   onClose: () => void;
+  showPaymentStatus?: boolean;
 }) {
   const [vendors, setVendors] = useState<BazaarConfirmedVendor[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -93,14 +95,16 @@ export function BazaarVendorsModal({
                       {vendor.category}
                     </span>
                   )}
-                  <span
-                    className={`text-[10px] px-2 py-0.5 rounded-full ${
-                      STATUS_BADGE[vendor.status]?.className ??
-                      "bg-gray-100 text-gray-600"
-                    }`}
-                  >
-                    {STATUS_BADGE[vendor.status]?.label ?? vendor.status}
-                  </span>
+                  {showPaymentStatus && (
+                    <span
+                      className={`text-[10px] px-2 py-0.5 rounded-full ${
+                        STATUS_BADGE[vendor.status]?.className ??
+                        "bg-gray-100 text-gray-600"
+                      }`}
+                    >
+                      {STATUS_BADGE[vendor.status]?.label ?? vendor.status}
+                    </span>
+                  )}
                 </div>
               </div>
             ))}
