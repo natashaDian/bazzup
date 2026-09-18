@@ -273,11 +273,11 @@ Beberapa hal yang perlu diatur di dashboard Supabase:
 
 | Hasil | Jumlah |
 |---|---|
-| Lulus | 30 |
-| Tidak berlaku | 2 |
-| Dilewati | 2 |
+| Pass | 30 |
+| N/A | 2 |
+| Cancel | 2 |
 
-Tidak ada skenario yang gagal. Dua kategori "tidak berlaku" adalah test case yang premisnya tidak sesuai arsitektur aplikasi — pengujian akses receipt lewat URL, padahal receipt dibuat sepenuhnya di sisi klien tanpa endpoint yang bisa diserang.
+Tidak ada skenario yang gagal. Dua kategori "tidak berlaku" adalah test case yang premisnya tidak sesuai arsitektur aplikasi, sementara dilewati adalah keputusan tim sepakat untuk tidak memasukkannya sebagai test case karena tidak sesuai konsep bisnis dan beberapa alasan krusial lainnya.
 
 Rincian lengkap beserta bukti per skenario ada di `bazzup-test-plan-2-results.csv`.
 
