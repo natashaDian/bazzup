@@ -1,6 +1,6 @@
-# BazzUp
+   # BazzUp
 
-Marketplace yang menghubungkan UMKM pencari tempat berjualan dengan penyelenggara bazaar yang punya slot kosong. Menjawab permasalahan distribusi lowongan bazaar yang belum merata, sebagai tempat penyaluran informasi bazaar yang lebih luas. Mudah di akses dan dapat dijangkau dimana saja dan kapanpun. 
+Platform yang menghubungkan UMKM pencari tempat berjualan dengan penyelenggara bazaar yang punya slot kosong. Menjawab permasalahan distribusi lowongan bazaar yang belum merata, sebagai tempat penyaluran informasi bazaar yang lebih luas. Mudah di akses dan dapat dijangkau dimana saja dan kapanpun. 
 
 **Demo:** https://bazzup.vercel.app
 
@@ -10,7 +10,7 @@ Marketplace yang menghubungkan UMKM pencari tempat berjualan dengan penyelenggar
 
 Ada jutaan UMKM di Indonesia yang punya produk bagus tapi tidak punya tempat berjualan dan kesempatan untuk mempromosikan bandnya. Di sisi lain, ratusan bazaar digelar setiap bulan dengan slot yang sulit untuk terisi penuh. 
 
-Masalahnya bukan sekadar mempertemukan keduanya — vendor sering rugi karena menyewa slot di area yang salah. BazzUp menghitung **Match Score** yang mencocokkan karakter usaha vendor dengan karakter area bazaar, sehingga keputusan sewa jadi terukur, bukan tebak-tebakan. BazzUp membantu penyebaran informasi merata sehingga lebih banyak UMKM mendapatkan kesempatan berjualan dan memudahkan penyelenggara menemukan UMKM yang pas untuk tipe bazaarnya.
+Masalahnya bukan sekadar mempertemukan keduanya, vendor sering rugi karena menyewa slot di area yang salah. BazzUp menghitung **Match Score** yang mencocokkan karakter usaha vendor dengan karakter area bazaar, sehingga keputusan sewa jadi terukur, bukan tebak-tebakan. BazzUp membantu penyebaran informasi merata sehingga lebih banyak UMKM mendapatkan kesempatan berjualan dan memudahkan penyelenggara menemukan UMKM yang pas untuk tipe bazaarnya.
 
 ---
 
@@ -199,7 +199,6 @@ Beberapa hal yang perlu diatur di dashboard Supabase:
 4. **Tinjau pengajuan** di `/organizer/applications`. Tiap pengajuan menampilkan Match Score beserta rincian faktornya
 5. **Setujui atau tolak** pengajuan. Penolakan disertai alasan yang dikirim ke vendor
 6. **Pantau okupansi** dan pemasukan di dashboard
-7. **Beri ulasan** untuk vendor setelah acara selesai
 
 ---
 
