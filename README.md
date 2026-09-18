@@ -15,13 +15,13 @@ Masalahnya bukan sekadar mempertemukan keduanya — vendor sering rugi karena me
 ---
 
 ## Akun Demo
-Organizer : Penyelenggara bazaar
-Vendor : UMKM 
+Organizer : Penyelenggara Bazaar
+Vendor : Penyewa Bazaar
 
 | Role | Email | Password |
 |---|---|---|
-| Organizer | `tamananggrek@gmail.com` | `tamananggrek@gmail.com` |
-| Vendor | `Jessia@gmail.com` | `Jessia@gmail.com` |
+| Organizer | `jack@gmail.com` | `jack@gmail.com` |
+| Vendor | `michele@gmail.com` | `123sayang` |
 
 ---
 
@@ -218,7 +218,7 @@ REJECTED   EXPIRED    CANCELLED
 | `PENDING` | Menunggu tinjauan organizer |
 | `APPROVED` | Disetujui, menunggu pembayaran vendor |
 | `REJECTED` | Ditolak organizer |
-| `EXPIRED` | Pembayaran lewat batas waktu, slot dilepas |
+| `EXPIRED` | Pembayaran lewat batas waktu 24 jam, slot dilepas |
 | `CONFIRMED` | Pembayaran diterima, slot terkunci |
 | `CANCELLED` | Dibatalkan vendor sebelum acara |
 | `COMPLETED` | Acara sudah selesai |
