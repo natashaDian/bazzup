@@ -305,8 +305,8 @@ npm run db:seed    # isi database dengan data awal
 | Nama | GitHub |
 |---|---|
 | Natasha Dian Mahardita | [@natashaDian](https://github.com/natashaDian) |
-| Rainer | [@RainerYesaya](https://github.com/RainerYesaya) |
-| Shafa | [@naycilla](https://github.com/naycilla) |
+| Rainer Yesaya Villareal | [@RainerYesaya](https://github.com/RainerYesaya) |
+| Shafa Naura Livka Naycilla| [@naycilla](https://github.com/naycilla) |
 
 
 ---
