@@ -16,6 +16,7 @@ Masalahnya bukan sekadar mempertemukan keduanya, vendor sering rugi karena menye
 
 ## Akun Demo
 Organizer : Penyelenggara Bazaar
+
 Vendor : Penyewa Bazaar
 
 | Role | Email | Password |
