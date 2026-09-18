@@ -267,6 +267,21 @@ Beberapa hal yang perlu diatur di dashboard Supabase:
 6. **Pantau okupansi** dan pemasukan di dashboard
 
 ---
+## Hasil Pengujian
+
+34 skenario diuji mencakup alur status, keamanan, Match Score, kasus batas, notifikasi, dokumen, dan tampilan.
+
+| Hasil | Jumlah |
+|---|---|
+| Lulus | 30 |
+| Tidak berlaku | 2 |
+| Dilewati | 2 |
+
+Tidak ada skenario yang gagal. Dua kategori "tidak berlaku" adalah test case yang premisnya tidak sesuai arsitektur aplikasi — pengujian akses receipt lewat URL, padahal receipt dibuat sepenuhnya di sisi klien tanpa endpoint yang bisa diserang.
+
+Rincian lengkap beserta bukti per skenario ada di `bazzup-test-plan-2-results.csv`.
+
+---
 
 ## Status Pengajuan
 
