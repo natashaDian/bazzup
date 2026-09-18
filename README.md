@@ -229,20 +229,52 @@ Transisi ke `EXPIRED` dan `COMPLETED` terjadi otomatis saat halaman terkait dimu
 
 ## Struktur Proyek
 
+## Struktur Proyek
+
 ```
 bazzup/
 ├── app/
-│   ├── (auth)/          Halaman login dan registrasi
-│   ├── (vendor)/        Halaman untuk role Vendor
-│   ├── (organizer)/     Halaman untuk role Organizer
-│   └── api/             Route handler
-├── components/          Komponen UI yang dipakai bersama
-├── lib/                 Query, server action, dan utilitas
+│   ├── (main)/                  Layout untuk halaman publik
+│   ├── (organizer)/             Halaman role Organizer
+│   │   ├── organizer/           Dashboard, bazaar, applications, profile
+│   │   └── layout.tsx           Guard requireOrganizer()
+│   ├── (vendor)/                Halaman role Vendor
+│   │   ├── about/
+│   │   ├── allbazaar/
+│   │   ├── applications/        Status pengajuan vendor
+│   │   ├── bazaars/             Detail bazaar dan pengajuan slot
+│   │   ├── explore/             Pencarian dan filter bazaar
+│   │   ├── payment/             Alur pembayaran
+│   │   ├── profile/             Profil usaha, produk, portofolio
+│   │   ├── vendor/
+│   │   └── layout.tsx           Guard requireVendor()
+│   ├── api/
+│   │   ├── bazaars/
+│   │   ├── chat/                Endpoint AI assistant (Gemini)
+│   │   └── notifications/
+│   ├── login/
+│   │   ├── actions.ts
+│   │   ├── login-form.tsx
+│   │   └── page.tsx
+│   ├── register/
+│   │   ├── organizer/           Form registrasi organizer
+│   │   ├── vendor/              Form registrasi vendor
+│   │   ├── actions.ts
+│   │   ├── register-form.tsx
+│   │   └── page.tsx
+│   ├── globals.css
+│   ├── layout.tsx               Root layout
+│   └── page.tsx                 Halaman utama
+├── components/                  Komponen UI yang dipakai bersama
+├── hooks/                       Custom React hooks
+├── lib/                         Query Prisma, server action, utilitas
 ├── prisma/
-│   ├── schema.prisma    Definisi struktur database
-│   └── seed.ts          Data awal
-└── public/              Aset statis
+│   ├── schema.prisma            Definisi struktur database
+│   └── seed.ts                  Data awal
+└── public/                      Aset statis
 ```
+
+Folder berkurung seperti `(vendor)` adalah **route group** Next.js — namanya tidak muncul di URL, fungsinya mengelompokkan halaman agar bisa berbagi satu layout. Proteksi role dipasang di `layout.tsx` masing-masing grup, sehingga seluruh halaman di dalamnya otomatis terlindungi.
 
 ---
 
@@ -273,8 +305,8 @@ npm run db:seed    # isi database dengan data awal
 | Nama | GitHub |
 |---|---|
 | Natasha Dian Mahardita | [@natashaDian](https://github.com/natashaDian) |
-| Rainer | [@username](https://github.com/username) |
-| Shafa | [@username](https://github.com/username) |
+| Rainer | [@RainerYesaya](https://github.com/RainerYesaya) |
+| Shafa | [@naycilla](https://github.com/naycilla) |
 
 
 ---
