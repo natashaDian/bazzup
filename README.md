@@ -49,6 +49,44 @@ Vendor : Penyewa Bazaar
 
 ---
 
+## Keamanan dan Perlindungan Data
+
+### Data yang Dikumpulkan
+
+| Data | Tujuan |
+|---|---|
+| Email, password | Autentikasi |
+| Nama | Identitas di profil dan pengajuan |
+| Nomor telepon / WhatsApp | Komunikasi vendor dengan organizer |
+| Data usaha (nama, kategori, deskripsi) | Perhitungan Match Score dan penilaian organizer |
+| Media sosial, foto produk, portofolio | Kredibilitas usaha vendor |
+
+Tidak ada data sensitif seperti NIK, nomor rekening, atau data kartu yang disimpan. Pembayaran masih berupa simulasi, sehingga tidak ada transaksi finansial yang diproses.
+
+### Cara Data Dilindungi
+
+| Aspek | Penerapan |
+|---|---|
+| Password | Ditangani Supabase Auth dengan hashing bcrypt. Aplikasi tidak pernah menyimpan atau membaca password |
+| Sesi login | Token dikelola Supabase, diperbarui otomatis |
+| Koneksi | HTTPS untuk aplikasi, TLS untuk koneksi database |
+| Akses database | Data API Supabase dinonaktifkan; tidak ada endpoint publik ke tabel. Seluruh akses melalui Prisma dari server |
+| Otorisasi role | Divalidasi di server, bukan disembunyikan di tampilan. Mengetik URL manual tidak bisa menembus batasan |
+| Kepemilikan data | Diperiksa sebelum setiap perubahan. Vendor hanya melihat pengajuannya sendiri, organizer hanya mengelola bazaar miliknya |
+| Kredensial | Disimpan sebagai environment variable, tidak ikut ke repositori |
+
+### Batasan
+
+| Hal | Keterangan |
+|---|---|
+| Verifikasi email | Dinonaktifkan karena kuota pengiriman email pada layanan gratis sangat terbatas. Perlu diaktifkan beserta layanan email khusus untuk produksi |
+| Penghapusan akun mandiri | Belum tersedia |
+| Ekspor data pribadi | Belum tersedia |
+| Autentikasi dua faktor | Belum tersedia |
+| Pencatatan audit akses data | Belum tersedia |
+
+---
+
 ## Match Score
 
 Skor kecocokan dari sisi Organizer : 
@@ -86,6 +124,33 @@ Skor kecocokan dari sisi Vendor :
 | AI Assistant | Google Gemini |
 | Generator PDF | jsPDF |
 | Hosting | Vercel |
+
+---
+
+## Penggunaan Tools dan AI
+
+Pengembangan BazzUp memanfaatkan beberapa alat bantu berikut, sesuai ketentuan lomba.
+
+### AI Assistant dalam Pengembangan
+
+| Tools | Peran |
+|---|---|
+| Claude (Anthropic) | Konsultasi arsitektur, pemilihan stack, perancangan skema database, logika Match Score, penulisan dan review kode, penyusunan dokumentasi dan rencana pengujian |
+| Claude Code | Agen coding di terminal untuk membantu debugging bug di dalam proyek, serta testing (non primary function) |
+
+Seluruh keputusan desain, alur bisnis, dan verifikasi hasil dilakukan oleh tim. AI digunakan sebagai alat bantu, bukan pengganti pemahaman tim atas kode yang ditulis.
+
+### API Pihak Ketiga
+
+| Layanan | Peran |
+|---|---|
+| Supabase | Database PostgreSQL, autentikasi, dan penyimpanan file |
+| Google Gemini | Mesin asisten AI untuk pencarian bazaar lewat percakapan |
+| Vercel | Hosting dan continuous deployment |
+
+### Library Utama
+
+Next.js, React, TypeScript, Prisma, Tailwind CSS, shadcn/ui, Lucide, jsPDF, react-hook-form, zod, Recharts. Daftar lengkap ada di `package.json`.
 
 ---
 
